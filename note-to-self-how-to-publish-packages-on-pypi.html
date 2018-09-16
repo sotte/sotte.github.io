@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <title>Stefan Otte - research what?</title>
+
+  <meta charset="utf-8" />
+  <meta name="author" content="Stefan Otte">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <link href="https://fonts.googleapis.com/css?family=PT+Serif" rel="stylesheet">
+
+  <link rel="stylesheet" href="/theme/css/normalize.css">
+  <link rel="stylesheet" href="/theme/css/skeleton.css">
+  <link rel="stylesheet" href="/theme/css/custom.css">
+
+  <!-- force https -->
+  <script>
+    var host = "sotte.github.io"
+    if (window.location.host == host && window.location.protocol != "https:") {
+      window.location.protocol = "https:"
+    }
+  </script>
+
+</head>
+<body>
+
+  <div class="container">
+    <nav class="navbar">
+      <div class="u-pull-right">
+        <a class="navbar-link" href="/index.html">about me</a>
+        <a class="navbar-link" href="/archives.html">blog</a>
+        <a class="navbar-link" href="/pages/research.html">research</a>
+        <a class="navbar-link" href="/publications.html">publications</a>
+      </div>
+      <div class="u-cf"></div>
+    </nav>
+
+  <div>
+    <h1>Note to self: How to publish packages on PyPI</h1>
+    <p class="article-date">
+      Published on <time datetime="2016-01-20T00:00:00+01:00">2016-01-20</time>
+    </p>
+    <div><p>One of the least favorite things about python is package and release management.
+Even though it's getting better, there is still room for improvement.
+There are guides of how to publish package on <a class="reference external" href="https://pypi.python.org/pypi">PyPI</a> out there,
+but many are out of date and/or recommend methods that leak your password
+(<strong>DON'T</strong> use <tt class="docutils literal">setup.py upload</tt> or <tt class="docutils literal">setup.py register</tt>!).</p>
+<p>This guide is mostly for myself because I tend to forget things,
+but maybe it's useful for someone else.
+The authoritative source
+-- and everybody should know about it --
+is <a class="reference external" href="https://packaging.python.org/en/latest/">python packaging</a>.
+It's a bit lengthy but really good.</p>
+<div class="section" id="goal">
+<h2>Goal</h2>
+<p>The goal is to release an already existing package
+(which works with python 2&amp;3 and does not include any compiled stuff)
+on PyPI
+as <a class="reference external" href="https://packaging.python.org/en/latest/glossary/#term-source-distribution-or-sdist">source distribution</a> and as <a class="reference external" href="https://packaging.python.org/en/latest/distributing/#universal-wheels">universal wheel</a>
+so it's easy to <cite>pip install</cite>.</p>
+</div>
+<div class="section" id="tools">
+<h2>Tools</h2>
+<p>The tools we're going to be using:</p>
+<ul class="simple">
+<li>use <tt class="docutils literal">setuptools</tt> in your <tt class="docutils literal">setup.py</tt>,</li>
+<li>use <tt class="docutils literal">pip</tt> for installing,</li>
+<li>use <tt class="docutils literal">wheels</tt> to generate binary <a class="reference external" href="https://packaging.python.org/en/latest/distributing/#universal-wheels">universal wheel</a>, and</li>
+<li>use <tt class="docutils literal">twine</tt> to upload the packages to PyPI
+(<tt class="docutils literal">twine</tt> uses an encrypted connection whereas <tt class="docutils literal">setup.py upload</tt>
+leaks your password).</li>
+</ul>
+<p>See <a class="reference external" href="https://packaging.python.org/en/latest/current/">packaging tools</a> for more details.</p>
+<div class="section" id="preperation-create-accounts">
+<h3>Preperation: Create accounts</h3>
+<p>Even if you only want to publish your package on <a class="reference external" href="https://pypi.python.org/pypi">PyPI</a>
+you should have accounts on <a class="reference external" href="https://testpypi.python.org/pypi">PyPITest</a> (for testing purposes)
+<strong>and</strong> PyPI (for the real thing).
+Create accounts on both platforms.
+Work with PyPITest until you have the workflow down.
+Then actually release your package on PyPI.</p>
+<p>After you registered on
+<a class="reference external" href="https://pypi.python.org/pypi?%3Aaction=register_form">PyPI</a> and
+<a class="reference external" href="https://testpypi.python.org/pypi?%3Aaction=register_form">PyPITest</a>
+you should create a file <tt class="docutils literal"><span class="pre">~/.pypirc</span></tt> and add your credentials:</p>
+<div class="highlight"><pre><span></span><span class="c1"># .pypirc</span>
+<span class="k">[distutils]</span>
+<span class="na">index-servers</span><span class="o">=</span><span class="s"></span>
+<span class="s">    pypi</span>
+<span class="s">    pypitest</span>
+
+<span class="k">[pypitest]</span>
+<span class="na">repository</span><span class="o">=</span><span class="s">https://testpypi.python.org/pypi</span>
+<span class="na">username</span><span class="o">=</span><span class="s">&lt;your user name goes here&gt;</span>
+<span class="na">password</span><span class="o">=</span><span class="s">&lt;your password goes here&gt;</span>
+
+<span class="k">[pypi]</span>
+<span class="na">repository</span><span class="o">=</span><span class="s">https://pypi.python.org/pypi</span>
+<span class="na">username</span><span class="o">=</span><span class="s">&lt;your user name goes here&gt;</span>
+<span class="na">password</span><span class="o">=</span><span class="s">&lt;your password goes here&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="your-package-should-have">
+<h2>Your Package Should Have</h2>
+<p>... a <tt class="docutils literal">setup.py</tt> file, a <tt class="docutils literal">setup.cfg</tt> file, and a <tt class="docutils literal">README.rst</tt> file (and
+a bunch of python code that actually does something).</p>
+<p>How to structure your <tt class="docutils literal">setup.py</tt> is described
+<a class="reference external" href="https://packaging.python.org/en/latest/distributing/#setup-args">here</a>.</p>
+<p>The <tt class="docutils literal">setup.cfg</tt> is needed to create a universal wheels and should look like
+this:</p>
+<div class="highlight"><pre><span></span><span class="c1"># setup.cfg</span>
+<span class="k">[bdist_wheel]</span>
+<span class="c1"># univesal wheel</span>
+<span class="na">universal</span><span class="o">=</span><span class="s">1</span>
+</pre></div>
+<p>I use <tt class="docutils literal">README.rst</tt> because PyPI recognizes the <tt class="docutils literal">rst</tt> format
+and I can reuse the <tt class="docutils literal">README.rst</tt> with sphinx.</p>
+<div class="section" id="steps-to-upload-to-pypi-test">
+<h3>Steps to upload to PyPI(Test)</h3>
+<p>Given a proper setup package your can build the package:</p>
+<div class="highlight"><pre><span></span><span class="c1"># create a source distribution</span>
+python setup.py sdist
+<span class="c1"># create a universal wheel for</span>
+<span class="c1"># (py2&amp;3 without any ompiled stuff)</span>
+python setup.py bdist_wheel --universal
+</pre></div>
+<p>If the package is not on PyPI yet you have to register it first.
+Register your package on PyPI by uploading the <tt class="docutils literal"><span class="pre">PKG-INFO</span></tt>
+from <tt class="docutils literal"><span class="pre">myproject.egg-info/PKG-INFO</span></tt>
+via the <a class="reference external" href="https://testpypi.python.org/pypi?%3Aaction=submit_form">PyPITest web form</a>
+or the <a class="reference external" href="https://testpypi.python.org/pypi?%3Aaction=submit_form">PyPI web form</a>.
+DON'T use <tt class="docutils literal">python setup.py register</tt> because it leaks your password!</p>
+<p>Then upload it to PyPITest:</p>
+<div class="highlight"><pre><span></span>twine upload --repository pypitest dist/*
+</pre></div>
+<p>or PyPI:</p>
+<div class="highlight"><pre><span></span>twine upload --repository pypi dist/*
+</pre></div>
+</div>
+<div class="section" id="conclusion">
+<h3>Conclusion</h3>
+<p>Congratulations, you're done!
+Once you know what to do it's not that hard :)</p>
+<p>I think it's a pain that default tools leak your password and you're forced
+to upload PKG
+<tt class="docutils literal"><span class="pre">PKG-INFO</span></tt> via a web form and install <tt class="docutils literal">twine</tt> to upload the packages.
+Hopefully that changes at some point...</p>
+<!-- ============================================================================ -->
+<!-- links -->
+</div>
+</div>
+</div>
+  </div>
+
+    <footer>
+      <p>
+        Created by Stefan Otte | 2013 - 2018
+      </p>
+      <p>
+        <a href="https://github.com//sotte" target="_blank">github</a>
+        |
+        <a href="https://www.linkedin.com/in/stefan-otte-29367a111/" target="_blank">linkedin</a>
+      </p>
+    </footer>
+  </div>
+
+<!-- RANDOM INCLUDES -->
+    <script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-37828045-1");
+    pageTracker._trackPageview();
+    } catch(err) {}</script>
+
+</body>
+</html>
