@@ -4,11 +4,11 @@
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;p&gt;&lt;em&gt;Note: you can find the jupyter notebok for this post &lt;a href="https://github.com/sotte/sotte.github.io.resources"&gt;here&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note: you can find the jupyter notebook for this post &lt;a href="https://github.com/sotte/sotte.github.io.resources"&gt;here&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;I really like &lt;code&gt;PyTorch&lt;/code&gt; and &lt;a href="https://twitter.com/karpathy/status/868178954032513024"&gt;I'm not alone&lt;/a&gt;.
 However, there is one aspect where &lt;code&gt;PyTorch&lt;/code&gt; is not too user-friendly.
-&lt;code&gt;PyTorch&lt;/code&gt; does not have a nice high level &lt;code&gt;fit&lt;/code&gt; function,
-i.e. an interface like &lt;code&gt;scikit-learn&lt;/code&gt;s or &lt;code&gt;keras&lt;/code&gt; &lt;code&gt;fit&lt;/code&gt;.
+&lt;code&gt;PyTorch&lt;/code&gt; does not have a nice high-level &lt;code&gt;fit&lt;/code&gt; function,
+i.e. a &lt;code&gt;fit&lt;/code&gt;interface like &lt;code&gt;scikit-learn&lt;/code&gt; or &lt;code&gt;keras&lt;/code&gt;.
 That is the complaint I hear most often about &lt;code&gt;PyTorch&lt;/code&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Stefan Otte</dc:creator><pubDate>Sun, 16 Sep 2018 00:00:00 +0200</pubDate><guid isPermaLink="false">tag:None,2018-09-16:/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html</guid><category>notag</category></item><item><title>PyData PyTorch Tutorial</title><link>/pydata-pytorch-tutorial.html</link><description>&lt;p&gt;I attended the PyData Berlin again and it was a really good conference:
 great talks, great people, and well organized!&lt;/p&gt;
 &lt;p&gt;I also presented a &lt;strong&gt;PyTorch&lt;/strong&gt; tutorial.

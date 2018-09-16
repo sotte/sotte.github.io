@@ -4,21 +4,21 @@
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;p&gt;&lt;em&gt;Note: you can find the jupyter notebok for this post &lt;a href="https://github.com/sotte/sotte.github.io.resources"&gt;here&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note: you can find the jupyter notebook for this post &lt;a href="https://github.com/sotte/sotte.github.io.resources"&gt;here&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;I really like &lt;code&gt;PyTorch&lt;/code&gt; and &lt;a href="https://twitter.com/karpathy/status/868178954032513024"&gt;I'm not alone&lt;/a&gt;.
 However, there is one aspect where &lt;code&gt;PyTorch&lt;/code&gt; is not too user-friendly.
-&lt;code&gt;PyTorch&lt;/code&gt; does not have a nice high level &lt;code&gt;fit&lt;/code&gt; function,
-i.e. an interface like &lt;code&gt;scikit-learn&lt;/code&gt;s or &lt;code&gt;keras&lt;/code&gt; &lt;code&gt;fit&lt;/code&gt;.
+&lt;code&gt;PyTorch&lt;/code&gt; does not have a nice high-level &lt;code&gt;fit&lt;/code&gt; function,
+i.e. a &lt;code&gt;fit&lt;/code&gt;interface like &lt;code&gt;scikit-learn&lt;/code&gt; or &lt;code&gt;keras&lt;/code&gt;.
 That is the complaint I hear most often about &lt;code&gt;PyTorch&lt;/code&gt;</summary><content type="html">
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;p&gt;&lt;em&gt;Note: you can find the jupyter notebok for this post &lt;a href="https://github.com/sotte/sotte.github.io.resources"&gt;here&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note: you can find the jupyter notebook for this post &lt;a href="https://github.com/sotte/sotte.github.io.resources"&gt;here&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;I really like &lt;code&gt;PyTorch&lt;/code&gt; and &lt;a href="https://twitter.com/karpathy/status/868178954032513024"&gt;I'm not alone&lt;/a&gt;.
 However, there is one aspect where &lt;code&gt;PyTorch&lt;/code&gt; is not too user-friendly.
-&lt;code&gt;PyTorch&lt;/code&gt; does not have a nice high level &lt;code&gt;fit&lt;/code&gt; function,
-i.e. an interface like &lt;code&gt;scikit-learn&lt;/code&gt;s or &lt;code&gt;keras&lt;/code&gt; &lt;code&gt;fit&lt;/code&gt;.
+&lt;code&gt;PyTorch&lt;/code&gt; does not have a nice high-level &lt;code&gt;fit&lt;/code&gt; function,
+i.e. a &lt;code&gt;fit&lt;/code&gt;interface like &lt;code&gt;scikit-learn&lt;/code&gt; or &lt;code&gt;keras&lt;/code&gt;.
 That is the complaint I hear most often about &lt;code&gt;PyTorch&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;I can't remember how often I have written a training loop in &lt;code&gt;PyTorch&lt;/code&gt;
 and how often I made mistakes doing so.
