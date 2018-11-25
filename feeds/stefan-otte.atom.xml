@@ -133,7 +133,25 @@ We'll write a little image classifier that classifies
 Downloading pytorch took me longer than writing the code to train the model and
 I haven't used hy in several years.&lt;/p&gt;
 &lt;p&gt;I don't know where I want to go with this, but it sure was a fun little
-experiment :)&lt;/p&gt;</content><category term="TODO"></category></entry><entry><title>"No fit?" Comparing high-level learning interfaces for PyTorch</title><link href="/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html" rel="alternate"></link><published>2018-09-16T00:00:00+02:00</published><updated>2018-09-16T00:00:00+02:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-09-16:/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html</id><summary type="html">
+experiment :)&lt;/p&gt;</content><category term="TODO"></category></entry><entry><title>Similarity Search with Neural Networks</title><link href="/similarity-search-with-neural-networks.html" rel="alternate"></link><published>2018-11-21T00:00:00+01:00</published><updated>2018-11-21T00:00:00+01:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-11-21:/similarity-search-with-neural-networks.html</id><summary type="html">&lt;p&gt;I gave a talk "Fun with Content-based Image Retrieval with Neural Network" at
+the
+&lt;a href="https://www.meetup.com/PyData-Berlin/events/255903846/"&gt;PyData Berlin Meetup&lt;/a&gt;.
+Here are the &lt;a href="images/CBIR-talk.pdf"&gt;slides as pdf&lt;/a&gt;.
+(I hope to publish the transcript of the talk in a few days.)&lt;/p&gt;
+&lt;p&gt;&lt;a href="images/CBIR-talk.pdf"&gt;
+  &lt;img src="images/CBIR-talk.png" style="width: 100%;  height: auto;"&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Thanks again to the PyData Berlin folks for organizing the event and thanks to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I gave a talk "Fun with Content-based Image Retrieval with Neural Network" at
+the
+&lt;a href="https://www.meetup.com/PyData-Berlin/events/255903846/"&gt;PyData Berlin Meetup&lt;/a&gt;.
+Here are the &lt;a href="images/CBIR-talk.pdf"&gt;slides as pdf&lt;/a&gt;.
+(I hope to publish the transcript of the talk in a few days.)&lt;/p&gt;
+&lt;p&gt;&lt;a href="images/CBIR-talk.pdf"&gt;
+  &lt;img src="images/CBIR-talk.png" style="width: 100%;  height: auto;"&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Thanks again to the PyData Berlin folks for organizing the event and thanks to
+all the people who attended the event.
+I really enjoyed the interesting conversations with you, thanks!&lt;/p&gt;</content><category term="TODO"></category></entry><entry><title>"No fit?" Comparing high-level learning interfaces for PyTorch</title><link href="/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html" rel="alternate"></link><published>2018-09-16T00:00:00+02:00</published><updated>2018-09-16T00:00:00+02:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-09-16:/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html</id><summary type="html">
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;

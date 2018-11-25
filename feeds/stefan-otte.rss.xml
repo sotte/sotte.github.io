@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Stefan Otte - research what? - Stefan Otte</title><link>/</link><description></description><lastBuildDate>Sun, 25 Nov 2018 00:00:00 +0100</lastBuildDate><item><title>HyTorch - A lisp flavoured PyTorch</title><link>/hytorch-a-lisp-flavoured-pytorch.html</link><description>&lt;p&gt;TODO&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Stefan Otte</dc:creator><pubDate>Sun, 25 Nov 2018 00:00:00 +0100</pubDate><guid isPermaLink="false">tag:None,2018-11-25:/hytorch-a-lisp-flavoured-pytorch.html</guid><category>TODO</category></item><item><title>"No fit?" Comparing high-level learning interfaces for PyTorch</title><link>/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html</link><description>
+<rss version="2.0"><channel><title>Stefan Otte - research what? - Stefan Otte</title><link>/</link><description></description><lastBuildDate>Sun, 25 Nov 2018 00:00:00 +0100</lastBuildDate><item><title>HyTorch - A lisp flavoured PyTorch</title><link>/hytorch-a-lisp-flavoured-pytorch.html</link><description>&lt;p&gt;TODO&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Stefan Otte</dc:creator><pubDate>Sun, 25 Nov 2018 00:00:00 +0100</pubDate><guid isPermaLink="false">tag:None,2018-11-25:/hytorch-a-lisp-flavoured-pytorch.html</guid><category>TODO</category></item><item><title>Similarity Search with Neural Networks</title><link>/similarity-search-with-neural-networks.html</link><description>&lt;p&gt;I gave a talk "Fun with Content-based Image Retrieval with Neural Network" at
+the
+&lt;a href="https://www.meetup.com/PyData-Berlin/events/255903846/"&gt;PyData Berlin Meetup&lt;/a&gt;.
+Here are the &lt;a href="images/CBIR-talk.pdf"&gt;slides as pdf&lt;/a&gt;.
+(I hope to publish the transcript of the talk in a few days.)&lt;/p&gt;
+&lt;p&gt;&lt;a href="images/CBIR-talk.pdf"&gt;
+  &lt;img src="images/CBIR-talk.png" style="width: 100%;  height: auto;"&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Thanks again to the PyData Berlin folks for organizing the event and thanks to …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Stefan Otte</dc:creator><pubDate>Wed, 21 Nov 2018 00:00:00 +0100</pubDate><guid isPermaLink="false">tag:None,2018-11-21:/similarity-search-with-neural-networks.html</guid><category>TODO</category></item><item><title>"No fit?" Comparing high-level learning interfaces for PyTorch</title><link>/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html</link><description>
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
