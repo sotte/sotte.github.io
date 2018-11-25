@@ -1,5 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Stefan Otte - research what? - Stefan Otte</title><link href="/" rel="alternate"></link><link href="/feeds/stefan-otte.atom.xml" rel="self"></link><id>/</id><updated>2018-09-16T00:00:00+02:00</updated><entry><title>"No fit?" Comparing high-level learning interfaces for PyTorch</title><link href="/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html" rel="alternate"></link><published>2018-09-16T00:00:00+02:00</published><updated>2018-09-16T00:00:00+02:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-09-16:/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html</id><summary type="html">
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Stefan Otte - research what? - Stefan Otte</title><link href="/" rel="alternate"></link><link href="/feeds/stefan-otte.atom.xml" rel="self"></link><id>/</id><updated>2018-11-25T00:00:00+01:00</updated><entry><title>HyTorch - A lisp flavoured PyTorch</title><link href="/hytorch-a-lisp-flavoured-pytorch.html" rel="alternate"></link><published>2018-11-25T00:00:00+01:00</published><updated>2018-11-25T00:00:00+01:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-11-25:/hytorch-a-lisp-flavoured-pytorch.html</id><summary type="html">&lt;p&gt;TODO&lt;/p&gt;</summary><content type="html">&lt;p&gt;Clearly, this post falls into the category: "don't try this at home",
+or, the developers' equivalent: "don't use this in production".
+With the warning out of the way, you should really try HyTorch if you feel
+particularly bored on a cold Sunday!&lt;/p&gt;
+&lt;p&gt;"HyTorch" is not really a thing or library.
+It is just &lt;a href="http://hylang.org/"&gt;hy&lt;/a&gt;, "a dialect of Lisp that's embedded in Python",
+and PyTorch 1.0 nightly, because we don't want this project to be too stable.&lt;/p&gt;
+&lt;p&gt;Why am I doing this?
+Don't get me wrong, I really like python, and it's my main language for all
+things data science and machine learning.
+(Also there are pretty cool things happening in python land:
+type annotations (&lt;a href="https://www.python.org/dev/peps/pep-0484/"&gt;PEP484&lt;/a&gt;, &lt;a href="https://www.python.org/dev/peps/pep-0483/"&gt;PEP483&lt;/a&gt;, and &lt;a href="https://www.python.org/dev/peps/pep-0526/"&gt;PEP526&lt;/a&gt;),
+&lt;a href="https://www.python.org/dev/peps/pep-0557/"&gt;PEP557 data classes&lt;/a&gt;,
+&lt;a href="https://hypothesis.works/"&gt;hypothesis - property based testing&lt;/a&gt;,
+&lt;a href="https://docs.python.org/3/library/asyncio.html#module-asyncio"&gt;asyncio&lt;/a&gt; and &lt;a href="https://trio.readthedocs.io/en/latest/"&gt;trio&lt;/a&gt;,
+&lt;a href="https://dask.org/"&gt;dask&lt;/a&gt;, and more).
+But I also like functional languages, immutability, "proper" concurrency and parallelism
+like Clojure, Elixir/Erlang with OTP and more.
+Sometimes it's just fun to play with a new thing (even though in this case it's technically still python).&lt;/p&gt;
+&lt;h2&gt;Hy lang&lt;/h2&gt;
+&lt;p&gt;We setup hy in a virtualenv for hy:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;virtualenv --p python3.7 .venv
+&lt;span class="nb"&gt;source&lt;/span&gt; .venv/bin/activate
+&lt;span class="c1"&gt;# install hy&lt;/span&gt;
+pip install git+https://github.com/hylang/hy.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Here is a short demo of a few very basic hy features:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="o"&gt;!/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;env&lt;/span&gt; &lt;span class="n"&gt;hy&lt;/span&gt;
+
+&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Hello world&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="o"&gt;(+&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;hello&amp;quot;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;world&amp;quot;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;!&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+
+&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;defn&lt;/span&gt; &lt;span class="n"&gt;greet&lt;/span&gt; &lt;span class="o"&gt;[]&lt;/span&gt;
+  &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="o"&gt;(*&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Hello world!\n&amp;quot;&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)))&lt;/span&gt;
+
+&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;greet&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+
+&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;lists&lt;/span&gt;
+&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;setv&lt;/span&gt; &lt;span class="n"&gt;some_list&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="o"&gt;])&lt;/span&gt;
+&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="n"&gt;some_list&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;dicts&lt;/span&gt;
+&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;setv&lt;/span&gt; &lt;span class="n"&gt;some_dict&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;one&amp;quot;&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;two&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;})&lt;/span&gt;
+&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="n"&gt;some_dict&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;std&lt;/span&gt; &lt;span class="n"&gt;lib&lt;/span&gt;
+&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cpu_count&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can also import hy from your python program!
+Pretty crazy already :)&lt;/p&gt;
+&lt;p&gt;If you would like to learn more, the &lt;a href="http://docs.hylang.org/en/stable/tutorial.html"&gt;official hy tutorial&lt;/a&gt;
+and &lt;a href="https://learnxinyminutes.com/docs/hy/"&gt;learn x in y&lt;/a&gt; are good.
+Paul Tagliamonte, one of the creators of hy, has a very entertaining talk on YouTube: &lt;a href="https://www.youtube.com/watch?v=AmMaN1AokTI"&gt;Getting Hy on Python: How to implement a Lisp front-end to Python&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;PyTorch nightly&lt;/h2&gt;
+&lt;p&gt;Install the PyTorch 1.0 preview with &lt;code&gt;pip&lt;/code&gt; for linux and python 3.7 and CUDA 9.0:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install numpy torchvision_nightly
+pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu90/torch_nightly.html
+python -c &lt;span class="s2"&gt;&amp;quot;import torch; print(torch.cuda.is_available())&amp;quot;&lt;/span&gt;
+&lt;span class="c1"&gt;# True&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Hy + PyTorch = HyTorch&lt;/h2&gt;
+&lt;p&gt;Now let's do some transfer learning with HyTorch.
+We'll write a little image classifier that classifies
+&lt;a href="https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition"&gt;dogs and cats&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;➤&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;hy&lt;/span&gt; &lt;span class="n"&gt;repl&lt;/span&gt;
+&lt;span class="err"&gt;➤&lt;/span&gt; &lt;span class="n"&gt;hy&lt;/span&gt;
+&lt;span class="n"&gt;hy&lt;/span&gt; &lt;span class="mf"&gt;0.15&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;48&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;gc5abc85&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="n"&gt;CPython&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="mf"&gt;3.7&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="n"&gt;on&lt;/span&gt; &lt;span class="n"&gt;Linux&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;# General infos&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="n"&gt;General&lt;/span&gt; &lt;span class="n"&gt;infos&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;torch&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt; &lt;span class="n"&gt;already&lt;/span&gt; &lt;span class="n"&gt;amazing&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;GPU available:&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;torch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cuda&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;is_available&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;GPU&lt;/span&gt; &lt;span class="nl"&gt;available:&lt;/span&gt; &lt;span class="n"&gt;True&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;we&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;ll&lt;/span&gt; &lt;span class="n"&gt;mode&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;GPU&lt;/span&gt; &lt;span class="n"&gt;later&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;setv&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;torch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;device&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lif&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;torch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cuda&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;is_available&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;cuda:0&amp;quot;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;cpu&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)))&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Device:&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="nl"&gt;Device:&lt;/span&gt; &lt;span class="nl"&gt;cuda:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;# Get the data&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="n"&gt;Get&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;copy&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;pasted&lt;/span&gt; &lt;span class="n"&gt;some&lt;/span&gt; &lt;span class="n"&gt;utility&lt;/span&gt; &lt;span class="n"&gt;functions&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;old&lt;/span&gt; &lt;span class="n"&gt;pytorch&lt;/span&gt; &lt;span class="n"&gt;tutorial&lt;/span&gt; &lt;span class="n"&gt;into&lt;/span&gt; &lt;span class="n"&gt;utils&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;py&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="n"&gt;importing&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;here&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;utils&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;setv&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;train_dl&lt;/span&gt; &lt;span class="n"&gt;val_dl&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;   &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;utils&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get_data&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;batch_size&lt;/span&gt; &lt;span class="mi"&gt;128&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;image_size&lt;/span&gt; &lt;span class="mi"&gt;224&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;sample&lt;/span&gt; &lt;span class="n"&gt;False&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;download&lt;/span&gt; &lt;span class="n"&gt;False&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;Loading&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;dogscats&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;train&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;Loading&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;dogscats&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;valid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;# Get the model&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="n"&gt;Get&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;setv&lt;/span&gt; &lt;span class="n"&gt;module&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;utils&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get_model&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;simple&lt;/span&gt; &lt;span class="n"&gt;frozen&lt;/span&gt; &lt;span class="n"&gt;ResNet&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;Now&lt;/span&gt; &lt;span class="n"&gt;we&lt;/span&gt; &lt;span class="n"&gt;use&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;amazing&lt;/span&gt; &lt;span class="n"&gt;PyToune&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;train&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="err"&gt;[&lt;/span&gt;&lt;span class="nn"&gt;pytoune.framework&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="o"&gt;]])&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;setv&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;   &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt; &lt;span class="n"&gt;module&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;adam&amp;quot;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;cross_entropy&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;metrics&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;accuracy&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;]))&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;setv&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;   &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;to&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;# Train...&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="n"&gt;Train&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pprint&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pprint&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pprint&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;   &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;fit_generator&lt;/span&gt; &lt;span class="n"&gt;train_dl&lt;/span&gt; &lt;span class="n"&gt;val_dl&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;epochs&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;Epoch&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="mf"&gt;52.61&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;Step&lt;/span&gt; &lt;span class="mi"&gt;180&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;180&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nl"&gt;loss:&lt;/span&gt; &lt;span class="mf"&gt;0.149578&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nl"&gt;acc:&lt;/span&gt; &lt;span class="mf"&gt;94.730435&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nl"&gt;val_loss:&lt;/span&gt; &lt;span class="mf"&gt;0.067275&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nl"&gt;val_acc:&lt;/span&gt; &lt;span class="mf"&gt;97.750000&lt;/span&gt;
+&lt;span class="n"&gt;Epoch&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="mf"&gt;53.10&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;Step&lt;/span&gt; &lt;span class="mi"&gt;180&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;180&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nl"&gt;loss:&lt;/span&gt; &lt;span class="mf"&gt;0.083727&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nl"&gt;acc:&lt;/span&gt; &lt;span class="mf"&gt;96.821739&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nl"&gt;val_loss:&lt;/span&gt; &lt;span class="mf"&gt;0.065457&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nl"&gt;val_acc:&lt;/span&gt; &lt;span class="mf"&gt;97.250000&lt;/span&gt;
+&lt;span class="o"&gt;[{&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;acc&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;94.7304347773013&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+  &lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;epoch&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+  &lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;loss&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.14957752645534017&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+  &lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;val_acc&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;97.75&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+  &lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;val_loss&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.06727455681562423&lt;/span&gt;&lt;span class="o"&gt;},&lt;/span&gt;
+ &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;acc&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;96.82173912247367&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+  &lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;epoch&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+  &lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;loss&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.08372681827130525&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+  &lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;val_acc&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;97.25&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+  &lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;val_loss&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.06545671501010657&lt;/span&gt;&lt;span class="o"&gt;}]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Wow, this is cool and it all worked out of the box.
+Downloading pytorch took me longer than writing the code to train the model and
+I haven't used hy in several years.&lt;/p&gt;
+&lt;p&gt;I don't know where I want to go with this, but it sure was a fun little
+experiment :)&lt;/p&gt;</content><category term="TODO"></category></entry><entry><title>"No fit?" Comparing high-level learning interfaces for PyTorch</title><link href="/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html" rel="alternate"></link><published>2018-09-16T00:00:00+02:00</published><updated>2018-09-16T00:00:00+02:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-09-16:/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html</id><summary type="html">
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
