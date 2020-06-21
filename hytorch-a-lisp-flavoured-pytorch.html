@@ -63,15 +63,15 @@ like Clojure, Elixir/Erlang with OTP and more.
 Sometimes it's just fun to play with a new thing (even though in this case it's technically still python).</p>
 <h2>Hy lang</h2>
 <p>We setup hy in a virtualenv for hy:</p>
-<div class="highlight"><pre><span></span>virtualenv --p python3.7 .venv
+<div class="highlight"><pre><span></span><code>virtualenv --p python3.7 .venv
 <span class="nb">source</span> .venv/bin/activate
 <span class="c1"># install hy</span>
 pip install git+https://github.com/hylang/hy.git
-</pre></div>
+</code></pre></div>
 
 
 <p>Here is a short demo of a few very basic hy features:</p>
-<div class="highlight"><pre><span></span><span class="err">#</span><span class="o">!/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="nb">env</span> <span class="n">hy</span>
+<div class="highlight"><pre><span></span><code><span class="err">#</span><span class="o">!/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="nb">env</span> <span class="n">hy</span>
 
 <span class="o">(</span><span class="nb">print</span> <span class="s">&quot;Hello world&quot;</span><span class="o">)</span>
 <span class="o">(</span><span class="nb">print</span> <span class="o">(+</span> <span class="s">&quot;hello&quot;</span> <span class="s">&quot;world&quot;</span> <span class="s">&quot;!&quot;</span><span class="o">))</span>
@@ -95,7 +95,7 @@ pip install git+https://github.com/hylang/hy.git
 <span class="o">;</span> <span class="n">using</span> <span class="n">python</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">std</span> <span class="n">lib</span>
 <span class="o">(</span><span class="kn">import</span> <span class="nn">os</span><span class="o">)</span>
 <span class="o">(</span><span class="nb">print</span> <span class="o">(</span><span class="n">os</span><span class="o">.</span><span class="na">cpu_count</span><span class="o">))</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>You can also import hy from your python program!
@@ -105,18 +105,18 @@ and <a href="https://learnxinyminutes.com/docs/hy/">learn x in y</a> are good.
 Paul Tagliamonte, one of the creators of hy, has a very entertaining talk on YouTube: <a href="https://www.youtube.com/watch?v=AmMaN1AokTI">Getting Hy on Python: How to implement a Lisp front-end to Python</a>.</p>
 <h2>PyTorch nightly</h2>
 <p>Install the PyTorch 1.0 preview with <code>pip</code> for linux and python 3.7 and CUDA 9.0:</p>
-<div class="highlight"><pre><span></span>pip install numpy torchvision_nightly
+<div class="highlight"><pre><span></span><code>pip install numpy torchvision_nightly
 pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu90/torch_nightly.html
 python -c <span class="s2">&quot;import torch; print(torch.cuda.is_available())&quot;</span>
 <span class="c1"># True</span>
-</pre></div>
+</code></pre></div>
 
 
 <h2>Hy + PyTorch = HyTorch</h2>
 <p>Now let's do some transfer learning with HyTorch.
 We'll write a little image classifier that classifies
 <a href="https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition">dogs and cats</a>.</p>
-<div class="highlight"><pre><span></span><span class="err">➤</span> <span class="err">#</span> <span class="n">start</span> <span class="n">the</span> <span class="n">hy</span> <span class="n">repl</span>
+<div class="highlight"><pre><span></span><code><span class="err">➤</span> <span class="err">#</span> <span class="n">start</span> <span class="n">the</span> <span class="n">hy</span> <span class="n">repl</span>
 <span class="err">➤</span> <span class="n">hy</span>
 <span class="n">hy</span> <span class="mf">0.15</span><span class="o">.</span><span class="mi">0</span><span class="o">+</span><span class="mi">48</span><span class="o">.</span><span class="na">gc5abc85</span> <span class="n">using</span> <span class="n">CPython</span><span class="o">(</span><span class="k">default</span><span class="o">)</span> <span class="mf">3.7</span><span class="o">.</span><span class="mi">0</span> <span class="n">on</span> <span class="n">Linux</span>
 <span class="o">=&gt;</span> <span class="o">(</span><span class="nb">print</span> <span class="s">&quot;# General infos&quot;</span><span class="o">)</span>
@@ -169,7 +169,7 @@ We'll write a little image classifier that classifies
   <span class="err">&#39;</span><span class="n">loss</span><span class="err">&#39;</span><span class="o">:</span> <span class="mf">0.08372681827130525</span><span class="o">,</span>
   <span class="err">&#39;</span><span class="n">val_acc</span><span class="err">&#39;</span><span class="o">:</span> <span class="mf">97.25</span><span class="o">,</span>
   <span class="err">&#39;</span><span class="n">val_loss</span><span class="err">&#39;</span><span class="o">:</span> <span class="mf">0.06545671501010657</span><span class="o">}]</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>Wow, this is cool and it all worked out of the box.

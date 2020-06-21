@@ -42,10 +42,8 @@
     <p class="article-date">
       Published on <time datetime="2017-07-14T00:00:00+02:00">2017-07-14</time>
     </p>
-    <div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+    <div><div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="dplyr-enlightenment-with-pandas">dplyr enlightenment with pandas<a class="anchor-link" href="#dplyr-enlightenment-with-pandas">&#182;</a></h2><p>I tried to reach <a href="http://dplyr.tidyverse.org/">dplyr</a> enlightenment in the <code>pandas</code> ecosystem, but what I found was different from what I expected. Be warned: opinions ahead!</p>
 <p>According to the <a href="https://github.com/tidyverse/dplyr">dplyr homepage</a></p>
@@ -69,24 +67,23 @@
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span>R
-flights <span class="o">%&gt;%</span>
-  group_by<span class="p">(</span>year<span class="p">,</span> month<span class="p">,</span> day<span class="p">)</span> <span class="o">%&gt;%</span>
-  summarise<span class="p">(</span>
-    arr <span class="o">=</span> <span class="kp">mean</span><span class="p">(</span>arr_delay<span class="p">,</span> na.rm <span class="o">=</span> <span class="kc">TRUE</span><span class="p">),</span>
-    dep <span class="o">=</span> <span class="kp">mean</span><span class="p">(</span>dep_delay<span class="p">,</span> na.rm <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="n">R</span>
+<span class="n">flights</span> <span class="o">%&gt;%</span>
+  <span class="nf">group_by</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="nf">summarise</span><span class="p">(</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="nf">mean</span><span class="p">(</span><span class="n">arr_delay</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">),</span>
+    <span class="n">dep</span> <span class="o">=</span> <span class="nf">mean</span><span class="p">(</span><span class="n">dep_delay</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
   <span class="p">)</span> <span class="o">%&gt;%</span>
-  filter<span class="p">(</span>arr <span class="o">&gt;</span> <span class="m">30</span> <span class="o">&amp;</span> dep <span class="o">&gt;</span> <span class="m">30</span><span class="p">)</span>
+  <span class="nf">filter</span><span class="p">(</span><span class="n">arr</span> <span class="o">&gt;</span> <span class="m">30</span> <span class="o">&amp;</span> <span class="n">dep</span> <span class="o">&gt;</span> <span class="m">30</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Compare this to, what they call, "the most common way to express this in pandas":</p>
 
@@ -105,14 +102,13 @@ flights <span class="o">%&gt;%</span>
 <span class="n">filtered_output</span> <span class="o">=</span> <span class="n">output</span><span class="p">[(</span><span class="n">output</span><span class="o">.</span><span class="n">arr</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">dep</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">)]</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The dplyr version is more readable.</p>
 <p>Let's check out if there is a dplyr-like way to write the obove with python and <code>pandas</code>.
@@ -126,16 +122,14 @@ Luckily there are some libraries which implement some of dplyr's features in pyt
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Case-Study-with-the-Diamond-dataset">Case Study with the Diamond dataset<a class="anchor-link" href="#Case-Study-with-the-Diamond-dataset">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>I'm going to show some simple data mungling with the diamonds dataset.
 <a href="https://github.com/dodger487/dplython">dplython</a> has some data mungling examples that demonstrate of how to use dplython with this dataset.
@@ -153,13 +147,13 @@ I'm going to do the same with <code>pandas-ply</code> and vanilla <code>pandas</
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="c1"># pandas-ply</span>
-<span class="kn">from</span> <span class="nn">pandas_ply</span> <span class="k">import</span> <span class="n">install_ply</span>
+<span class="kn">from</span> <span class="nn">pandas_ply</span> <span class="kn">import</span> <span class="n">install_ply</span>
 <span class="c1"># normally just X</span>
-<span class="kn">from</span> <span class="nn">pandas_ply</span> <span class="k">import</span> <span class="n">X</span> <span class="k">as</span> <span class="n">X_ply</span>
+<span class="kn">from</span> <span class="nn">pandas_ply</span> <span class="kn">import</span> <span class="n">X</span> <span class="k">as</span> <span class="n">X_ply</span>
 <span class="n">install_ply</span><span class="p">(</span><span class="n">pd</span><span class="p">)</span>
 
 <span class="c1"># dplython</span>
-<span class="kn">from</span> <span class="nn">dplython</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">dplython</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">select</span><span class="p">,</span>
     <span class="n">sift</span><span class="p">,</span>
     <span class="n">sample_n</span><span class="p">,</span>
@@ -170,17 +164,16 @@ I'm going to do the same with <code>pandas-ply</code> and vanilla <code>pandas</
     <span class="n">summarize</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="c1"># normally just X</span>
-<span class="kn">from</span> <span class="nn">dplython</span> <span class="k">import</span> <span class="n">X</span> <span class="k">as</span> <span class="n">X_dpl</span>
+<span class="kn">from</span> <span class="nn">dplython</span> <span class="kn">import</span> <span class="n">X</span> <span class="k">as</span> <span class="n">X_dpl</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>dplython</code> already ships the diamonds dataset.
 Note that dplython uses <code>DplyFrame</code> as extension of the <code>DataFrame</code> and <code>dyf</code> is the diamond data as <code>DplyFrame</code>.</p>
@@ -193,7 +186,7 @@ Note that dplython uses <code>DplyFrame</code> as extension of the <code>DataFra
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">dplython</span> <span class="k">import</span> <span class="n">diamonds</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">dplython</span> <span class="kn">import</span> <span class="n">diamonds</span>
 
 <span class="c1"># Note that dplython needs the DplyFrame</span>
 <span class="c1"># and dyf is the diamond data as DplyFrame</span>
@@ -203,7 +196,7 @@ Note that dplython uses <code>DplyFrame</code> as extension of the <code>DataFra
 <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dyf</span><span class="p">))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -213,7 +206,7 @@ Note that dplython uses <code>DplyFrame</code> as extension of the <code>DataFra
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
@@ -228,8 +221,7 @@ Note that dplython uses <code>DplyFrame</code> as extension of the <code>DataFra
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Just to get an idea of how the data look like:</p>
 
@@ -244,7 +236,7 @@ Note that dplython uses <code>DplyFrame</code> as extension of the <code>DataFra
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -254,7 +246,7 @@ Note that dplython uses <code>DplyFrame</code> as extension of the <code>DataFra
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[3]:</div>
+    <div class="prompt output_prompt">Out[3]:</div>
 
 
 
@@ -352,14 +344,13 @@ Note that dplython uses <code>DplyFrame</code> as extension of the <code>DataFra
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># number of samples we&#39;ll draw</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Simple-select">Simple select<a class="anchor-link" href="#Simple-select">&#182;</a></h3>
 </div>
@@ -378,7 +369,7 @@ Note that dplython uses <code>DplyFrame</code> as extension of the <code>DataFra
 <span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -388,7 +379,7 @@ Note that dplython uses <code>DplyFrame</code> as extension of the <code>DataFra
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[5]:</div>
+    <div class="prompt output_prompt">Out[5]:</div>
 
 
 
@@ -447,8 +438,7 @@ Note that dplython uses <code>DplyFrame</code> as extension of the <code>DataFra
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>I like dplython's <code>&gt;&gt;</code> operator for piping the data (but I'm spoiled by elixir and I'm aware that operator overloading can be used for evil (hello c++)).
 The use of <code>X</code> gives us access to the columns of the data.
@@ -470,14 +460,13 @@ It's nice, but again not a huge difference.</p>
 <span class="p">);</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The <code>ply_select</code> methods is the equivalent to <code>dplython</code>'s <code>select</code> function.</p>
 
@@ -497,14 +486,13 @@ It's nice, but again not a huge difference.</p>
 <span class="p">);</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>With pandas we use the good old bracket notation.
 Also quite readable.</p>
@@ -513,8 +501,7 @@ Also quite readable.</p>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Filter-and-select">Filter and select<a class="anchor-link" href="#Filter-and-select">&#182;</a></h3>
 </div>
@@ -533,7 +520,7 @@ Also quite readable.</p>
 <span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -543,7 +530,7 @@ Also quite readable.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[8]:</div>
+    <div class="prompt output_prompt">Out[8]:</div>
 
 
 
@@ -620,8 +607,7 @@ Also quite readable.</p>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>dplython</code>'s sift is like a filter and quite redable.</p>
 
@@ -641,14 +627,13 @@ Also quite readable.</p>
 <span class="p">);</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>.ply_where</code> in combination with the <code>X</code> is just as nice as <code>dplyton</code>.</p>
 
@@ -668,14 +653,13 @@ Also quite readable.</p>
 <span class="p">);</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>I guess this is the most common way to write the same in vanilla <code>pandas</code>.</p>
 
@@ -695,14 +679,13 @@ Also quite readable.</p>
 <span class="p">);</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>But it's also possible to use the <code>query</code> method of <code>pandas</code>.</p>
 
@@ -710,8 +693,7 @@ Also quite readable.</p>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Sample-and-sort">Sample and sort<a class="anchor-link" href="#Sample-and-sort">&#182;</a></h3>
 </div>
@@ -731,7 +713,7 @@ Also quite readable.</p>
 <span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -741,7 +723,7 @@ Also quite readable.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[12]:</div>
+    <div class="prompt output_prompt">Out[12]:</div>
 
 
 
@@ -804,8 +786,7 @@ Also quite readable.</p>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>arrange</code> might seem strange in the beginning.
 Just think of it as sort and you're fine.</p>
@@ -827,14 +808,13 @@ Just think of it as sort and you're fine.</p>
 <span class="p">);</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>No surprises with <code>pandas-ply</code>.</p>
 
@@ -855,14 +835,13 @@ Just think of it as sort and you're fine.</p>
 <span class="p">);</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>And no surprises with vanilla <code>pandas</code>, but I still think it's quite readable.</p>
 
@@ -870,8 +849,7 @@ Just think of it as sort and you're fine.</p>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Assign,-group-by-and-summarize">Assign, group by and summarize<a class="anchor-link" href="#Assign,-group-by-and-summarize">&#182;</a></h3>
 </div>
@@ -892,7 +870,7 @@ Just think of it as sort and you're fine.</p>
 <span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -902,7 +880,7 @@ Just think of it as sort and you're fine.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[15]:</div>
+    <div class="prompt output_prompt">Out[15]:</div>
 
 
 
@@ -1003,8 +981,7 @@ Just think of it as sort and you're fine.</p>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This is an example where dplython shines.
 <code>mutate</code> makes clear that something is changed (though technically we return a copy, so we don't change anything)
@@ -1030,7 +1007,7 @@ and <code>summarize</code> is similar to <code>pandas</code> <code>agg</code> bu
 <span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1040,7 +1017,7 @@ and <code>summarize</code> is similar to <code>pandas</code> <code>agg</code> bu
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[16]:</div>
+    <div class="prompt output_prompt">Out[16]:</div>
 
 
 
@@ -1141,8 +1118,7 @@ and <code>summarize</code> is similar to <code>pandas</code> <code>agg</code> bu
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We were not really able to use any padans-ply features here. <code>ply_select(carat=_X.carat.round())</code> only leaves the selected 'carat' column.</p>
 <p><code>pandas</code>'s <code>assign</code> method is quite clear.
@@ -1157,8 +1133,7 @@ We flatten the <code>MultiIndex</code> by resetting the index.</p>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">&#182;</a></h2><p>So which one is better? <code>dplython</code>, <code>pandas-ply</code>, or even vanialla <code>pandas</code>?</p>
 <p>I think the method-chaining version of <code>pandas</code> is quite readable but <code>pandas</code> API ist still...<code>pandas</code> API: powerful but not necessarily intuitive.
@@ -1180,8 +1155,7 @@ I think I'll give it a try in a bigger project and see how it goes.</p>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="PS">PS<a class="anchor-link" href="#PS">&#182;</a></h2><p>Just as a side note, I have a little python helper library <a href="">pelper</a> which contains a <code>pipe</code> function.
 <code>pipe</code> passes the output of a function as first argument into another function.
@@ -1199,7 +1173,7 @@ So you can rewrite this:</p>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1209,7 +1183,7 @@ So you can rewrite this:</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[17]:</div>
+    <div class="prompt output_prompt">Out[17]:</div>
 
 
 
@@ -1225,8 +1199,7 @@ So you can rewrite this:</p>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>as something more functional like this:</p>
 
@@ -1238,11 +1211,11 @@ So you can rewrite this:</p>
 <div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pelper</span> <span class="k">import</span> <span class="n">pipe</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pelper</span> <span class="kn">import</span> <span class="n">pipe</span>
 <span class="n">pipe</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="p">(</span><span class="nb">sorted</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;reverse&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}))</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -1252,7 +1225,7 @@ So you can rewrite this:</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[18]:</div>
+    <div class="prompt output_prompt">Out[18]:</div>
 
 
 
@@ -1268,8 +1241,7 @@ So you can rewrite this:</p>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Unsurprisingly, one can use the <code>pipe</code> function with <code>dplython</code> (not using the delayed execution functionality of <code>dplython</code>):</p>
 
@@ -1281,7 +1253,7 @@ So you can rewrite this:</p>
 <div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pelper</span> <span class="k">import</span> <span class="n">pipe</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pelper</span> <span class="kn">import</span> <span class="n">pipe</span>
 <span class="n">pipe</span><span class="p">(</span>
     <span class="n">diamonds</span><span class="p">,</span>
     <span class="p">(</span><span class="n">mutate</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;carat_bin&quot;</span><span class="p">:</span> <span class="n">X_dpl</span><span class="o">.</span><span class="n">carat</span><span class="o">.</span><span class="n">round</span><span class="p">()}),</span>
@@ -1290,14 +1262,13 @@ So you can rewrite this:</p>
 <span class="p">);</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Or using the delayed execution functionality:</p>
 
@@ -1317,14 +1288,13 @@ So you can rewrite this:</p>
 <span class="p">);</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="References">References<a class="anchor-link" href="#References">&#182;</a></h2><ul>
 <li><a href="https://www.youtube.com/watch?v=4YAcwCe1mAE">dplython talk at PyGotham 2016</a></li>

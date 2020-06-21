@@ -15,7 +15,7 @@ Here is the &lt;a href="https://nodata.science/practical_pytorch_talk_reinforce_
 &lt;p&gt;Thanks to the folks organizing the conference, it was a lot of fun.&lt;/p&gt;
 &lt;style&gt;.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }&lt;/style&gt;
 
-&lt;div class='embed-container'&gt;&lt;iframe src='https://www.youtube.com/embed/-pRBzh_hGqA' frameborder='0' allowfullscreen&gt;&lt;/iframe&gt;&lt;/div&gt;</content><category term="TODO"></category></entry><entry><title>HyTorch - A lisp flavoured PyTorch</title><link href="/hytorch-a-lisp-flavoured-pytorch.html" rel="alternate"></link><published>2018-11-25T00:00:00+01:00</published><updated>2018-11-25T00:00:00+01:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-11-25:/hytorch-a-lisp-flavoured-pytorch.html</id><summary type="html">&lt;p&gt;TODO&lt;/p&gt;</summary><content type="html">&lt;p&gt;Clearly, this post falls into the category: "don't try this at home",
+&lt;div class='embed-container'&gt;&lt;iframe src='https://www.youtube.com/embed/-pRBzh_hGqA' frameborder='0' allowfullscreen&gt;&lt;/iframe&gt;&lt;/div&gt;</content><category term="TODO"></category><category term="TODO"></category></entry><entry><title>HyTorch - A lisp flavoured PyTorch</title><link href="/hytorch-a-lisp-flavoured-pytorch.html" rel="alternate"></link><published>2018-11-25T00:00:00+01:00</published><updated>2018-11-25T00:00:00+01:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-11-25:/hytorch-a-lisp-flavoured-pytorch.html</id><summary type="html">&lt;p&gt;TODO&lt;/p&gt;</summary><content type="html">&lt;p&gt;Clearly, this post falls into the category: "don't try this at home",
 or, the developers' equivalent: "don't use this in production".
 With the warning out of the way, you should really try HyTorch if you feel
 particularly bored on a cold Sunday!&lt;/p&gt;
@@ -36,15 +36,15 @@ like Clojure, Elixir/Erlang with OTP and more.
 Sometimes it's just fun to play with a new thing (even though in this case it's technically still python).&lt;/p&gt;
 &lt;h2&gt;Hy lang&lt;/h2&gt;
 &lt;p&gt;We setup hy in a virtualenv for hy:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;virtualenv --p python3.7 .venv
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;virtualenv --p python3.7 .venv
 &lt;span class="nb"&gt;source&lt;/span&gt; .venv/bin/activate
 &lt;span class="c1"&gt;# install hy&lt;/span&gt;
 pip install git+https://github.com/hylang/hy.git
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Here is a short demo of a few very basic hy features:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="o"&gt;!/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;env&lt;/span&gt; &lt;span class="n"&gt;hy&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="o"&gt;!/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;env&lt;/span&gt; &lt;span class="n"&gt;hy&lt;/span&gt;
 
 &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Hello world&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="o"&gt;(+&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;hello&amp;quot;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;world&amp;quot;&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;!&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
@@ -68,7 +68,7 @@ pip install git+https://github.com/hylang/hy.git
 &lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;std&lt;/span&gt; &lt;span class="n"&gt;lib&lt;/span&gt;
 &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;cpu_count&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;You can also import hy from your python program!
@@ -78,18 +78,18 @@ and &lt;a href="https://learnxinyminutes.com/docs/hy/"&gt;learn x in y&lt;/a&gt;
 Paul Tagliamonte, one of the creators of hy, has a very entertaining talk on YouTube: &lt;a href="https://www.youtube.com/watch?v=AmMaN1AokTI"&gt;Getting Hy on Python: How to implement a Lisp front-end to Python&lt;/a&gt;.&lt;/p&gt;
 &lt;h2&gt;PyTorch nightly&lt;/h2&gt;
 &lt;p&gt;Install the PyTorch 1.0 preview with &lt;code&gt;pip&lt;/code&gt; for linux and python 3.7 and CUDA 9.0:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install numpy torchvision_nightly
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pip install numpy torchvision_nightly
 pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu90/torch_nightly.html
 python -c &lt;span class="s2"&gt;&amp;quot;import torch; print(torch.cuda.is_available())&amp;quot;&lt;/span&gt;
 &lt;span class="c1"&gt;# True&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2&gt;Hy + PyTorch = HyTorch&lt;/h2&gt;
 &lt;p&gt;Now let's do some transfer learning with HyTorch.
 We'll write a little image classifier that classifies
 &lt;a href="https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition"&gt;dogs and cats&lt;/a&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;➤&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;hy&lt;/span&gt; &lt;span class="n"&gt;repl&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;➤&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;hy&lt;/span&gt; &lt;span class="n"&gt;repl&lt;/span&gt;
 &lt;span class="err"&gt;➤&lt;/span&gt; &lt;span class="n"&gt;hy&lt;/span&gt;
 &lt;span class="n"&gt;hy&lt;/span&gt; &lt;span class="mf"&gt;0.15&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;48&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;gc5abc85&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="n"&gt;CPython&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="mf"&gt;3.7&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="n"&gt;on&lt;/span&gt; &lt;span class="n"&gt;Linux&lt;/span&gt;
 &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;# General infos&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
@@ -142,14 +142,14 @@ We'll write a little image classifier that classifies
   &lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;loss&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.08372681827130525&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
   &lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;val_acc&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;97.25&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
   &lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;val_loss&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.06545671501010657&lt;/span&gt;&lt;span class="o"&gt;}]&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Wow, this is cool and it all worked out of the box.
 Downloading pytorch took me longer than writing the code to train the model and
 I haven't used hy in several years.&lt;/p&gt;
 &lt;p&gt;I don't know where I want to go with this, but it sure was a fun little
-experiment :)&lt;/p&gt;</content><category term="TODO"></category></entry><entry><title>Similarity Search with Neural Networks</title><link href="/similarity-search-with-neural-networks.html" rel="alternate"></link><published>2018-11-21T00:00:00+01:00</published><updated>2018-11-21T00:00:00+01:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-11-21:/similarity-search-with-neural-networks.html</id><summary type="html">&lt;p&gt;I gave a talk "Fun with Content-based Image Retrieval with Neural Network" at
+experiment :)&lt;/p&gt;</content><category term="TODO"></category><category term="TODO"></category></entry><entry><title>Similarity Search with Neural Networks</title><link href="/similarity-search-with-neural-networks.html" rel="alternate"></link><published>2018-11-21T00:00:00+01:00</published><updated>2018-11-21T00:00:00+01:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-11-21:/similarity-search-with-neural-networks.html</id><summary type="html">&lt;p&gt;I gave a talk "Fun with Content-based Image Retrieval with Neural Network" at
 the
 &lt;a href="https://www.meetup.com/PyData-Berlin/events/255903846/"&gt;PyData Berlin Meetup&lt;/a&gt;.
 Here are the &lt;a href="images/CBIR-talk.pdf"&gt;slides as pdf&lt;/a&gt;.
@@ -167,20 +167,16 @@ Here are the &lt;a href="images/CBIR-talk.pdf"&gt;slides as pdf&lt;/a&gt;.
 &lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Thanks again to the PyData Berlin folks for organizing the event and thanks to
 all the people who attended the event.
-I really enjoyed the interesting conversations with you, thanks!&lt;/p&gt;</content><category term="TODO"></category></entry><entry><title>"No fit?" Comparing high-level learning interfaces for PyTorch</title><link href="/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html" rel="alternate"></link><published>2018-09-16T00:00:00+02:00</published><updated>2018-09-16T00:00:00+02:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-09-16:/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html</id><summary type="html">
-&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+I really enjoyed the interesting conversations with you, thanks!&lt;/p&gt;</content><category term="TODO"></category><category term="TODO"></category></entry><entry><title>"No fit?" Comparing high-level learning interfaces for PyTorch</title><link href="/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html" rel="alternate"></link><published>2018-09-16T00:00:00+02:00</published><updated>2018-09-16T00:00:00+02:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-09-16:/no-fit-comparing-high-level-learning-interfaces-for-pytorch.html</id><summary type="html">&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;&lt;em&gt;Note: you can find the jupyter notebook for this post &lt;a href="https://github.com/sotte/sotte.github.io.resources"&gt;here&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Update &amp;lt;2019-02-07&amp;gt;&lt;/em&gt;: Some corrections regarding skorch. See the update at the bottom of the page.&lt;/p&gt;
 &lt;p&gt;I really like &lt;code&gt;PyTorch&lt;/code&gt; and &lt;a href="https://twitter.com/karpathy/status/868178954032513024"&gt;I'm not alone&lt;/a&gt;.
 However, there is one aspect where &lt;code&gt;PyTorch&lt;/code&gt; is not too user-friendly.
 &lt;code&gt;PyTorch&lt;/code&gt; does not have a nice high-level &lt;code&gt;fit&lt;/code&gt; function,
-i.e. a &lt;code&gt;fit&lt;/code&gt;</summary><content type="html">
-&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+i.e. a &lt;code&gt;fit&lt;/code&gt;</summary><content type="html">&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;&lt;em&gt;Note: you can find the jupyter notebook for this post &lt;a href="https://github.com/sotte/sotte.github.io.resources"&gt;here&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Update &amp;lt;2019-02-07&amp;gt;&lt;/em&gt;: Some corrections regarding skorch. See the update at the bottom of the page.&lt;/p&gt;
@@ -227,8 +223,7 @@ I'll use a pre-trained ResNet and only replace the last layer.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h2 id="Setup"&gt;Setup&lt;a class="anchor-link" href="#Setup"&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;This is the usual setup for most ML tasks: data, model, loss, and optimizer.
 Feel free to skip it.&lt;/p&gt;
@@ -247,14 +242,14 @@ Feel free to skip it.&lt;/p&gt;
 
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;torchvision&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;torchvision.transforms&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;transforms&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;torch.utils.data&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;DataLoader&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;torchvision.models.resnet&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;resnet18&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;torch.utils.data&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;DataLoader&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;torchvision.models.resnet&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;resnet18&lt;/span&gt;
 
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;utils&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;utils&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;DogsCatsDataset&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;utils&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;DogsCatsDataset&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -268,7 +263,7 @@ Feel free to skip it.&lt;/p&gt;
 &lt;span class="n"&gt;device&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -278,7 +273,7 @@ Feel free to skip it.&lt;/p&gt;
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt output_prompt"&gt;Out[2]:&lt;/div&gt;
+    &lt;div class="prompt output_prompt"&gt;Out[2]:&lt;/div&gt;
 
 
 
@@ -294,8 +289,7 @@ Feel free to skip it.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h3 id="The-Data"&gt;The Data&lt;a class="anchor-link" href="#The-Data"&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;
 &lt;/div&gt;
@@ -359,7 +353,7 @@ Feel free to skip it.&lt;/p&gt;
 &lt;span class="n"&gt;train_dl&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;val_dl&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;get_data&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -369,7 +363,7 @@ Feel free to skip it.&lt;/p&gt;
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt"&gt;&lt;/div&gt;
+    &lt;div class="prompt"&gt;&lt;/div&gt;
 
 
 &lt;div class="output_subarea output_stream output_stdout output_text"&gt;
@@ -392,7 +386,7 @@ Loading data from data/dogscats/valid.
 &lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;train_dl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dataset&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -402,7 +396,7 @@ Loading data from data/dogscats/valid.
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt"&gt;&lt;/div&gt;
+    &lt;div class="prompt"&gt;&lt;/div&gt;
 
 
 &lt;div class="output_subarea output_stream output_stdout output_text"&gt;
@@ -426,8 +420,7 @@ Loading data from data/dogscats/valid.
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h3 id="Model,-Loss,-and-Optimizer"&gt;Model, Loss, and Optimizer&lt;a class="anchor-link" href="#Model,-Loss,-and-Optimizer"&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;We'll just use a simple pretrained ResNet and replace the last fully connected layer with a problem specific layer, i.e. a linear layer with two outputs (one for cats, one for dogs).&lt;/p&gt;
 
@@ -453,14 +446,13 @@ Loading data from data/dogscats/valid.
 &lt;span class="n"&gt;model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;get_model&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;We also need to specify the loss function and the optimizer.&lt;/p&gt;
 
@@ -476,14 +468,13 @@ Loading data from data/dogscats/valid.
 &lt;span class="n"&gt;optimizer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;torch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;optim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Adam&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;parameters&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;lr&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;0.0001&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;Just for the sake of completeness, a &lt;em&gt;simple&lt;/em&gt; train loop would look something like this:&lt;/p&gt;
 
@@ -497,7 +488,7 @@ Loading data from data/dogscats/valid.
     &lt;div class="input_area"&gt;
 &lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;criterion&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;optimizer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;n_epochs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;epoch&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_epochs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Epoch {epoch+1}/&lt;/span&gt;&lt;span class="si"&gt;{n_epochs}&lt;/span&gt;&lt;span class="s2"&gt; ...&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Epoch &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;epoch&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;n_epochs&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; ...&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
         &lt;span class="c1"&gt;# Train&lt;/span&gt;
         &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;train&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;  &lt;span class="c1"&gt;# IMPORTANT&lt;/span&gt;
@@ -518,9 +509,9 @@ Loading data from data/dogscats/valid.
             &lt;span class="n"&gt;correct&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;y_label_&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
             &lt;span class="n"&gt;running_loss&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="n"&gt;loss&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
         &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-            &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;  &amp;quot;&lt;/span&gt;
-            &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;loss: {running_loss / len(train_dl.dataset):0.3f} &amp;quot;&lt;/span&gt;
-            &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;acc:  {correct / len(train_dl.dataset):0.3f}&amp;quot;&lt;/span&gt;
+            &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;  &amp;quot;&lt;/span&gt;
+            &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;loss: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;running_loss&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;train_dl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dataset&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;0.3f&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; &amp;quot;&lt;/span&gt;
+            &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;acc:  &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;correct&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;train_dl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dataset&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;0.3f&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
         &lt;span class="p"&gt;)&lt;/span&gt;
 
         &lt;span class="c1"&gt;# Eval&lt;/span&gt;
@@ -537,13 +528,13 @@ Loading data from data/dogscats/valid.
                 &lt;span class="n"&gt;correct&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;y_label_&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;            
                 &lt;span class="n"&gt;running_loss&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="n"&gt;loss&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
         &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-            &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;  &amp;quot;&lt;/span&gt;
-            &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;val_loss: {running_loss / len(val_dl.dataset):0.3f} &amp;quot;&lt;/span&gt;
-            &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;val_acc:  {correct / len(val_dl.dataset):0.3f}&amp;quot;&lt;/span&gt;
+            &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;  &amp;quot;&lt;/span&gt;
+            &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;val_loss: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;running_loss&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;val_dl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dataset&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;0.3f&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; &amp;quot;&lt;/span&gt;
+            &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;val_acc:  &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;correct&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;val_dl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dataset&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;0.3f&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
         &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -553,11 +544,11 @@ Loading data from data/dogscats/valid.
 &lt;div class="prompt input_prompt"&gt;In&amp;nbsp;[8]:&lt;/div&gt;
 &lt;div class="inner_cell"&gt;
     &lt;div class="input_area"&gt;
-&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;%%&lt;/span&gt;&lt;span class="k"&gt;time&lt;/span&gt;
-fit(model, criterion, optimizer, n_epochs=2)
+&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;%%time&lt;/span&gt;
+&lt;span class="n"&gt;fit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;criterion&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;optimizer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;n_epochs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -567,7 +558,7 @@ fit(model, criterion, optimizer, n_epochs=2)
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt"&gt;&lt;/div&gt;
+    &lt;div class="prompt"&gt;&lt;/div&gt;
 
 
 &lt;div class="output_subarea output_stream output_stdout output_text"&gt;
@@ -588,8 +579,7 @@ Wall time: 49.3 s
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h2 id="The-Contenders"&gt;The Contenders&lt;a class="anchor-link" href="#The-Contenders"&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Here I will try to solve the task with the three libraries.&lt;/p&gt;
 
@@ -597,8 +587,7 @@ Wall time: 49.3 s
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h3 id="Ignite"&gt;Ignite&lt;a class="anchor-link" href="#Ignite"&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;blockquote&gt;&lt;p&gt;Ignite is a high-level library to help with training neural networks in PyTorch.&lt;/p&gt;
 &lt;ul&gt;
@@ -617,7 +606,7 @@ The main abstractions are &lt;code&gt;Engines&lt;/code&gt; which loop over the d
 The &lt;code&gt;State&lt;/code&gt; object is part of the engine and is used to track training/evaluation state.
 Via &lt;code&gt;Events&lt;/code&gt; and &lt;code&gt;Handlers&lt;/code&gt; you can execute your custom code, e.g. printing out the current loss or storing a checkpoint.
 You can register callbacks via decorators:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nd"&gt;@trainer.on&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Events&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ITERATION_COMPLETED&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nd"&gt;@trainer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;on&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Events&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ITERATION_COMPLETED&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;log_training_loss&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;trainer&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;pass&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -644,7 +633,7 @@ Here is the code:&lt;/p&gt;
 &lt;span class="n"&gt;optimizer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;torch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;optim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Adam&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;parameters&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;lr&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;0.0001&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -654,7 +643,7 @@ Here is the code:&lt;/p&gt;
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt"&gt;&lt;/div&gt;
+    &lt;div class="prompt"&gt;&lt;/div&gt;
 
 
 &lt;div class="output_subarea output_stream output_stdout output_text"&gt;
@@ -675,17 +664,17 @@ Loading data from data/dogscats/valid.
 &lt;div class="inner_cell"&gt;
     &lt;div class="input_area"&gt;
 &lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# The helper functions to create engines&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;ignite.engine&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;ignite.engine&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
     &lt;span class="n"&gt;Events&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
     &lt;span class="n"&gt;create_supervised_trainer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
     &lt;span class="n"&gt;create_supervised_evaluator&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="c1"&gt;# The metrics we&amp;#39;re going to use&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;ignite.metrics&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;ignite.metrics&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
     &lt;span class="n"&gt;CategoricalAccuracy&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
     &lt;span class="n"&gt;Loss&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;ignite.handlers&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Timer&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;ignite.handlers&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Timer&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Setup&lt;/span&gt;
 &lt;span class="n"&gt;trainer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;create_supervised_trainer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;optimizer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;criterion&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -712,9 +701,9 @@ Loading data from data/dogscats/valid.
     &lt;span class="n"&gt;evaluator&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;train_dl&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="n"&gt;metrics&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;evaluator&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;metrics&lt;/span&gt;
     &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-        &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Training Results - Epoch: &lt;/span&gt;&lt;span class="si"&gt;{trainer.state.epoch}&lt;/span&gt;&lt;span class="s2"&gt; &amp;quot;&lt;/span&gt;
-        &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Avg accuracy: &lt;/span&gt;&lt;span class="si"&gt;{metrics[&amp;#39;accuracy&amp;#39;]:.2f}&lt;/span&gt;&lt;span class="s2"&gt; &amp;quot;&lt;/span&gt;
-        &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Avg loss: &lt;/span&gt;&lt;span class="si"&gt;{metrics[&amp;#39;loss&amp;#39;]:.2f}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+        &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Training Results - Epoch: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;trainer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;epoch&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; &amp;quot;&lt;/span&gt;
+        &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Avg accuracy: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;metrics&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;accuracy&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;.2f&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; &amp;quot;&lt;/span&gt;
+        &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Avg loss: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;metrics&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;loss&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;.2f&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
     &lt;span class="p"&gt;)&lt;/span&gt;
     
     
@@ -723,9 +712,9 @@ Loading data from data/dogscats/valid.
     &lt;span class="n"&gt;evaluator&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;val_dl&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="n"&gt;metrics&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;evaluator&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;metrics&lt;/span&gt;
     &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-        &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Validation Results - Epoch: &lt;/span&gt;&lt;span class="si"&gt;{trainer.state.epoch}&lt;/span&gt;&lt;span class="s2"&gt; &amp;quot;&lt;/span&gt;
-        &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Avg accuracy: &lt;/span&gt;&lt;span class="si"&gt;{metrics[&amp;#39;accuracy&amp;#39;]:.2f}&lt;/span&gt;&lt;span class="s2"&gt; &amp;quot;&lt;/span&gt;
-        &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Avg loss: &lt;/span&gt;&lt;span class="si"&gt;{metrics[&amp;#39;loss&amp;#39;]:.2f}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+        &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Validation Results - Epoch: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;trainer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;epoch&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; &amp;quot;&lt;/span&gt;
+        &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Avg accuracy: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;metrics&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;accuracy&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;.2f&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; &amp;quot;&lt;/span&gt;
+        &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Avg loss: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;metrics&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;loss&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;.2f&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
     &lt;span class="p"&gt;)&lt;/span&gt;
 
 
@@ -740,7 +729,7 @@ Loading data from data/dogscats/valid.
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -750,7 +739,7 @@ Loading data from data/dogscats/valid.
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt output_prompt"&gt;Out[10]:&lt;/div&gt;
+    &lt;div class="prompt output_prompt"&gt;Out[10]:&lt;/div&gt;
 
 
 
@@ -770,11 +759,11 @@ Loading data from data/dogscats/valid.
 &lt;div class="prompt input_prompt"&gt;In&amp;nbsp;[11]:&lt;/div&gt;
 &lt;div class="inner_cell"&gt;
     &lt;div class="input_area"&gt;
-&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;%%&lt;/span&gt;&lt;span class="k"&gt;time&lt;/span&gt;
-trainer.run(train_dl, max_epochs=2)
+&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;%%time&lt;/span&gt;
+&lt;span class="n"&gt;trainer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;train_dl&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;max_epochs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -784,7 +773,7 @@ trainer.run(train_dl, max_epochs=2)
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt"&gt;&lt;/div&gt;
+    &lt;div class="prompt"&gt;&lt;/div&gt;
 
 
 &lt;div class="output_subarea output_stream output_stdout output_text"&gt;
@@ -800,7 +789,7 @@ Wall time: 1min 39s
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt output_prompt"&gt;Out[11]:&lt;/div&gt;
+    &lt;div class="prompt output_prompt"&gt;Out[11]:&lt;/div&gt;
 
 
 
@@ -823,7 +812,7 @@ Wall time: 1min 39s
 &lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;timer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;total&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;step_count&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -833,7 +822,7 @@ Wall time: 1min 39s
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt output_prompt"&gt;Out[12]:&lt;/div&gt;
+    &lt;div class="prompt output_prompt"&gt;Out[12]:&lt;/div&gt;
 
 
 
@@ -849,8 +838,7 @@ Wall time: 1min 39s
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h3 id="skorch"&gt;skorch&lt;a class="anchor-link" href="#skorch"&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;blockquote&gt;&lt;p&gt;A scikit-learn compatible neural network library that wraps pytorch.&lt;/p&gt;
 &lt;p&gt;The goal of skorch is to make it possible to use PyTorch with sklearn. This is achieved by providing a wrapper around PyTorch that has an sklearn interface. In that sense, skorch is the spiritual successor to nolearn, but instead of using Lasagne and Theano, it uses PyTorch.&lt;/p&gt;
@@ -882,8 +870,7 @@ And I want to reuse all my Datasets :)&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;Just to give you an idea of what the code looks like:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;skorch.net&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;NeuralNetClassifier&lt;/span&gt;
@@ -897,8 +884,7 @@ And I want to reuse all my Datasets :)&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h3 id="PyToune"&gt;PyToune&lt;a class="anchor-link" href="#PyToune"&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;blockquote&gt;&lt;p&gt;PyToune is a Keras-like framework for PyTorch and handles much of the boilerplating code needed to train neural networks.&lt;/p&gt;
 &lt;p&gt;Use PyToune to:&lt;/p&gt;
@@ -942,7 +928,7 @@ Here is the code:&lt;/p&gt;
 &lt;span class="n"&gt;optimizer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;torch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;optim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Adam&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model_&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;parameters&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;lr&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;0.0001&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -952,7 +938,7 @@ Here is the code:&lt;/p&gt;
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt"&gt;&lt;/div&gt;
+    &lt;div class="prompt"&gt;&lt;/div&gt;
 
 
 &lt;div class="output_subarea output_stream output_stdout output_text"&gt;
@@ -972,8 +958,8 @@ Loading data from data/dogscats/valid.
 &lt;div class="prompt input_prompt"&gt;In&amp;nbsp;[14]:&lt;/div&gt;
 &lt;div class="inner_cell"&gt;
     &lt;div class="input_area"&gt;
-&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pytoune.framework&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Model&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pytoune.framework.callbacks&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ModelCheckpoint&lt;/span&gt;
+&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pytoune.framework&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Model&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pytoune.framework.callbacks&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ModelCheckpoint&lt;/span&gt;
 
 &lt;span class="n"&gt;model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;optimizer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;criterion&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;metrics&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;accuracy&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
 &lt;span class="n"&gt;model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -989,7 +975,7 @@ Loading data from data/dogscats/valid.
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -999,16 +985,16 @@ Loading data from data/dogscats/valid.
 &lt;div class="prompt input_prompt"&gt;In&amp;nbsp;[15]:&lt;/div&gt;
 &lt;div class="inner_cell"&gt;
     &lt;div class="input_area"&gt;
-&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;%%&lt;/span&gt;&lt;span class="k"&gt;time&lt;/span&gt;
-model.fit_generator(
-    train_dl,
-    valid_generator=val_dl,
-    callbacks=[model_checkpoint_cb],
-    epochs=2,
-);
+&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;%%time&lt;/span&gt;
+&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fit_generator&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="n"&gt;train_dl&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;valid_generator&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;val_dl&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;callbacks&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;model_checkpoint_cb&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+    &lt;span class="n"&gt;epochs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -1018,7 +1004,7 @@ model.fit_generator(
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt"&gt;&lt;/div&gt;
+    &lt;div class="prompt"&gt;&lt;/div&gt;
 
 
 &lt;div class="output_subarea output_stream output_stdout output_text"&gt;
@@ -1032,7 +1018,7 @@ Wall time: 57.3 s
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt output_prompt"&gt;Out[15]:&lt;/div&gt;
+    &lt;div class="prompt output_prompt"&gt;Out[15]:&lt;/div&gt;
 
 
 
@@ -1064,7 +1050,7 @@ Wall time: 57.3 s
 &lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;ls&lt;/span&gt; &lt;span class="n"&gt;pytoune_&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -1074,7 +1060,7 @@ Wall time: 57.3 s
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt"&gt;&lt;/div&gt;
+    &lt;div class="prompt"&gt;&lt;/div&gt;
 
 
 &lt;div class="output_subarea output_stream output_stdout output_text"&gt;
@@ -1088,8 +1074,7 @@ Wall time: 57.3 s
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h2 id="Conclusion"&gt;Conclusion&lt;a class="anchor-link" href="#Conclusion"&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;All libraries look good.&lt;/p&gt;
 &lt;ul&gt;
@@ -1103,8 +1088,7 @@ Wall time: 57.3 s
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;&lt;em&gt;Update &amp;lt;2019-02-07&amp;gt;&lt;/em&gt;: One of the friendly folks from skorch reached out to me and corrected me:&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;"One thing to note is that if you have a 'typical' dataset that provides a pair of &lt;code&gt;X&lt;/code&gt;, &lt;code&gt;y&lt;/code&gt; values then skorch already supports them as input to .fit: &lt;code&gt;net.fit(train_dataset, y=None)&lt;/code&gt;&lt;/em&gt;
@@ -1149,7 +1133,7 @@ Wall time: 57.3 s
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;
-</content><category term="notag"></category></entry><entry><title>PyData PyTorch Tutorial</title><link href="/pydata-pytorch-tutorial.html" rel="alternate"></link><published>2018-07-12T00:00:00+02:00</published><updated>2018-07-12T00:00:00+02:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-07-12:/pydata-pytorch-tutorial.html</id><summary type="html">&lt;p&gt;I attended the PyData Berlin again and it was a really good conference:
+</content><category term="TOOD"></category><category term="notag"></category></entry><entry><title>PyData PyTorch Tutorial</title><link href="/pydata-pytorch-tutorial.html" rel="alternate"></link><published>2018-07-12T00:00:00+02:00</published><updated>2018-07-12T00:00:00+02:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-07-12:/pydata-pytorch-tutorial.html</id><summary type="html">&lt;p&gt;I attended the PyData Berlin again and it was a really good conference:
 great talks, great people, and well organized!&lt;/p&gt;
 &lt;p&gt;I also presented a &lt;strong&gt;PyTorch&lt;/strong&gt; tutorial.
 You can find the material of the tutorial on &lt;a href="https://github.com/sotte/pytorch_tutorial"&gt;github&lt;/a&gt;
@@ -1161,11 +1145,9 @@ You can find the material of the tutorial on &lt;a href="https://github.com/sott
 and here is the video:&lt;/p&gt;
 &lt;style&gt;.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }&lt;/style&gt;
 
-&lt;div class='embed-container'&gt;&lt;iframe src='https://www.youtube.com/embed/_H3aw6wkCv0' frameborder='0' allowfullscreen&gt;&lt;/iframe&gt;&lt;/div&gt;</content><category term="TODO"></category></entry><entry><title>Tools to ease EDA (lightning talk)</title><link href="/tools-to-ease-eda-lightning-talk.html" rel="alternate"></link><published>2018-07-12T00:00:00+02:00</published><updated>2018-07-12T00:00:00+02:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-07-12:/tools-to-ease-eda-lightning-talk.html</id><summary type="html">&lt;p&gt;At the PyData Berlin I prepared a lightning talk about tools to ease EDA,
+&lt;div class='embed-container'&gt;&lt;iframe src='https://www.youtube.com/embed/_H3aw6wkCv0' frameborder='0' allowfullscreen&gt;&lt;/iframe&gt;&lt;/div&gt;</content><category term="TODO"></category><category term="TODO"></category></entry><entry><title>Tools to ease EDA (lightning talk)</title><link href="/tools-to-ease-eda-lightning-talk.html" rel="alternate"></link><published>2018-07-12T00:00:00+02:00</published><updated>2018-07-12T00:00:00+02:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2018-07-12:/tools-to-ease-eda-lightning-talk.html</id><content type="html">&lt;p&gt;At the PyData Berlin I prepared a lightning talk about tools to ease EDA,
 but I didn't give the talk due to time constraints :)
-You can find the notebook of the talk on &lt;a href="https://github.com/sotte/pydata_eda_lightning_talk/blob/master/README.ipynb"&gt;github&lt;/a&gt;.&lt;/p&gt;</summary><content type="html">&lt;p&gt;At the PyData Berlin I prepared a lightning talk about tools to ease EDA,
-but I didn't give the talk due to time constraints :)
-You can find the notebook of the talk on &lt;a href="https://github.com/sotte/pydata_eda_lightning_talk/blob/master/README.ipynb"&gt;github&lt;/a&gt;.&lt;/p&gt;</content><category term="TODO"></category></entry><entry><title>PyData Talk 2017: On Bandits and Swipes - Gamification of Search</title><link href="/pydata-talk-2017-on-bandits-and-swipes-gamification-of-search.html" rel="alternate"></link><published>2017-07-16T00:00:00+02:00</published><updated>2017-07-16T00:00:00+02:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2017-07-16:/pydata-talk-2017-on-bandits-and-swipes-gamification-of-search.html</id><summary type="html">&lt;p&gt;Short version for index and feeds&lt;/p&gt;</summary><content type="html">&lt;p&gt;This is a slightly edited version of the talk I gave at the PyData Berlin 2017.&lt;/p&gt;
+You can find the notebook of the talk on &lt;a href="https://github.com/sotte/pydata_eda_lightning_talk/blob/master/README.ipynb"&gt;github&lt;/a&gt;.&lt;/p&gt;</content><category term="TODO"></category><category term="TODO"></category></entry><entry><title>PyData Talk 2017: On Bandits and Swipes - Gamification of Search</title><link href="/pydata-talk-2017-on-bandits-and-swipes-gamification-of-search.html" rel="alternate"></link><published>2017-07-16T00:00:00+02:00</published><updated>2017-07-16T00:00:00+02:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2017-07-16:/pydata-talk-2017-on-bandits-and-swipes-gamification-of-search.html</id><summary type="html">&lt;p&gt;Short version for index and feeds&lt;/p&gt;</summary><content type="html">&lt;p&gt;This is a slightly edited version of the talk I gave at the PyData Berlin 2017.&lt;/p&gt;
 &lt;p&gt;Here is the &lt;a href="https://github.com/sotte/pydata_berlin_2017_active_learning"&gt;github repo&lt;/a&gt;
 containing the source and additional materials,
 here is the &lt;a href="https://sotte.github.io/pydata_berlin_2017_active_learning/"&gt;reveal.js presentation&lt;/a&gt;,
@@ -1850,17 +1832,13 @@ References:
   [video](https://www.youtube.com/watch?v=5rev-zVx1Ps)
 
   &lt;/div&gt;
-&lt;/div&gt;</content><category term="TODO"></category></entry><entry><title>dplyr for python</title><link href="/dplyr-for-python.html" rel="alternate"></link><published>2017-07-14T00:00:00+02:00</published><updated>2017-07-14T00:00:00+02:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2017-07-14:/dplyr-for-python.html</id><summary type="html">
-&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;</content><category term="TODO"></category><category term="TODO"></category></entry><entry><title>dplyr for python</title><link href="/dplyr-for-python.html" rel="alternate"></link><published>2017-07-14T00:00:00+02:00</published><updated>2017-07-14T00:00:00+02:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2017-07-14:/dplyr-for-python.html</id><summary type="html">&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h2 id="dplyr-enlightenment-with-pandas"&gt;dplyr enlightenment with pandas&lt;a class="anchor-link" href="#dplyr-enlightenment-with-pandas"&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;I tried to reach &lt;a href="http://dplyr.tidyverse.org/"&gt;dplyr&lt;/a&gt; enlightenment in the &lt;code&gt;pandas&lt;/code&gt; ecosystem, but what I found was different from what I expected. Be warned: opinions ahead!&lt;/p&gt;
 &lt;p&gt;According to the &lt;a href="https://github.com/tidyverse/dplyr"&gt;dplyr homepage&lt;/a&gt;&lt;/p&gt;
-&lt;blockquote&gt;&lt;p&gt;"dplyr is a grammar of data manipulation, providing a consistent set of verbs that help &amp;gt; you solve the most common data manipulation challenges.&lt;/p&gt;</summary><content type="html">
-&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;blockquote&gt;&lt;p&gt;"dplyr is a grammar of data manipulation, providing a consistent set of verbs that help &amp;gt; you solve the most common data manipulation challenges.&lt;/p&gt;</summary><content type="html">&lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h2 id="dplyr-enlightenment-with-pandas"&gt;dplyr enlightenment with pandas&lt;a class="anchor-link" href="#dplyr-enlightenment-with-pandas"&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;I tried to reach &lt;a href="http://dplyr.tidyverse.org/"&gt;dplyr&lt;/a&gt; enlightenment in the &lt;code&gt;pandas&lt;/code&gt; ecosystem, but what I found was different from what I expected. Be warned: opinions ahead!&lt;/p&gt;
 &lt;p&gt;According to the &lt;a href="https://github.com/tidyverse/dplyr"&gt;dplyr homepage&lt;/a&gt;&lt;/p&gt;
@@ -1884,24 +1862,23 @@ References:
 &lt;div class="prompt input_prompt"&gt;In&amp;nbsp;[&amp;nbsp;]:&lt;/div&gt;
 &lt;div class="inner_cell"&gt;
     &lt;div class="input_area"&gt;
-&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;%%&lt;/span&gt;R
-flights &lt;span class="o"&gt;%&amp;gt;%&lt;/span&gt;
-  group_by&lt;span class="p"&gt;(&lt;/span&gt;year&lt;span class="p"&gt;,&lt;/span&gt; month&lt;span class="p"&gt;,&lt;/span&gt; day&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;%&amp;gt;%&lt;/span&gt;
-  summarise&lt;span class="p"&gt;(&lt;/span&gt;
-    arr &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kp"&gt;mean&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;arr_delay&lt;span class="p"&gt;,&lt;/span&gt; na.rm &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;TRUE&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
-    dep &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kp"&gt;mean&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;dep_delay&lt;span class="p"&gt;,&lt;/span&gt; na.rm &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;TRUE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;%%&lt;/span&gt;&lt;span class="n"&gt;R&lt;/span&gt;
+&lt;span class="n"&gt;flights&lt;/span&gt; &lt;span class="o"&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span class="nf"&gt;group_by&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;year&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;month&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;day&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;%&amp;gt;%&lt;/span&gt;
+  &lt;span class="nf"&gt;summarise&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="n"&gt;arr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;mean&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arr_delay&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;na.rm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;TRUE&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="n"&gt;dep&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;mean&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;dep_delay&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;na.rm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;TRUE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
   &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;%&amp;gt;%&lt;/span&gt;
-  filter&lt;span class="p"&gt;(&lt;/span&gt;arr &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; dep &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="m"&gt;30&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="nf"&gt;filter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arr&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;dep&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="m"&gt;30&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;Compare this to, what they call, "the most common way to express this in pandas":&lt;/p&gt;
 
@@ -1920,14 +1897,13 @@ flights &lt;span class="o"&gt;%&amp;gt;%&lt;/span&gt;
 &lt;span class="n"&gt;filtered_output&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;output&lt;/span&gt;&lt;span class="p"&gt;[(&lt;/span&gt;&lt;span class="n"&gt;output&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;arr&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;30&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;output&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dep&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;30&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;The dplyr version is more readable.&lt;/p&gt;
 &lt;p&gt;Let's check out if there is a dplyr-like way to write the obove with python and &lt;code&gt;pandas&lt;/code&gt;.
@@ -1941,16 +1917,14 @@ Luckily there are some libraries which implement some of dplyr's features in pyt
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h2 id="Case-Study-with-the-Diamond-dataset"&gt;Case Study with the Diamond dataset&lt;a class="anchor-link" href="#Case-Study-with-the-Diamond-dataset"&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;I'm going to show some simple data mungling with the diamonds dataset.
 &lt;a href="https://github.com/dodger487/dplython"&gt;dplython&lt;/a&gt; has some data mungling examples that demonstrate of how to use dplython with this dataset.
@@ -1968,13 +1942,13 @@ I'm going to do the same with &lt;code&gt;pandas-ply&lt;/code&gt; and vanilla &l
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
 
 &lt;span class="c1"&gt;# pandas-ply&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pandas_ply&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;install_ply&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pandas_ply&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;install_ply&lt;/span&gt;
 &lt;span class="c1"&gt;# normally just X&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pandas_ply&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;X_ply&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pandas_ply&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;X_ply&lt;/span&gt;
 &lt;span class="n"&gt;install_ply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="c1"&gt;# dplython&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;dplython&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;dplython&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
     &lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
     &lt;span class="n"&gt;sift&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
     &lt;span class="n"&gt;sample_n&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
@@ -1985,17 +1959,16 @@ I'm going to do the same with &lt;code&gt;pandas-ply&lt;/code&gt; and vanilla &l
     &lt;span class="n"&gt;summarize&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="c1"&gt;# normally just X&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;dplython&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;X_dpl&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;dplython&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;X_dpl&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;&lt;code&gt;dplython&lt;/code&gt; already ships the diamonds dataset.
 Note that dplython uses &lt;code&gt;DplyFrame&lt;/code&gt; as extension of the &lt;code&gt;DataFrame&lt;/code&gt; and &lt;code&gt;dyf&lt;/code&gt; is the diamond data as &lt;code&gt;DplyFrame&lt;/code&gt;.&lt;/p&gt;
@@ -2008,7 +1981,7 @@ Note that dplython uses &lt;code&gt;DplyFrame&lt;/code&gt; as extension of the &
 &lt;div class="prompt input_prompt"&gt;In&amp;nbsp;[2]:&lt;/div&gt;
 &lt;div class="inner_cell"&gt;
     &lt;div class="input_area"&gt;
-&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;dplython&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;diamonds&lt;/span&gt;
+&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;dplython&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;diamonds&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Note that dplython needs the DplyFrame&lt;/span&gt;
 &lt;span class="c1"&gt;# and dyf is the diamond data as DplyFrame&lt;/span&gt;
@@ -2018,7 +1991,7 @@ Note that dplython uses &lt;code&gt;DplyFrame&lt;/code&gt; as extension of the &
 &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;dyf&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -2028,7 +2001,7 @@ Note that dplython uses &lt;code&gt;DplyFrame&lt;/code&gt; as extension of the &
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt"&gt;&lt;/div&gt;
+    &lt;div class="prompt"&gt;&lt;/div&gt;
 
 
 &lt;div class="output_subarea output_stream output_stdout output_text"&gt;
@@ -2043,8 +2016,7 @@ Note that dplython uses &lt;code&gt;DplyFrame&lt;/code&gt; as extension of the &
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;Just to get an idea of how the data look like:&lt;/p&gt;
 
@@ -2059,7 +2031,7 @@ Note that dplython uses &lt;code&gt;DplyFrame&lt;/code&gt; as extension of the &
 &lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sample&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -2069,7 +2041,7 @@ Note that dplython uses &lt;code&gt;DplyFrame&lt;/code&gt; as extension of the &
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt output_prompt"&gt;Out[3]:&lt;/div&gt;
+    &lt;div class="prompt output_prompt"&gt;Out[3]:&lt;/div&gt;
 
 
 
@@ -2167,14 +2139,13 @@ Note that dplython uses &lt;code&gt;DplyFrame&lt;/code&gt; as extension of the &
 &lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;  &lt;span class="c1"&gt;# number of samples we&amp;#39;ll draw&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h3 id="Simple-select"&gt;Simple select&lt;a class="anchor-link" href="#Simple-select"&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;
 &lt;/div&gt;
@@ -2193,7 +2164,7 @@ Note that dplython uses &lt;code&gt;DplyFrame&lt;/code&gt; as extension of the &
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -2203,7 +2174,7 @@ Note that dplython uses &lt;code&gt;DplyFrame&lt;/code&gt; as extension of the &
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt output_prompt"&gt;Out[5]:&lt;/div&gt;
+    &lt;div class="prompt output_prompt"&gt;Out[5]:&lt;/div&gt;
 
 
 
@@ -2262,8 +2233,7 @@ Note that dplython uses &lt;code&gt;DplyFrame&lt;/code&gt; as extension of the &
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;I like dplython's &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt; operator for piping the data (but I'm spoiled by elixir and I'm aware that operator overloading can be used for evil (hello c++)).
 The use of &lt;code&gt;X&lt;/code&gt; gives us access to the columns of the data.
@@ -2285,14 +2255,13 @@ It's nice, but again not a huge difference.&lt;/p&gt;
 &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;The &lt;code&gt;ply_select&lt;/code&gt; methods is the equivalent to &lt;code&gt;dplython&lt;/code&gt;'s &lt;code&gt;select&lt;/code&gt; function.&lt;/p&gt;
 
@@ -2312,14 +2281,13 @@ It's nice, but again not a huge difference.&lt;/p&gt;
 &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;With pandas we use the good old bracket notation.
 Also quite readable.&lt;/p&gt;
@@ -2328,8 +2296,7 @@ Also quite readable.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h3 id="Filter-and-select"&gt;Filter and select&lt;a class="anchor-link" href="#Filter-and-select"&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;
 &lt;/div&gt;
@@ -2348,7 +2315,7 @@ Also quite readable.&lt;/p&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -2358,7 +2325,7 @@ Also quite readable.&lt;/p&gt;
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt output_prompt"&gt;Out[8]:&lt;/div&gt;
+    &lt;div class="prompt output_prompt"&gt;Out[8]:&lt;/div&gt;
 
 
 
@@ -2435,8 +2402,7 @@ Also quite readable.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;&lt;code&gt;dplython&lt;/code&gt;'s sift is like a filter and quite redable.&lt;/p&gt;
 
@@ -2456,14 +2422,13 @@ Also quite readable.&lt;/p&gt;
 &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;&lt;code&gt;.ply_where&lt;/code&gt; in combination with the &lt;code&gt;X&lt;/code&gt; is just as nice as &lt;code&gt;dplyton&lt;/code&gt;.&lt;/p&gt;
 
@@ -2483,14 +2448,13 @@ Also quite readable.&lt;/p&gt;
 &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;I guess this is the most common way to write the same in vanilla &lt;code&gt;pandas&lt;/code&gt;.&lt;/p&gt;
 
@@ -2510,14 +2474,13 @@ Also quite readable.&lt;/p&gt;
 &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;But it's also possible to use the &lt;code&gt;query&lt;/code&gt; method of &lt;code&gt;pandas&lt;/code&gt;.&lt;/p&gt;
 
@@ -2525,8 +2488,7 @@ Also quite readable.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h3 id="Sample-and-sort"&gt;Sample and sort&lt;a class="anchor-link" href="#Sample-and-sort"&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;
 &lt;/div&gt;
@@ -2546,7 +2508,7 @@ Also quite readable.&lt;/p&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -2556,7 +2518,7 @@ Also quite readable.&lt;/p&gt;
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt output_prompt"&gt;Out[12]:&lt;/div&gt;
+    &lt;div class="prompt output_prompt"&gt;Out[12]:&lt;/div&gt;
 
 
 
@@ -2619,8 +2581,7 @@ Also quite readable.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;&lt;code&gt;arrange&lt;/code&gt; might seem strange in the beginning.
 Just think of it as sort and you're fine.&lt;/p&gt;
@@ -2642,14 +2603,13 @@ Just think of it as sort and you're fine.&lt;/p&gt;
 &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;No surprises with &lt;code&gt;pandas-ply&lt;/code&gt;.&lt;/p&gt;
 
@@ -2670,14 +2630,13 @@ Just think of it as sort and you're fine.&lt;/p&gt;
 &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;And no surprises with vanilla &lt;code&gt;pandas&lt;/code&gt;, but I still think it's quite readable.&lt;/p&gt;
 
@@ -2685,8 +2644,7 @@ Just think of it as sort and you're fine.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h3 id="Assign,-group-by-and-summarize"&gt;Assign, group by and summarize&lt;a class="anchor-link" href="#Assign,-group-by-and-summarize"&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;
 &lt;/div&gt;
@@ -2707,7 +2665,7 @@ Just think of it as sort and you're fine.&lt;/p&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -2717,7 +2675,7 @@ Just think of it as sort and you're fine.&lt;/p&gt;
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt output_prompt"&gt;Out[15]:&lt;/div&gt;
+    &lt;div class="prompt output_prompt"&gt;Out[15]:&lt;/div&gt;
 
 
 
@@ -2818,8 +2776,7 @@ Just think of it as sort and you're fine.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;This is an example where dplython shines.
 &lt;code&gt;mutate&lt;/code&gt; makes clear that something is changed (though technically we return a copy, so we don't change anything)
@@ -2845,7 +2802,7 @@ and &lt;code&gt;summarize&lt;/code&gt; is similar to &lt;code&gt;pandas&lt;/code
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -2855,7 +2812,7 @@ and &lt;code&gt;summarize&lt;/code&gt; is similar to &lt;code&gt;pandas&lt;/code
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt output_prompt"&gt;Out[16]:&lt;/div&gt;
+    &lt;div class="prompt output_prompt"&gt;Out[16]:&lt;/div&gt;
 
 
 
@@ -2956,8 +2913,7 @@ and &lt;code&gt;summarize&lt;/code&gt; is similar to &lt;code&gt;pandas&lt;/code
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;We were not really able to use any padans-ply features here. &lt;code&gt;ply_select(carat=_X.carat.round())&lt;/code&gt; only leaves the selected 'carat' column.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;pandas&lt;/code&gt;'s &lt;code&gt;assign&lt;/code&gt; method is quite clear.
@@ -2972,8 +2928,7 @@ We flatten the &lt;code&gt;MultiIndex&lt;/code&gt; by resetting the index.&lt;/p
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h2 id="Conclusion"&gt;Conclusion&lt;a class="anchor-link" href="#Conclusion"&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;So which one is better? &lt;code&gt;dplython&lt;/code&gt;, &lt;code&gt;pandas-ply&lt;/code&gt;, or even vanialla &lt;code&gt;pandas&lt;/code&gt;?&lt;/p&gt;
 &lt;p&gt;I think the method-chaining version of &lt;code&gt;pandas&lt;/code&gt; is quite readable but &lt;code&gt;pandas&lt;/code&gt; API ist still...&lt;code&gt;pandas&lt;/code&gt; API: powerful but not necessarily intuitive.
@@ -2995,8 +2950,7 @@ I think I'll give it a try in a bigger project and see how it goes.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h2 id="PS"&gt;PS&lt;a class="anchor-link" href="#PS"&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Just as a side note, I have a little python helper library &lt;a href=""&gt;pelper&lt;/a&gt; which contains a &lt;code&gt;pipe&lt;/code&gt; function.
 &lt;code&gt;pipe&lt;/code&gt; passes the output of a function as first argument into another function.
@@ -3014,7 +2968,7 @@ So you can rewrite this:&lt;/p&gt;
 &lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;sorted&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt; &lt;span class="n"&gt;reverse&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -3024,7 +2978,7 @@ So you can rewrite this:&lt;/p&gt;
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt output_prompt"&gt;Out[17]:&lt;/div&gt;
+    &lt;div class="prompt output_prompt"&gt;Out[17]:&lt;/div&gt;
 
 
 
@@ -3040,8 +2994,7 @@ So you can rewrite this:&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;as something more functional like this:&lt;/p&gt;
 
@@ -3053,11 +3006,11 @@ So you can rewrite this:&lt;/p&gt;
 &lt;div class="prompt input_prompt"&gt;In&amp;nbsp;[18]:&lt;/div&gt;
 &lt;div class="inner_cell"&gt;
     &lt;div class="input_area"&gt;
-&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pelper&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;pipe&lt;/span&gt;
+&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pelper&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;pipe&lt;/span&gt;
 &lt;span class="n"&gt;pipe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;list&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;sorted&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;reverse&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;}))&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
@@ -3067,7 +3020,7 @@ So you can rewrite this:&lt;/p&gt;
 
 &lt;div class="output_area"&gt;
 
-&lt;div class="prompt output_prompt"&gt;Out[18]:&lt;/div&gt;
+    &lt;div class="prompt output_prompt"&gt;Out[18]:&lt;/div&gt;
 
 
 
@@ -3083,8 +3036,7 @@ So you can rewrite this:&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;Unsurprisingly, one can use the &lt;code&gt;pipe&lt;/code&gt; function with &lt;code&gt;dplython&lt;/code&gt; (not using the delayed execution functionality of &lt;code&gt;dplython&lt;/code&gt;):&lt;/p&gt;
 
@@ -3096,7 +3048,7 @@ So you can rewrite this:&lt;/p&gt;
 &lt;div class="prompt input_prompt"&gt;In&amp;nbsp;[19]:&lt;/div&gt;
 &lt;div class="inner_cell"&gt;
     &lt;div class="input_area"&gt;
-&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pelper&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;pipe&lt;/span&gt;
+&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pelper&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;pipe&lt;/span&gt;
 &lt;span class="n"&gt;pipe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
     &lt;span class="n"&gt;diamonds&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
     &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mutate&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;carat_bin&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;X_dpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;carat&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;round&lt;/span&gt;&lt;span class="p"&gt;()}),&lt;/span&gt;
@@ -3105,14 +3057,13 @@ So you can rewrite this:&lt;/p&gt;
 &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;p&gt;Or using the delayed execution functionality:&lt;/p&gt;
 
@@ -3132,14 +3083,13 @@ So you can rewrite this:&lt;/p&gt;
 &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
-&lt;/div&gt;
-&lt;div class="inner_cell"&gt;
+&lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h2 id="References"&gt;References&lt;a class="anchor-link" href="#References"&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href="https://www.youtube.com/watch?v=4YAcwCe1mAE"&gt;dplython talk at PyGotham 2016&lt;/a&gt;&lt;/li&gt;
@@ -3182,7 +3132,7 @@ So you can rewrite this:&lt;/p&gt;
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;
-</content><category term="notag"></category></entry><entry><title>Note to self: How to publish packages on PyPI</title><link href="/note-to-self-how-to-publish-packages-on-pypi.html" rel="alternate"></link><published>2016-01-20T00:00:00+01:00</published><updated>2016-01-20T00:00:00+01:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2016-01-20:/note-to-self-how-to-publish-packages-on-pypi.html</id><summary type="html">&lt;p class="first last"&gt;...because I always forget which tools to use in what order and what
+</content><category term="TOOD"></category><category term="notag"></category></entry><entry><title>Note to self: How to publish packages on PyPI</title><link href="/note-to-self-how-to-publish-packages-on-pypi.html" rel="alternate"></link><published>2016-01-20T00:00:00+01:00</published><updated>2016-01-20T00:00:00+01:00</updated><author><name>Stefan Otte</name></author><id>tag:None,2016-01-20:/note-to-self-how-to-publish-packages-on-pypi.html</id><summary type="html">&lt;p class="first last"&gt;...because I always forget which tools to use in what order and what
 can go wrong.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;One of the least favorite things about python is package and release management.
 Even though it's getting better, there is still room for improvement.
@@ -3294,4 +3244,4 @@ Hopefully that changes at some point...&lt;/p&gt;
 &lt;!-- links --&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content></entry></feed>
+</content><category term="misc"></category></entry></feed>

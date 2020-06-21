@@ -42,10 +42,8 @@
     <p class="article-date">
       Published on <time datetime="2018-09-16T00:00:00+02:00">2018-09-16</time>
     </p>
-    <div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+    <div><div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><em>Note: you can find the jupyter notebook for this post <a href="https://github.com/sotte/sotte.github.io.resources">here</a>.</em></p>
 <p><em>Update &lt;2019-02-07&gt;</em>: Some corrections regarding skorch. See the update at the bottom of the page.</p>
@@ -92,8 +90,7 @@ I'll use a pre-trained ResNet and only replace the last layer.</p>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Setup">Setup<a class="anchor-link" href="#Setup">&#182;</a></h2><p>This is the usual setup for most ML tasks: data, model, loss, and optimizer.
 Feel free to skip it.</p>
@@ -112,14 +109,14 @@ Feel free to skip it.</p>
 
 <span class="kn">import</span> <span class="nn">torchvision</span>
 <span class="kn">import</span> <span class="nn">torchvision.transforms</span> <span class="k">as</span> <span class="nn">transforms</span>
-<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">DataLoader</span>
-<span class="kn">from</span> <span class="nn">torchvision.models.resnet</span> <span class="k">import</span> <span class="n">resnet18</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+<span class="kn">from</span> <span class="nn">torchvision.models.resnet</span> <span class="kn">import</span> <span class="n">resnet18</span>
 
 <span class="kn">import</span> <span class="nn">utils</span>
-<span class="kn">from</span> <span class="nn">utils</span> <span class="k">import</span> <span class="n">DogsCatsDataset</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">DogsCatsDataset</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -133,7 +130,7 @@ Feel free to skip it.</p>
 <span class="n">device</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -143,7 +140,7 @@ Feel free to skip it.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[2]:</div>
+    <div class="prompt output_prompt">Out[2]:</div>
 
 
 
@@ -159,8 +156,7 @@ Feel free to skip it.</p>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="The-Data">The Data<a class="anchor-link" href="#The-Data">&#182;</a></h3>
 </div>
@@ -224,7 +220,7 @@ Feel free to skip it.</p>
 <span class="n">train_dl</span><span class="p">,</span> <span class="n">val_dl</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">()</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -234,7 +230,7 @@ Feel free to skip it.</p>
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
@@ -257,7 +253,7 @@ Loading data from data/dogscats/valid.
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">train_dl</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -267,7 +263,7 @@ Loading data from data/dogscats/valid.
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
@@ -291,8 +287,7 @@ Loading data from data/dogscats/valid.
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Model,-Loss,-and-Optimizer">Model, Loss, and Optimizer<a class="anchor-link" href="#Model,-Loss,-and-Optimizer">&#182;</a></h3><p>We'll just use a simple pretrained ResNet and replace the last fully connected layer with a problem specific layer, i.e. a linear layer with two outputs (one for cats, one for dogs).</p>
 
@@ -318,14 +313,13 @@ Loading data from data/dogscats/valid.
 <span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We also need to specify the loss function and the optimizer.</p>
 
@@ -341,14 +335,13 @@ Loading data from data/dogscats/valid.
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Just for the sake of completeness, a <em>simple</em> train loop would look something like this:</p>
 
@@ -362,7 +355,7 @@ Loading data from data/dogscats/valid.
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">n_epochs</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_epochs</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Epoch {epoch+1}/</span><span class="si">{n_epochs}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_epochs</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
 
         <span class="c1"># Train</span>
         <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>  <span class="c1"># IMPORTANT</span>
@@ -383,9 +376,9 @@ Loading data from data/dogscats/valid.
             <span class="n">correct</span> <span class="o">+=</span> <span class="p">(</span><span class="n">y_label_</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
             <span class="n">running_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="nb">print</span><span class="p">(</span>
-            <span class="n">f</span><span class="s2">&quot;  &quot;</span>
-            <span class="n">f</span><span class="s2">&quot;loss: {running_loss / len(train_dl.dataset):0.3f} &quot;</span>
-            <span class="n">f</span><span class="s2">&quot;acc:  {correct / len(train_dl.dataset):0.3f}&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;loss: </span><span class="si">{</span><span class="n">running_loss</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_dl</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span><span class="si">:</span><span class="s2">0.3f</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;acc:  </span><span class="si">{</span><span class="n">correct</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_dl</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span><span class="si">:</span><span class="s2">0.3f</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
         <span class="c1"># Eval</span>
@@ -402,13 +395,13 @@ Loading data from data/dogscats/valid.
                 <span class="n">correct</span> <span class="o">+=</span> <span class="p">(</span><span class="n">y_label_</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>            
                 <span class="n">running_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="nb">print</span><span class="p">(</span>
-            <span class="n">f</span><span class="s2">&quot;  &quot;</span>
-            <span class="n">f</span><span class="s2">&quot;val_loss: {running_loss / len(val_dl.dataset):0.3f} &quot;</span>
-            <span class="n">f</span><span class="s2">&quot;val_acc:  {correct / len(val_dl.dataset):0.3f}&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;val_loss: </span><span class="si">{</span><span class="n">running_loss</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">val_dl</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span><span class="si">:</span><span class="s2">0.3f</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;val_acc:  </span><span class="si">{</span><span class="n">correct</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">val_dl</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span><span class="si">:</span><span class="s2">0.3f</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -418,11 +411,11 @@ Loading data from data/dogscats/valid.
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
-fit(model, criterion, optimizer, n_epochs=2)
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%time</span>
+<span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">n_epochs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -432,7 +425,7 @@ fit(model, criterion, optimizer, n_epochs=2)
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
@@ -453,8 +446,7 @@ Wall time: 49.3 s
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="The-Contenders">The Contenders<a class="anchor-link" href="#The-Contenders">&#182;</a></h2><p>Here I will try to solve the task with the three libraries.</p>
 
@@ -462,8 +454,7 @@ Wall time: 49.3 s
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Ignite">Ignite<a class="anchor-link" href="#Ignite">&#182;</a></h3><blockquote><p>Ignite is a high-level library to help with training neural networks in PyTorch.</p>
 <ul>
@@ -482,7 +473,7 @@ The main abstractions are <code>Engines</code> which loop over the data.
 The <code>State</code> object is part of the engine and is used to track training/evaluation state.
 Via <code>Events</code> and <code>Handlers</code> you can execute your custom code, e.g. printing out the current loss or storing a checkpoint.
 You can register callbacks via decorators:</p>
-<div class="highlight"><pre><span></span><span class="nd">@trainer.on</span><span class="p">(</span><span class="n">Events</span><span class="o">.</span><span class="n">ITERATION_COMPLETED</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="nd">@trainer</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="n">Events</span><span class="o">.</span><span class="n">ITERATION_COMPLETED</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">log_training_loss</span><span class="p">(</span><span class="n">trainer</span><span class="p">):</span>
     <span class="k">pass</span>
 </pre></div>
@@ -509,7 +500,7 @@ Here is the code:</p>
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -519,7 +510,7 @@ Here is the code:</p>
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
@@ -540,17 +531,17 @@ Loading data from data/dogscats/valid.
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># The helper functions to create engines</span>
-<span class="kn">from</span> <span class="nn">ignite.engine</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">ignite.engine</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Events</span><span class="p">,</span>
     <span class="n">create_supervised_trainer</span><span class="p">,</span>
     <span class="n">create_supervised_evaluator</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="c1"># The metrics we&#39;re going to use</span>
-<span class="kn">from</span> <span class="nn">ignite.metrics</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">ignite.metrics</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">CategoricalAccuracy</span><span class="p">,</span>
     <span class="n">Loss</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ignite.handlers</span> <span class="k">import</span> <span class="n">Timer</span>
+<span class="kn">from</span> <span class="nn">ignite.handlers</span> <span class="kn">import</span> <span class="n">Timer</span>
 
 <span class="c1"># Setup</span>
 <span class="n">trainer</span> <span class="o">=</span> <span class="n">create_supervised_trainer</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
@@ -577,9 +568,9 @@ Loading data from data/dogscats/valid.
     <span class="n">evaluator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_dl</span><span class="p">)</span>
     <span class="n">metrics</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">metrics</span>
     <span class="nb">print</span><span class="p">(</span>
-        <span class="n">f</span><span class="s2">&quot;Training Results - Epoch: </span><span class="si">{trainer.state.epoch}</span><span class="s2"> &quot;</span>
-        <span class="n">f</span><span class="s2">&quot;Avg accuracy: </span><span class="si">{metrics[&#39;accuracy&#39;]:.2f}</span><span class="s2"> &quot;</span>
-        <span class="n">f</span><span class="s2">&quot;Avg loss: </span><span class="si">{metrics[&#39;loss&#39;]:.2f}</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Training Results - Epoch: </span><span class="si">{</span><span class="n">trainer</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Avg accuracy: </span><span class="si">{</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Avg loss: </span><span class="si">{</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
     
     
@@ -588,9 +579,9 @@ Loading data from data/dogscats/valid.
     <span class="n">evaluator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">val_dl</span><span class="p">)</span>
     <span class="n">metrics</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">metrics</span>
     <span class="nb">print</span><span class="p">(</span>
-        <span class="n">f</span><span class="s2">&quot;Validation Results - Epoch: </span><span class="si">{trainer.state.epoch}</span><span class="s2"> &quot;</span>
-        <span class="n">f</span><span class="s2">&quot;Avg accuracy: </span><span class="si">{metrics[&#39;accuracy&#39;]:.2f}</span><span class="s2"> &quot;</span>
-        <span class="n">f</span><span class="s2">&quot;Avg loss: </span><span class="si">{metrics[&#39;loss&#39;]:.2f}</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Validation Results - Epoch: </span><span class="si">{</span><span class="n">trainer</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Avg accuracy: </span><span class="si">{</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Avg loss: </span><span class="si">{</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
 
 
@@ -605,7 +596,7 @@ Loading data from data/dogscats/valid.
 <span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -615,7 +606,7 @@ Loading data from data/dogscats/valid.
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[10]:</div>
+    <div class="prompt output_prompt">Out[10]:</div>
 
 
 
@@ -635,11 +626,11 @@ Loading data from data/dogscats/valid.
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
-trainer.run(train_dl, max_epochs=2)
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%time</span>
+<span class="n">trainer</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_dl</span><span class="p">,</span> <span class="n">max_epochs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -649,7 +640,7 @@ trainer.run(train_dl, max_epochs=2)
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
@@ -665,7 +656,7 @@ Wall time: 1min 39s
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[11]:</div>
+    <div class="prompt output_prompt">Out[11]:</div>
 
 
 
@@ -688,7 +679,7 @@ Wall time: 1min 39s
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">timer</span><span class="o">.</span><span class="n">total</span><span class="p">,</span> <span class="n">timer</span><span class="o">.</span><span class="n">step_count</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -698,7 +689,7 @@ Wall time: 1min 39s
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[12]:</div>
+    <div class="prompt output_prompt">Out[12]:</div>
 
 
 
@@ -714,8 +705,7 @@ Wall time: 1min 39s
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="skorch">skorch<a class="anchor-link" href="#skorch">&#182;</a></h3><blockquote><p>A scikit-learn compatible neural network library that wraps pytorch.</p>
 <p>The goal of skorch is to make it possible to use PyTorch with sklearn. This is achieved by providing a wrapper around PyTorch that has an sklearn interface. In that sense, skorch is the spiritual successor to nolearn, but instead of using Lasagne and Theano, it uses PyTorch.</p>
@@ -747,8 +737,7 @@ And I want to reuse all my Datasets :)</p>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Just to give you an idea of what the code looks like:</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skorch.net</span> <span class="kn">import</span> <span class="n">NeuralNetClassifier</span>
@@ -762,8 +751,7 @@ And I want to reuse all my Datasets :)</p>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="PyToune">PyToune<a class="anchor-link" href="#PyToune">&#182;</a></h3><blockquote><p>PyToune is a Keras-like framework for PyTorch and handles much of the boilerplating code needed to train neural networks.</p>
 <p>Use PyToune to:</p>
@@ -807,7 +795,7 @@ Here is the code:</p>
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model_</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -817,7 +805,7 @@ Here is the code:</p>
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
@@ -837,8 +825,8 @@ Loading data from data/dogscats/valid.
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pytoune.framework</span> <span class="k">import</span> <span class="n">Model</span>
-<span class="kn">from</span> <span class="nn">pytoune.framework.callbacks</span> <span class="k">import</span> <span class="n">ModelCheckpoint</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pytoune.framework</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">pytoune.framework.callbacks</span> <span class="kn">import</span> <span class="n">ModelCheckpoint</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">model_</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">])</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
@@ -854,7 +842,7 @@ Loading data from data/dogscats/valid.
 <span class="p">)</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -864,16 +852,16 @@ Loading data from data/dogscats/valid.
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">time</span>
-model.fit_generator(
-    train_dl,
-    valid_generator=val_dl,
-    callbacks=[model_checkpoint_cb],
-    epochs=2,
-);
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%time</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit_generator</span><span class="p">(</span>
+    <span class="n">train_dl</span><span class="p">,</span>
+    <span class="n">valid_generator</span><span class="o">=</span><span class="n">val_dl</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">model_checkpoint_cb</span><span class="p">],</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">);</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -883,7 +871,7 @@ model.fit_generator(
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
@@ -897,7 +885,7 @@ Wall time: 57.3 s
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[15]:</div>
+    <div class="prompt output_prompt">Out[15]:</div>
 
 
 
@@ -929,7 +917,7 @@ Wall time: 57.3 s
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">ls</span> <span class="n">pytoune_</span><span class="o">*</span>
 </pre></div>
 
-</div>
+    </div>
 </div>
 </div>
 
@@ -939,7 +927,7 @@ Wall time: 57.3 s
 
 <div class="output_area">
 
-<div class="prompt"></div>
+    <div class="prompt"></div>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
@@ -953,8 +941,7 @@ Wall time: 57.3 s
 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">&#182;</a></h2><p>All libraries look good.</p>
 <ul>
@@ -968,8 +955,7 @@ Wall time: 57.3 s
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><em>Update &lt;2019-02-07&gt;</em>: One of the friendly folks from skorch reached out to me and corrected me:</p>
 <p><em>"One thing to note is that if you have a 'typical' dataset that provides a pair of <code>X</code>, <code>y</code> values then skorch already supports them as input to .fit: <code>net.fit(train_dataset, y=None)</code></em>
