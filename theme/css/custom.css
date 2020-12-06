@@ -1,0 +1,126 @@
+/* @import url("monokai.css"); */
+@import url("pygment.css");
+/* MISC */
+body {
+  font-size: 2.0rem;
+  line-height: 1.4;
+  font-family: 'PT Serif', serif;
+
+}
+.container {
+  max-width: 650px;
+}
+
+a:link, a:visited {
+  text-decoration: none
+}
+a:hover, a:active {
+  text-decoration: underline
+}
+
+footer {
+  padding: 3rem;
+  border-top: 1px solid #eee;
+  font-size: 1.3rem;
+  text-align: center;
+}
+ul{
+  list-style-position: outside;
+}
+li {
+  margin: 0px;
+  margin-left: 2rem;
+}
+blockquote {
+  border-left: 1rem solid #eee;
+  padding-left: 2rem;
+  font-style: italic;
+}
+h1, h2, h3, h4, h5, h6 {
+  color: #444;
+}
+/* NAV */
+.navbar {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+.navbar-link {
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: .15rem;
+  margin-left: 1.2rem;
+  text-decoration: none;
+  /* line-height: 6.3rem; */
+  color: #333;
+}
+/* PUBLICATION */
+.pub-title {
+  font-weight: 600;
+}
+.pub-authors {
+  font-size: 1.4rem;
+  font-style: italic;
+}
+.pub-conf {
+  font-size: 1.4rem;
+}
+.pub-links {
+  font-size: 1.4rem;
+  text-align: center;
+}
+.pub-preview {
+  width:95%;
+  border: 1px solid #eee;
+}
+
+/* ARTICLES */
+
+.article-date {
+  font-size: 1.5rem;
+  color: #222;
+}
+
+
+/* JUPYTER FIXES */
+/* I don't want the `In [1]:`
+ * I don't want the `Out[1]:` */
+.prompt.input_prompt {
+  display: none;
+}
+.prompt.output_prompt {
+  display: none;
+}
+
+.anchor-link {
+  /* The anchor for the headings from jupyter contains a weird char: Â¶.
+   * Workaround: just hide the anchor */
+  display: none;
+}
+
+/* Table styling */
+.output_wrapper {
+  font-size: 1.3rem;
+}
+.output_wrapper table {
+  border: none;
+}
+.output_wrapper tr, th, td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: 1.0;
+  white-space: nowrap;
+  max-width: 100px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  border: none;
+}
+.output_wrapper tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.output_wrapper th {
+  font-weight: 600;
+}
+.output_wrapper thead {
+  border-bottom: 1px solid;
+}
