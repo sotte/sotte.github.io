@@ -176,7 +176,7 @@ Feel free to skip it.</p>
     <span class="n">train_trans</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
         <span class="c1"># some images are too small to only crop --&gt; resize first</span>
         <span class="n">transforms</span><span class="o">.</span><span class="n">Resize</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-        <span class="n">transforms</span><span class="o">.</span><span class="n">ColorJitter</span><span class="p">(</span><span class="o">.</span><span class="mi">3</span><span class="p">,</span> <span class="o">.</span><span class="mi">3</span><span class="p">,</span> <span class="o">.</span><span class="mi">3</span><span class="p">),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">ColorJitter</span><span class="p">(</span><span class="mf">.3</span><span class="p">,</span> <span class="mf">.3</span><span class="p">,</span> <span class="mf">.3</span><span class="p">),</span>
         <span class="n">transforms</span><span class="o">.</span><span class="n">CenterCrop</span><span class="p">(</span><span class="n">IMG_SIZE</span><span class="p">),</span>
         <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
         <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">_mean</span><span class="p">,</span> <span class="n">_std</span><span class="p">),</span>
@@ -1006,8 +1006,8 @@ Wall time: 57.3 s
     <footer>
       <p>
         Created by Stefan Otte |
-        2013 - 2019 |
-        <a href="https://github.com//sotte" target="_blank">github</a> |
+        2013 - 2021 |
+        <a href="https://github.com/sotte" target="_blank">github</a> |
         <a href="https://www.linkedin.com/in/stefan-otte-29367a111/" target="_blank">linkedin</a>
       </p>
     </footer>
