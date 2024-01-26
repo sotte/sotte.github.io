@@ -1,7 +1,7 @@
 ---
 title: Practical PyTorch - Talk at Reinforce Conf
 created_at: 2019-04-01
-created_at: 2024-01-26
+updated_at: 2024-01-26
 author: Stefan Otte
 _template: article.html
 ---
