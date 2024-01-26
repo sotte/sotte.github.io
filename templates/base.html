@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>{{ title }}</title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <link href="{{ SITEURL }}/static/style.css" rel="stylesheet"> -->
+  <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+</head>
+
+<body>
+
+  <header>
+    <nav>
+      <h1>nodata.science</h1>
+      <a href="{{ SITEURL }}/index.html">home</a>
+      <a href="{{ SITEURL }}/blog.html">blog</a>
+      <a href="{{ SITEURL }}/research.html">research</a>
+      <a href="{{ SITEURL }}/uses.html">uses</a>
+    </nav>
+  </header>
+
+  <main>
+    <div id="content">
+{% block content %}
+{% endblock %}
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      Created by Stefan Otte
+        | 2013 - 2024
+        | <a href="https://github.com/sotte/">github</a>
+        | <a href="https://www.linkedin.com/in/stefan-otte-29367a111/">linkedin</a>
+    </p>
+  </footer>
+
+</body>
+
+</html>
