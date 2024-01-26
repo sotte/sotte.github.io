@@ -32,10 +32,12 @@ def main():
 
         post = frontmatter.load(str(f))
         content = post.content
-        metadata = dict(post.metadata)
-        metadata["src"] = str(f)
-        metadata["dst"] = str(dst)
-        metadata["url"] = str(dst.relative_to(OUT_DIR))
+        metadata = {
+            **post.metadata,
+            "src": str(f),
+            "dst": str(dst),
+            "url": str(dst.relative_to(OUT_DIR)),
+        }
         if "/article/" in str(f):
             metadata["is_article"] = True
             validate_blog_metadata(metadata, f)
