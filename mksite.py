@@ -22,7 +22,7 @@ def validate_blog_metadata(metadata: dict, path: Path):
 
 def main():
     jinja_env = Environment(loader=FileSystemLoader("templates"))
-    markdown = mistune.create_markdown(escape=False)
+    markdown = mistune.create_markdown(escape=False, plugins=["strikethrough"])
 
     rprint("# Generating pages from md files...")
     pages = []
