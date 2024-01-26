@@ -2,10 +2,11 @@
 {% block content %}
 
 {% for item in entries %}
-  <p>
+  <div>
     <a href="{{ item.url }}">{{ item.title }}</a>
+    <br>
     {{ item.created_at }}
-  </p>
+  </div>
 {% endfor %}
 
 {% endblock %}
