@@ -3,11 +3,14 @@ title: About me
 page: home
 ---
 
-# Hello, world!
+# Hello, I'm Stefan
 
-Hey, I'm Stefan Otte,
-machine learning engineer,
-data scientist, speaker, and ex-roboticist.
+> I'm a machine learning engineer,<br>
+> data scientist, speaker, and ex-roboticist.
+>
+> This is my personal website.
+
+<section>
 
 ## Short Bio
 
@@ -53,3 +56,5 @@ on the EU project [LarKC](http://www.larkc.eu/).
 I was part of the [FUmanoids](http://www.fumanoids.de)
 robot soccer team for four years
 and together we won many national and international awards/competitions.
+
+</section>

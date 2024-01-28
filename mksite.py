@@ -1,9 +1,10 @@
-from pathlib import Path
 import shutil
+from pathlib import Path
 
 import frontmatter
 import mistune
 from jinja2 import Environment, FileSystemLoader
+from mistune.directives import Admonition, RSTDirective
 from rich import print as rprint
 
 CONTENT_DIR = Path("content")
@@ -23,7 +24,16 @@ def validate_blog_metadata(metadata: dict, path: Path):
 
 def main():
     jinja_env = Environment(loader=FileSystemLoader("templates"))
-    markdown = mistune.create_markdown(escape=False, plugins=["strikethrough"])
+    markdown = mistune.create_markdown(
+        escape=False,
+        plugins=[
+            "strikethrough",
+            "footnotes",
+            "table",
+            "spoiler",
+            RSTDirective([Admonition()]),
+        ],
+    )
 
     rprint("# Copy static files...")
     for src in (CONTENT_DIR / "static").rglob("**/*"):
