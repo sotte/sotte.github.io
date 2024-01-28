@@ -1,4 +1,5 @@
 from pathlib import Path
+import shutil
 
 import frontmatter
 import mistune
@@ -23,6 +24,16 @@ def validate_blog_metadata(metadata: dict, path: Path):
 def main():
     jinja_env = Environment(loader=FileSystemLoader("templates"))
     markdown = mistune.create_markdown(escape=False, plugins=["strikethrough"])
+
+    rprint("# Copy static files...")
+    for src in (CONTENT_DIR / "static").rglob("**/*"):
+        dst = OUT_DIR / src.relative_to(CONTENT_DIR)
+        rprint(f" - '{src}' -> '{dst}'")
+        if dst.exists() and dst.stat().st_mtime > src.stat().st_mtime:
+            rprint(f"   - Skipping '{src}'")
+            continue
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(src, dst)
 
     rprint("# Generating pages from md files...")
     pages = []
