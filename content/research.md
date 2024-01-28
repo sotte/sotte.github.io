@@ -23,7 +23,26 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
 
 ## <a name="publications"></a>Publications
 
-TODO
+<div class="paper">
+  <a name="baisero2017identification"></a>
+  <aside>
+    <img src="/static/pdfs/baisero2017identification.png" />
+  </aside>
+  <div class="paper-title">
+    Identification of Unmodeled Objects from Symbolic Descriptions
+    <a href="#baisero2017identification">¶</a>
+  </div>
+  <div class="paper-author">
+    Baisero, Otte, Englert, Toussaint.
+  </div>
+  <div class="paper-rest">
+    arXiv:1701.06450, 2017
+  </div>
+  <div class="paper-links">
+    <a href="/static/pdfs/baisero2017identification.pdf">pdf</a> |
+    <a href="">bibtex</a>
+  </div>
+<div>
 
 ## <a name="supervised"></a>Supervised Theses
 

@@ -9,11 +9,7 @@ _template: article.html
 I gave a talk "Fun with Content-based Image Retrieval with Neural Network" at
 the
 [PyData Berlin Meetup](https://www.meetup.com/PyData-Berlin/events/255903846/).
-Here are the [slides as pdf](images/CBIR-talk.pdf).
-
-<a href="images/CBIR-talk.pdf">
-  <img src="images/CBIR-talk.png" style="width: 100%;  height: auto;">
-</a>
+Here are the [slides as pdf](/static/images/CBIR-talk.pdf).
 
 Thanks again to the PyData Berlin folks for organizing the event and thanks to
 all the people who attended the event.

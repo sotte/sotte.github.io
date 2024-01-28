@@ -45,6 +45,8 @@ def main():
 
     rprint("# Copy static files...")
     for src in (CONTENT_DIR / "static").rglob("**/*"):
+        if src.is_dir():
+            continue
         dst = OUT_DIR / src.relative_to(CONTENT_DIR)
         rprint(f" - '{src}' -> '{dst}'")
         if dst.exists() and dst.stat().st_mtime > src.stat().st_mtime:
