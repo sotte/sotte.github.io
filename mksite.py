@@ -36,7 +36,7 @@ def main():
         shutil.copy(src, dst)
 
     rprint("# Generating pages from md files...")
-    pages = []
+    all_pages = []
     for f in CONTENT_DIR.glob("**/*.md"):
         dst = OUT_DIR / f.relative_to(CONTENT_DIR).with_suffix(".html")
         rprint(f" - '{f}' -> '{dst}'")
@@ -54,7 +54,7 @@ def main():
             metadata["page"] = "blog"
             validate_blog_metadata(metadata, f)
 
-        pages.append(metadata)
+        all_pages.append(metadata)
 
         raw_html = markdown(content)
         template = jinja_env.get_template(metadata.get("_template", "page.html"))
@@ -64,13 +64,13 @@ def main():
         dst.write_text(html)
 
     rprint("# Generating blog overview page...")
-    article_metadata_list = sorted(
-        [e for e in pages if "/article/" in str(e)],
+    blog_article_metadata_list = sorted(
+        [e for e in all_pages if "/article/" in str(e)],
         key=lambda e: e["created_at"],
         reverse=True,
     )
     blog_template = jinja_env.get_template("blog.html")
-    html = blog_template.render(entries=article_metadata_list, page="blog")
+    html = blog_template.render(entries=blog_article_metadata_list, page="blog")
     dst = OUT_DIR / "blog.html"
     dst.parent.mkdir(exist_ok=True)
     dst.write_text(html)
