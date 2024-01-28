@@ -91,6 +91,14 @@ venv = ".venv"
 # the order matters
 [tool.poe.tasks]
 
+[tool.poe.tasks.devserver]
+help = "Run http server for development"
+cmd = "python -m http.server --directory out/"
+
+[tool.poe.tasks.devgen]
+help = "Generate the site on file changes"
+shell = "fd . | entr python mksite.py"
+
 [tool.poe.tasks.chores]
 help = "Run all chores on the code base"
 sequence = ["lint", "format", "types", "test"]
@@ -125,4 +133,5 @@ cmd = """
   ./nodata_science/**/__pycache__
   dist
   htmlcov
+  out/
   """
