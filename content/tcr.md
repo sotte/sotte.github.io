@@ -1,6 +1,6 @@
 ---
 title: The Curious Robot
-page: research
+_nav_page: research
 ---
 
 # The Curious Robot

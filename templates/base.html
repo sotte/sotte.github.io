@@ -15,9 +15,9 @@
   <header>
     <nav>
       <h1>nodata.science</h1>
-      <a {% if page == "home" %}class="current"{% endif %} href="{{ SITEURL }}/index.html">Home</a>
-      <a {% if page == "blog" %}class="current"{% endif %} href="{{ SITEURL }}/blog.html">Blog</a>
-      <a {% if page == "research" %}class="current"{% endif %} href="{{ SITEURL }}/research.html">Research</a>
+      <a {% if _nav_page == "home" %}class="current"{% endif %} href="{{ SITEURL }}/index.html">Home</a>
+      <a {% if _nav_page == "blog" %}class="current"{% endif %} href="{{ SITEURL }}/blog.html">Blog</a>
+      <a {% if _nav_page == "research" %}class="current"{% endif %} href="{{ SITEURL }}/research.html">Research</a>
       <!-- <a {% if page == "uses" %}class="current"{% endif %} href="{{ SITEURL }}/uses.html">Uses</a> -->
       <!-- <a {% if page == "rss" %}class="current"{% endif %} href="{{ SITEURL }}/rss.html">RSS</a> -->
     </nav>

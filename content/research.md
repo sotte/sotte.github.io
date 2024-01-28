@@ -1,6 +1,6 @@
 ---
 title: Research
-page: research
+_nav_page: research
 ---
 
 # Research

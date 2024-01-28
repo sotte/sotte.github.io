@@ -1,3 +1,11 @@
+"""A very simple static site generator.
+
+metadat with special meaning:
+
+- `_template`: the filename of the template under `templates/` to use to render the given md file
+- `_nav_page`: the name of the nav element to highlight
+"""
+
 import shutil
 from pathlib import Path
 
@@ -61,7 +69,7 @@ def main():
         }
         if "/article/" in str(f):
             metadata["is_article"] = True
-            metadata["page"] = "blog"
+            metadata["_nav_page"] = "blog"
             validate_blog_metadata(metadata, f)
 
         all_pages.append(metadata)
@@ -80,7 +88,7 @@ def main():
         reverse=True,
     )
     blog_template = jinja_env.get_template("blog.html")
-    html = blog_template.render(entries=blog_article_metadata_list, page="blog")
+    html = blog_template.render(entries=blog_article_metadata_list, _nav_page="blog")
     dst = OUT_DIR / "blog.html"
     dst.parent.mkdir(exist_ok=True)
     dst.write_text(html)

@@ -1,6 +1,6 @@
 ---
 title: About me
-page: home
+_nav_page: home
 ---
 
 # Hello, I'm Stefan

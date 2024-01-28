@@ -1,5 +1,5 @@
 ---
-page: uses
+_nav_page: uses
 ---
 
 # Uses
