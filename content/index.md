@@ -1,6 +1,8 @@
 ---
-title: about me
+title: About me
+page: home
 ---
+
 # Hello, world!
 
 Hey, I'm Stefan Otte,

@@ -1,3 +1,8 @@
+---
+title: The Curious Robot
+page: research
+---
+
 # The Curious Robot
 
 **The Curious Robot** (TCR) is about the challenge of gaining controllability

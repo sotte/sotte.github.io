@@ -1,3 +1,7 @@
+---
+page: uses
+---
+
 # Uses
 
 TODO
