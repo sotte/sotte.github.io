@@ -39,6 +39,7 @@ def main():
             "footnotes",
             "table",
             "spoiler",
+            "url",
             RSTDirective([Admonition()]),
         ],
     )
