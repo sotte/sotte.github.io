@@ -8,25 +8,21 @@ _nav_page: research
 Between 2013 and 2015 I was a PhD student / researcher at the
 [Machine Learning and Robotics lab](http://www.ipvs.uni-stuttgart.de/abteilungen/mlr/) (MLR)
 at  the [University Stuttgart, Germany](http://www.uni-stuttgart.de).
-My supervisor was [Prof. Marc Toussaint](http://userpage.fu-berlin.de/~mtoussai/).
-I'm interested in all things robotics and machine learning, especially in:
+My supervisor was [Prof. Marc Toussaint](https://www.user.tu-berlin.de/mtoussai/).
 
-* active learning,
-* belief representations of complex environments,
-* exploration and exploitation in complex worlds,
-* complex robotic systems (the PR2),
-* manipulation of the world,
-* and more ...
+I worked on combining machine learning and robotics to enable robots to explore and learn the world efficiently.
 
 [The Curious Robot](tcr.html) is a poster that I presented at the [Machine Learning
 Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.html).
 
 ## <a name="publications"></a>Publications
 
-<div class="paper">
+<section>
   <a name="baisero2017identification"></a>
   <aside>
-    <img src="/static/pdfs/baisero2017identification.png" />
+    <a href="/static/pdfs/baisero2017identification.pdf">
+      <img src="/static/pdfs/baisero2017identification.png" />
+    </a>
   </aside>
   <div class="paper-title">
     Identification of Unmodeled Objects from Symbolic Descriptions
@@ -39,10 +35,187 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
     arXiv:1701.06450, 2017
   </div>
   <div class="paper-links">
-    <a href="/static/pdfs/baisero2017identification.pdf">pdf</a> |
-    <a href="">bibtex</a>
+    <a href="/static/pdfs/baisero2017identification.pdf">pdf</a>
   </div>
-<div>
+</section>
+
+
+<section>
+  <a name="dummy"></a>
+  <aside>
+    <a href="/static/pdfs/kulick2015robots.pdf">
+      <img src="/static/pdfs/kulick2015robots.png" />
+    </a>
+  </aside>
+  <div class="paper-title">
+    Robots Solving Serial Means-Means-End Problems
+    <a href="#kulick2015robots">¶</a>
+  </div>
+  <div class="paper-author">
+    Kulick, Otte, Toussaint.
+  </div>
+  <div class="paper-rest">
+    In Proc. of Combining AI Reasoning and Cognitive Science with Robotics Workshop at Robotics: Science and Systems, 2015 
+  </div>
+  <div class="paper-links">
+    <a href="/static/pdfs/kulick2015robots.pdf">pdf</a>
+  </div>
+</section>
+
+<section>
+  <a name="kulick2015active"></a>
+  <aside>
+    <a href="/static/pdfs/kulick2015active.pdf">
+      <img src="/static/pdfs/kulick2015active.png" />
+    </a>
+  </aside>
+  <div class="paper-title">
+    Active Exploration of Joint Dependency Structures
+    <a href="#dummy">¶</a>
+  </div>
+  <div class="paper-author">
+    Kulick, Otte, Toussaint.
+  </div>
+  <div class="paper-rest">
+    Proc. of the IEEE Int. Conf. on Robotics & Automation (ICRA 2015), 2015
+  </div>
+  <div class="paper-links">
+    <a href="/static/pdfs/kulick2015active.pdf">pdf</a>
+  </div>
+</section>
+
+<section>
+  <a name="otte2014entropy"></a>
+  <aside>
+    <a href="/static/pdfs/otte2014entropy.pdf">
+      <img src="/static/pdfs/otte2014entropy.png" />
+    </a>
+  </aside>
+  <div class="paper-title">
+    Entropy Based Strategies for Physical Exploration of the Environment's Degrees of Freedom
+    <a href="#otte2014entropy">¶</a>
+  </div>
+  <div class="paper-author">
+    Otte, Kulick, Toussaint, Brock.
+  </div>
+  <div class="paper-rest">
+    Proc. of the Int. Conf. on Intelligent Robots and Systems (IROS 2014), 2014
+  </div>
+  <div class="paper-links">
+    <a href="/static/pdfs/otte2014entropy.pdf">pdf</a>
+  </div>
+</section>
+
+<section>
+  <a name="Otte2012Master"></a>
+  <aside>
+    <a href="/static/pdfs/Otte2012Master.pdf">
+      <img src="/static/pdfs/Otte2012Master.png" />
+    </a>
+  </aside>
+  <div class="paper-title">
+    Where am I? What is going on? - World Modelling using Multi-Hypothesis Kalman Filters for Humanoid Soccer Robots
+    <a href="#Otte2012Master">¶</a>
+  </div>
+  <div class="paper-author">
+    Otte.
+  </div>
+  <div class="paper-rest">
+    Free University Berlin, Germany, Master's Thesis, 2012 
+  </div>
+  <div class="paper-links">
+    <a href="/static/pdfs/Otte2012Master.pdf">pdf</a>
+  </div>
+</section>
+
+<section>
+  <a name="FumanoidsTDP2012"></a>
+  <aside>
+    <a href="/static/pdfs/FumanoidsTDP2012.pdf">
+      <img src="/static/pdfs/FumanoidsTDP2012.png" />
+    </a>
+  </aside>
+  <div class="paper-title">
+    Berlin United – FUmanoids Team Description Paper 2012
+    <a href="#FumanoidsTDP2012">¶</a>
+  </div>
+  <div class="paper-author">
+    Seifert, Otte, Kulick, Schmude, Dohrmann, Heinrich, Moballegh, Mielke, Freitag, Hohberg, Auer, Losch, Rojas.
+  </div>
+  <div class="paper-rest">
+    RoboCup 2012: Robot Soccer World Cup XVI Preproceedings, 2012
+  </div>
+  <div class="paper-links">
+    <a href="/static/pdfs/FumanoidsTDP2012.pdf">pdf</a>
+  </div>
+</section>
+
+<section>
+  <a name="FumanoidsTDP2011"></a>
+  <aside>
+    <a href="/static/pdfs/FumanoidsTDP2011.pdf">
+      <img src="/static/pdfs/FumanoidsTDP2011.png" />
+    </a>
+  </aside>
+  <div class="paper-title">
+    FUmanoids Team Description Paper 2011
+    <a href="#FumanoidsTDP2011">¶</a>
+  </div>
+  <div class="paper-author">
+Seifert, Moballegh, Heinrich, Otte, Mielke, Schmude, Weißgerber, Würfel, Jonschkowski, Kulick, Fröhlich, Streckenbach, Lubitz, Geyso, Schubert, Yao, Puhlmann, Salvador, Freitag, Rojas.
+  </div>
+  <div class="paper-rest">
+    RoboCup 2011: Robot Soccer World Cup XV Preproceedings, 2011 
+  </div>
+  <div class="paper-links">
+    <a href="/static/pdfs/FumanoidsTDP2011.pdf">pdf</a>
+  </div>
+</section>
+
+<section>
+  <a name="FumanoidsTDP2010"></a>
+  <aside>
+    <a href="/static/pdfs/FumanoidsTDP2010.pdf">
+      <img src="/static/pdfs/FumanoidsTDP2010.png" />
+    </a>
+  </aside>
+  <div class="paper-title">
+    FUmanoid Team Description Paper 2010
+    <a href="#FumanoidsTDP2010">¶</a>
+  </div>
+  <div class="paper-author">
+Moballegh, Fischer, Heinrich, Hohl, Lange, Langner, Mielke, Otte, Rojas, Schmude, Seifert, Steig, Weissgerber.
+  </div>
+  <div class="paper-rest">
+    RoboCup 2010: Robot Soccer World Cup XIV Preproceedings, 2010 
+  </div>
+  <div class="paper-links">
+    <a href="/static/pdfs/FumanoidsTDP2010.pdf">pdf</a>
+  </div>
+</section>
+
+<section>
+  <a name="FumanoidsTDP2009"></a>
+  <aside>
+    <a href="/static/pdfs/FumanoidsTDP2009.pdf">
+      <img src="/static/pdfs/FumanoidsTDP2009.png" />
+    </a>
+  </aside>
+  <div class="paper-title">
+    FUmanoid Team Description Paper 2009
+    <a href="#FumanoidsTDP2009">¶</a>
+  </div>
+  <div class="paper-author">
+Moballegh, Hohl, Landgraf, Fischer, Langner, Fassbender, Otte, Stoll, Tuchscherer, Steig, Heinrich, Mielke, Seifert, Kukulski, Kahlert, Rojas.
+  </div>
+  <div class="paper-rest">
+    RoboCup 2009: Robot Soccer World Cup XIII Preproceedings, 2009 
+  </div>
+  <div class="paper-links">
+    <a href="/static/pdfs/FumanoidsTDP2009.pdf">pdf</a>
+  </div>
+</section>
+
 
 ## <a name="supervised"></a>Supervised Theses
 
@@ -69,9 +242,9 @@ Stuttgart.
 Here is a list of the courses:
 
 * [WS 2015 - Introduction to Robotics](https://ipvs.informatik.uni-stuttgart.de/mlr/teaching/robotics/)
-* [WS 2015 - Introduction to AI](https://ipvs.informatik.uni-stuttgart.de/mlr/marc/teaching/15-ArtificialIntelligence/) - [python primer](https://github.com/sotte/ai_class_python_intro)
+* [WS 2015 - Introduction to AI](https://ipvs.informatik.uni-stuttgart.de/mlr/marc/teaching/15-ArtificialIntelligence/) / [python primer](https://github.com/sotte/ai_class_python_intro)
 * SS 2015 - Fachstudie: Perception for Robotics
-* [WS 2015 - Introduction to AI](https://ipvs.informatik.uni-stuttgart.de/mlr/marc/teaching/14-ArtificialIntelligence/) - [python primer](https://github.com/sotte/ai_class_python_intro)
+* [WS 2015 - Introduction to AI](https://ipvs.informatik.uni-stuttgart.de/mlr/marc/teaching/14-ArtificialIntelligence/) / [python primer](https://github.com/sotte/ai_class_python_intro)
 * [WS 2014 - StuPro: MailBot](http://www.ipvs.uni-stuttgart.de/abteilungen/mlr/lehre/lehrveranstaltungen/ss14/Studienprojekt_Mailbot.html)
 * [WS 2014 - MLR Colloquium](http://ipvs.informatik.uni-stuttgart.de/mlr/colloquia/)
 * [SS 2014 - Machine Learning](http://ipvs.informatik.uni-stuttgart.de/mlr/marc/teaching/14-MachineLearning/)
