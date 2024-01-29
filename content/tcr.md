@@ -11,8 +11,8 @@ environment and building a model of the world with the affordances of the
 objects in the world.
 
 <div>
-  <img src="../images/tcr/livingroom.jpg" style="width:49%;" alt="Real world">
-  <img src="../images/tcr/world.png" style="width:49%;" alt="Simulated world">
+  <img src="/static/images/tcr/livingroom.jpg" style="width:49%;" alt="Real world">
+  <img src="/static/images/tcr/world.png" style="width:49%;" alt="Simulated world">
 </div>
 
 ## The Method
@@ -46,13 +46,13 @@ drawers, handles, toys, blocks, (light) switches, pens, etc.).
 Here, you can see how the belief of the robot is iteratively updated.
 
 <div>
-  <img src="../images/tcr/belief1.png" style="width:32%;" alt="belief 1">
-  <img src="../images/tcr/belief4.png" style="width:32%;" alt="belief 4">
-  <img src="../images/tcr/belief5.png" style="width:32%;" alt="belief 5">
+  <img src="/static/images/tcr/belief1.png" style="width:32%;" alt="belief 1">
+  <img src="/static/images/tcr/belief4.png" style="width:32%;" alt="belief 4">
+  <img src="/static/images/tcr/belief5.png" style="width:32%;" alt="belief 5">
 
-  <img src="../images/tcr/belief7.png" style="width:32%;" alt="belief 7">
-  <img src="../images/tcr/belief8.png" style="width:32%;" alt="belief 8">
-  <img src="../images/tcr/belief10.png" style="width:32%;" alt="belief 10">
+  <img src="/static/images/tcr/belief7.png" style="width:32%;" alt="belief 7">
+  <img src="/static/images/tcr/belief8.png" style="width:32%;" alt="belief 8">
+  <img src="/static/images/tcr/belief10.png" style="width:32%;" alt="belief 10">
 </div>
 
 ## Poster
@@ -62,6 +62,6 @@ presented at the
 [Machine Learning Summer School 2013](http://mlss.tuebingen.mpg.de/)
 (MLSS 2013) in Tübingen, Germany.
 
-<a href="../pdfs/stefan_otte-tcr.pdf">
-  <img src="../images/tcr/poster_thumbnail.png"/>
+<a href="/static/pdfs/stefan_otte-tcr.pdf">
+  <img src="/static/images/tcr/poster_thumbnail.png"/>
 </a>

@@ -12,6 +12,11 @@ My supervisor was [Prof. Marc Toussaint](https://www.user.tu-berlin.de/mtoussai/
 
 I worked on combining machine learning and robotics to enable robots to explore and learn the world efficiently.
 
+<figure>
+  <img alt="This is a black swan" src="/static/images/tcr/livingroom.jpg" />
+  <figcaption>The PR2 robot.</figcaption>
+</figure>
+
 [The Curious Robot](tcr.html) is a poster that I presented at the [Machine Learning
 Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.html).
 
