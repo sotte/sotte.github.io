@@ -20,9 +20,10 @@ I worked on combining machine learning and robotics to enable robots to explore 
 [The Curious Robot](tcr.html) is a poster that I presented at the [Machine Learning
 Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.html).
 
+---
+
 ## <a name="publications"></a>Publications
 
-<section>
   <a name="baisero2017identification"></a>
   <aside>
     <a href="/static/pdfs/baisero2017identification.pdf">
@@ -42,11 +43,8 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
   <div class="paper-links">
     <a href="/static/pdfs/baisero2017identification.pdf">pdf</a>
   </div>
-</section>
-
-
-<section>
-  <a name="dummy"></a>
+  <div style="clear: both;"></div>
+  <a name="kulick2015robots"></a>
   <aside>
     <a href="/static/pdfs/kulick2015robots.pdf">
       <img src="/static/pdfs/kulick2015robots.png" />
@@ -65,9 +63,7 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
   <div class="paper-links">
     <a href="/static/pdfs/kulick2015robots.pdf">pdf</a>
   </div>
-</section>
-
-<section>
+  <div style="clear: both;"></div>
   <a name="kulick2015active"></a>
   <aside>
     <a href="/static/pdfs/kulick2015active.pdf">
@@ -87,9 +83,7 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
   <div class="paper-links">
     <a href="/static/pdfs/kulick2015active.pdf">pdf</a>
   </div>
-</section>
-
-<section>
+  <div style="clear: both;"></div>
   <a name="otte2014entropy"></a>
   <aside>
     <a href="/static/pdfs/otte2014entropy.pdf">
@@ -109,9 +103,7 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
   <div class="paper-links">
     <a href="/static/pdfs/otte2014entropy.pdf">pdf</a>
   </div>
-</section>
-
-<section>
+  <div style="clear: both;"></div>
   <a name="Otte2012Master"></a>
   <aside>
     <a href="/static/pdfs/Otte2012Master.pdf">
@@ -131,9 +123,7 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
   <div class="paper-links">
     <a href="/static/pdfs/Otte2012Master.pdf">pdf</a>
   </div>
-</section>
-
-<section>
+  <div style="clear: both;"></div>
   <a name="FumanoidsTDP2012"></a>
   <aside>
     <a href="/static/pdfs/FumanoidsTDP2012.pdf">
@@ -153,9 +143,7 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
   <div class="paper-links">
     <a href="/static/pdfs/FumanoidsTDP2012.pdf">pdf</a>
   </div>
-</section>
-
-<section>
+  <div style="clear: both;"></div>
   <a name="FumanoidsTDP2011"></a>
   <aside>
     <a href="/static/pdfs/FumanoidsTDP2011.pdf">
@@ -167,7 +155,7 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
     <a href="#FumanoidsTDP2011">¶</a>
   </div>
   <div class="paper-author">
-Seifert, Moballegh, Heinrich, Otte, Mielke, Schmude, Weißgerber, Würfel, Jonschkowski, Kulick, Fröhlich, Streckenbach, Lubitz, Geyso, Schubert, Yao, Puhlmann, Salvador, Freitag, Rojas.
+  Seifert, Moballegh, Heinrich, Otte, Mielke, Schmude, Weißgerber, Würfel, Jonschkowski, Kulick, Fröhlich, Streckenbach, Lubitz, Geyso, Schubert, Yao, Puhlmann, Salvador, Freitag, Rojas.
   </div>
   <div class="paper-rest">
     RoboCup 2011: Robot Soccer World Cup XV Preproceedings, 2011 
@@ -175,9 +163,7 @@ Seifert, Moballegh, Heinrich, Otte, Mielke, Schmude, Weißgerber, Würfel, Jonsc
   <div class="paper-links">
     <a href="/static/pdfs/FumanoidsTDP2011.pdf">pdf</a>
   </div>
-</section>
-
-<section>
+  <div style="clear: both;"></div>
   <a name="FumanoidsTDP2010"></a>
   <aside>
     <a href="/static/pdfs/FumanoidsTDP2010.pdf">
@@ -189,7 +175,7 @@ Seifert, Moballegh, Heinrich, Otte, Mielke, Schmude, Weißgerber, Würfel, Jonsc
     <a href="#FumanoidsTDP2010">¶</a>
   </div>
   <div class="paper-author">
-Moballegh, Fischer, Heinrich, Hohl, Lange, Langner, Mielke, Otte, Rojas, Schmude, Seifert, Steig, Weissgerber.
+  Moballegh, Fischer, Heinrich, Hohl, Lange, Langner, Mielke, Otte, Rojas, Schmude, Seifert, Steig, Weissgerber.
   </div>
   <div class="paper-rest">
     RoboCup 2010: Robot Soccer World Cup XIV Preproceedings, 2010 
@@ -197,9 +183,7 @@ Moballegh, Fischer, Heinrich, Hohl, Lange, Langner, Mielke, Otte, Rojas, Schmude
   <div class="paper-links">
     <a href="/static/pdfs/FumanoidsTDP2010.pdf">pdf</a>
   </div>
-</section>
-
-<section>
+  <div style="clear: both;"></div>
   <a name="FumanoidsTDP2009"></a>
   <aside>
     <a href="/static/pdfs/FumanoidsTDP2009.pdf">
@@ -219,8 +203,8 @@ Moballegh, Hohl, Landgraf, Fischer, Langner, Fassbender, Otte, Stoll, Tuchschere
   <div class="paper-links">
     <a href="/static/pdfs/FumanoidsTDP2009.pdf">pdf</a>
   </div>
-</section>
 
+---
 
 ## <a name="supervised"></a>Supervised Theses
 
@@ -240,6 +224,8 @@ During my time as researcher, I supervised/was involved in the following theses 
 - P. Suhm: *Vision and slam on a highly dynamic mobile two-wheeled robot*. BSc Thesis, University of Stuttgart, 2013.
 - M. Dreher: *Two-wheeled racer*. Diplomarbeit, University of Stuttgart, 2013.
 - P. Niethammer: *Motion Designer: Ein interaktives Tool zum Entwerfen von Bewegungen*. BSc Thesis, University of Stuttgart, 2013.
+
+---
 
 ## <a name="teaching"></a>Teaching
 I did some teaching during my time as a research assistant at the University of
