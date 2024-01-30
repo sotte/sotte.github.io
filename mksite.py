@@ -1,9 +1,11 @@
 """A very simple static site generator.
 
-metadat with special meaning:
+metadata with special meaning:
 
 - `_template`: the filename of the template under `templates/` to use to render the given md file
 - `_nav_page`: the name of the nav element to highlight
+
+Code rendered with pygments.
 """
 
 import shutil
@@ -13,11 +15,24 @@ import frontmatter
 import mistune
 from jinja2 import Environment, FileSystemLoader
 from mistune.directives import Admonition, RSTDirective
+from pygments import highlight
+from pygments.formatters import html
+from pygments.lexers import get_lexer_by_name
 from rich import print as rprint
+
 
 CONTENT_DIR = Path("content")
 OUT_DIR = Path("out")
 TITLE = "nodata.science"
+
+
+class _CodeRenderer(mistune.HTMLRenderer):
+    def block_code(self, code, info=None):
+        if info:
+            lexer = get_lexer_by_name(info, stripall=True)
+            formatter = html.HtmlFormatter()
+            return highlight(code, lexer, formatter)
+        return "<pre><code>" + mistune.escape(code) + "</code></pre>"
 
 
 def validate_blog_metadata(metadata: dict, path: Path):
@@ -42,6 +57,7 @@ def main():
             "url",
             RSTDirective([Admonition()]),
         ],
+        renderer=_CodeRenderer(),
     )
 
     rprint("# Copy static files...")
@@ -73,6 +89,7 @@ def main():
         if "/article/" in str(f):
             metadata["is_article"] = True
             metadata["_nav_page"] = "blog"
+            metadata["_template"] = "article.html"
             validate_blog_metadata(metadata, f)
 
         all_pages.append(metadata)
