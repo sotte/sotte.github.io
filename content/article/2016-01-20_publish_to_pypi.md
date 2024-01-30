@@ -3,12 +3,13 @@ title: Note to self - How to publish packages on PyPI
 created_at: 2016-01-20
 updated_at: 2024-01-26
 author: Stefan Otte
-_template: article.html
 ---
 
+<p class="notice">
 Update 2024: The information in this article is out of date.
-Just use [poetry](https://python-poetry.org/) (or other modern tools).
+Just use <a href="https://python-poetry.org/">poetry</a> (or other modern tools).
 That being said, it's quite interesting to see how the python packaging system has evolved over time.
+</p>
 
 One of the least favorite things about python is package and release management.
 Even though it's getting better, there is still room for improvement.

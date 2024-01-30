@@ -3,7 +3,6 @@ title: HyTorch - A lisp flavoured PyTorch
 created_at: 2018-11-25
 updated_at: 2024-01-26
 author: Stefan Otte
-_template: article.html
 ---
 
 Clearly, this post falls into the category: "don't try this at home",

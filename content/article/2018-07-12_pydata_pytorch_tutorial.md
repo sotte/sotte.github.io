@@ -2,7 +2,6 @@
 title: PyData PyTorch Tutorial
 created_at: 2018-07-12
 author: Stefan Otte
-_template: article.html
 ---
 
 

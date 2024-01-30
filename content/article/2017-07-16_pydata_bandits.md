@@ -2,7 +2,6 @@
 title: PyData Talk 2017 - On Bandits and Swipes - Gamification of Search
 author: Stefan Otte
 created_at: 2017-07-16
-_template: article.html
 ---
 
 This is a slightly edited version of the talk I gave at the PyData Berlin 2017.

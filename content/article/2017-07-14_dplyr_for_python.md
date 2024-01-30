@@ -3,7 +3,6 @@ title: dplyr enlightenment with pandas
 created_at: 2017-07-14
 updated_at: 2024-01-29
 author: 2017-07-14
-_template: article.html
 ---
 
 <p class="notice">
