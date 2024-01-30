@@ -27,6 +27,9 @@ TITLE = "nodata.science"
 
 
 class _CodeRenderer(mistune.HTMLRenderer):
+    """Add to the mistune.create_markdown() as `renderer` and include a css with syntax hl."""
+
+    # FIXME: this breaks some formatting, e.g. publications and "notice" elements.
     def block_code(self, code, info=None):
         if info:
             lexer = get_lexer_by_name(info, stripall=True)
@@ -57,7 +60,7 @@ def main():
             "url",
             RSTDirective([Admonition()]),
         ],
-        renderer=_CodeRenderer(),
+        # renderer=_CodeRenderer(),
     )
 
     rprint("# Copy static files...")
