@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 
+<h1>Blog</h1>
+
 {% for item in entries %}
   <p>
     <a href="{{ item.url }}">{{ item.title }}</a>

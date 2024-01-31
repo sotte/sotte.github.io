@@ -97,7 +97,7 @@ cmd = "python -m http.server --directory out/"
 
 [tool.poe.tasks.devgen]
 help = "Generate the site on file changes"
-shell = "fd . | entr python mksite.py"
+shell = "fd . ./content/ ./templates/ | entr python mksite.py"
 
 [tool.poe.tasks.chores]
 help = "Run all chores on the code base"

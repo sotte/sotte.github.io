@@ -5,56 +5,51 @@ _nav_page: home
 
 # Hello, I'm Stefan
 
-> I'm a machine learning engineer,<br>
-> data scientist, speaker, and ex-roboticist.
->
-> This is my personal website.
+<div style="float:right; margin: 0 0 2em 2em;">
+  <img src="/static/images/robot.png" width="200">
+</div>
 
-<section>
+I'm a **machine learning engineer**,
+data scientist, speaker, and ex-roboticist
+working in Berlin, Germany.
+I worked as freelancer, at consultancies, and at startups,
+always solving problems with and around machine learning.
 
-## Short Bio
+My latest position was **head of machine learning** at
+[paretos](https://paretos.com/),
+where I lead the team
+and built ML products in the areas of supply chain and advertisement
+with the focus on time series forecasting.
 
-*Head of Machine Learning* at [paretos](https://paretos.com/),
-building ML products in the areas of supply chain and advertisement.
-Working on time series forecasting, churn prediction, operations research, and more.
-Automating ML pipelines and workflows.
+Feel free to contact me (stefan dot otte at gmail dot com),
+read some of my [blog posts](/blog.html),
+or check out [github](https://github.com/sotte).
 
-*Freelance Machine Learning Engineer, Data Scientist, and Consultant*
-realizing machine learning, reinforcement learning, and data science projects
-for customers in different industries.
-Teaching ML workshops.
-Focus on deep learning, computer vision and MLOps.
+<div style="clear: both;"></div>
 
-*Head of Machine Learning* at [JustWatch](https://justwatch.com/),
-working on recommendation, personalization, discovery, and entity resolution.
+## Tech and Tools
 
-*Chief Data Scientist* at [RoomAR](https://www.roomar.de/),
-working on content-based image retrieval, visual recommendation, computer vision, deep learning, and data science infrastructure.
+I use the following technologies and tools:
 
-*Data Scientist* at [The unbelievable Machine Company](https://www.unbelievable-machine.com/),
-consulting and realization of *agile data science projects* for customers in different industries.
-Responsible for the full pipeline: from the idea, scoping, planning, to the implementation of the MVP.
-Working with structured and unstructured data (text and images).
+<p class="notice">
+  <img src="/static/images/techstack/pytorch.png" height="60px" alt="PyTorch" />
+  <img src="/static/images/techstack/python.png" height="60px" alt="python" />
+  <img src="/static/images/techstack/sklearn.png" height="60px" alt="scikit-learn" />
+  <img src="/static/images/techstack/keras.png" height="60px" alt="keras" />
+  <img src="/static/images/techstack/tensorflow.png" width="60px" alt="tensorflow" />
+  <img src="/static/images/techstack/flask.png" height="60px" alt="flask" />
+  <img src="/static/images/techstack/docker.png" width="60px" alt="docker" />
+  <img src="/static/images/techstack/kubernetes.png" width="60px" alt="kubernetes" />
+  <img src="/static/images/techstack/git.png" width="60px" alt="git" />
+  <img src="/static/images/techstack/dbt.png" width="60px" alt="dbt" />
+  <img src="/static/images/techstack/dagster.png" width="60px" alt="dagster" />
+  <img src="/static/images/techstack/rust.png" width="60px" alt="rust" />
+  <img src="/static/images/techstack/nvim.png" width="60px" alt="nvim" />
+</p>
 
-*Head of Technology* at [Karosso](http://www.karosso.de),
-doing data science in python and developing a real time bidding engine in Elixir/OTP.
+But I'm pretty pragmatic when it comes to tech, tools, and methods.
+I also use
+darts, polars, pandas, XGBoost, LightGBM, pandera, Dask, Spark, Luigi, Airflow, MLflow,
+Elixir/Erlang/OTP, C++, Scala, Clojure, Make, AWS, GCP, SQL, snowflake, BigQuery, RabbitMQ, ...
 
-*Research scientist* at the [Machine Learning and Robotics Lab](http://www.ipvs.uni-stuttgart.de/abteilungen/mlr/) (MLR)
-at the [University Stuttgart, Germany](http://www.uni-stuttgart.de),
-applying machine learning methods in the fields of robotics.
-More specifically, I applied *active learning methods* to enable robots to
-detect degrees of freedom by manipulating their environments.
-My supervisor was [Prof. Marc Toussaint](http://userpage.fu-berlin.de/~mtoussai/).
-
-*Programmer* at the *Max Planck Institute for Human Development*
-in the Department for Adaptive Behavior and Cognition
-on the EU project [LarKC](http://www.larkc.eu/).
-
-*Computer Science student* (Bachelor and Master) at the
-*Freie Universität Berlin* specializing in
-*Artificial Intelligence and Robotics*.
-I was part of the [FUmanoids](http://www.fumanoids.de)
-robot soccer team for four years
-and together we won many national and international awards/competitions.
-
-</section>
+And I'm always eager to learn new things.
