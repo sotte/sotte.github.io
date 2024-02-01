@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>dplyr enlightenment with pandas - nodata.science</title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/static/simple.css">
+  <link rel="stylesheet" href="/static/custom.css">
+  <!-- <link rel="stylesheet" href="/static/pygments.css"> -->
+</head>
+
+<body>
+
+  <header>
+    <nav>
+      <h1>nodata.science</h1>
+      <a  href="/index.html">Home</a>
+      <a class="current" href="/blog.html">Blog</a>
+      <a  href="/research.html">Research</a>
+      <!-- <a  href="/uses.html">Uses</a> -->
+      <!-- <a  href="/rss.html">RSS</a> -->
+    </nav>
+  </header>
+
+  <main>
+    <div id="content">
+
+
+<div>
+  <h1>dplyr enlightenment with pandas</h1>
+  <p>
+    <em>
+    Created at 2017-07-14 by 2017-07-14.
+    
+    Updated at 2024-01-29.
+    
+    </em>
+  </p>
+  <p class="notice">
+  Update 2024-01-29:
+  more current libraries than the one mentioned here in the article are
+  <a href="https://github.com/machow/siuba/">siuba</a>
+  and
+  <a href="https://github.com/pwwang/datar">datar</a>.
+  Also check out <a href="https://github.com/pola-rs/polars">polars</a> for a fast dataframe library that offers a nice but different interface.
+<p>
+
+<p>I tried to reach <a href="http://dplyr.tidyverse.org/">dplyr</a> enlightenment in the <code>pandas</code> ecosystem,
+but what I found was different from what I expected. Be warned: opinions ahead!</p>
+<p>According to the <a href="https://github.com/tidyverse/dplyr">dplyr homepage</a></p>
+<blockquote>
+<p>&quot;dplyr is a grammar of data manipulation, providing a consistent set of verbs that help &gt; you solve the most common data manipulation challenges.</p>
+<ul>
+<li>mutate() adds new variables that are functions of existing variables</li>
+<li>select() picks variables based on their names.</li>
+<li>filter() picks cases based on their values.</li>
+<li>summarise() reduces multiple values down to a single summary.</li>
+<li>arrange() changes the ordering of the rows.&quot;</li>
+</ul>
+</blockquote>
+<p>Some people, myself included, think that you can write some concise and easy-to-read code with just these few verbs.</p>
+<p>Here is an example of dplyr in action taken from the <a href="https://github.com/coursera/pandas-ply">python-ply</a> page:</p>
+<pre><code class="language-R">flights %&gt;%
+  group_by(year, month, day) %&gt;%
+  summarise(
+    arr = mean(arr_delay, na.rm = TRUE),
+    dep = mean(dep_delay, na.rm = TRUE)
+  ) %&gt;%
+  filter(arr &gt; 30 &amp; dep &gt; 30)
+</code></pre>
+<p>Compare this to, what they call, &quot;the most common way to express this in pandas&quot;:</p>
+<pre><code class="language-python">grouped_flights = flights.groupby(['year', 'month', 'day'])
+output = pd.DataFrame()
+output['arr'] = grouped_flights.arr_delay.mean()
+output['dep'] = grouped_flights.dep_delay.mean()
+filtered_output = output[(output.arr &gt; 30) &amp; (output.dep &gt; 30)]
+</code></pre>
+<p>The dplyr version is more readable.</p>
+<p>Let's check out if there is a dplyr-like way to write the obove with python and <code>pandas</code>.
+Luckily there are some libraries which implement some of dplyr's features in python.</p>
+<ul>
+<li><a href="https://github.com/coursera/pandas-ply"><code>python-ply</code></a> has 124 stars and 12 forks on github. The last commit was in August 2015. <code>python-ply</code> monkey-patches <code>pandas</code> and adds <code>.ply_select</code> and <code>.ply_where</code> and adds a special <code>X</code> variable for lazy evaluation.</li>
+<li><a href="https://github.com/dodger487/dplython"><code>dplython</code></a> has 576 stars and 38 forks on github. The last commit was in December 2016. <code>dplython</code> uses more of verb-like approach with functions and also adds a special <code>X</code> for delayed execution.</li>
+</ul>
+<h2>Case Study with the Diamond dataset</h2>
+<p>I'm going to show some simple data mungling with the diamonds dataset.
+<a href="https://github.com/dodger487/dplython">dplython</a> has some data mungling examples that demonstrate of how to use dplython with this dataset.
+I'm going to do the same with <code>pandas-ply</code> and vanilla <code>pandas</code>.</p>
+<pre><code class="language-python"># The imports...
+import pandas as pd
+
+# pandas-ply
+from pandas_ply import install_ply
+# normally just X
+from pandas_ply import X as X_ply
+install_ply(pd)
+
+# dplython
+from dplython import (
+    select,
+    sift,
+    sample_n,
+    head,
+    arrange,
+    mutate,
+    group_by,
+    summarize,
+)
+# normally just X
+from dplython import X as X_dpl
+</code></pre>
+<p><code>dplython</code> already ships the diamonds dataset.
+Note that dplython uses <code>DplyFrame</code> as extension of the <code>DataFrame</code> and <code>dyf</code> is the diamond data as <code>DplyFrame</code>.</p>
+<pre><code class="language-python">from dplython import diamonds
+
+# Note that dplython needs the DplyFrame
+# and dyf is the diamond data as DplyFrame
+dyf = diamonds 
+df = pd.DataFrame(diamonds)
+print(type(df))
+print(type(dyf))
+</code></pre>
+<p>Just to get an idea of how the data look like:</p>
+<pre><code class="language-python">df.sample(3)
+</code></pre>
+<pre><code class="language-python">n = 3  # number of samples we'll draw
+</code></pre>
+<h3>Simple select</h3>
+<pre><code class="language-python"># dplython
+(
+    dyf
+    &gt;&gt; select(X_dpl.carat, X_dpl.cut, X_dpl.price)
+    &gt;&gt; head(n)
+)
+</code></pre>
+<p>I like dplython's <code>&gt;&gt;</code> operator for piping the data (but I'm spoiled by elixir and I'm aware that operator overloading can be used for evil (hello c++)).
+The use of <code>X</code> gives us access to the columns of the data.
+It's nice, but again not a huge difference.</p>
+<pre><code class="language-python"># pandas-ply
+(
+    df
+    .ply_select('carat', 'cut', 'price')
+    .head(n)
+);
+</code></pre>
+<p>The <code>ply_select</code> methods is the equivalent to <code>dplython</code>'s <code>select</code> function.</p>
+<pre><code class="language-python"># pandas
+(
+    df
+    [['carat', 'cut', 'price']]
+    .head(n)
+);
+</code></pre>
+<p>With pandas we use the good old bracket notation.
+Also quite readable.</p>
+<h3>Filter and select</h3>
+<pre><code class="language-python"># dplython
+(
+    dyf
+    &gt;&gt; sift(X_dpl.carat &gt; 4)
+    &gt;&gt; select(X_dpl.carat, X_dpl.cut, X_dpl.depth, X_dpl.price)
+)
+</code></pre>
+<p><code>dplython</code>'s sift is like a filter and quite redable.</p>
+<pre><code class="language-python"># pandas-ply
+(
+    df
+    .ply_where(X_ply.carat &gt; 4)
+    .ply_select('carat', 'cut', 'depth', 'price')
+);
+</code></pre>
+<p><code>.ply_where</code> in combination with the <code>X</code> is just as nice as <code>dplyton</code>.</p>
+<pre><code class="language-python"># pandas
+(
+    df
+    [df.carat &gt; 4]
+    [['carat', 'cut', 'depth', 'price']]
+);
+</code></pre>
+<p>I guess this is the most common way to write the same in vanilla <code>pandas</code>.</p>
+<pre><code class="language-python"># pandas
+(
+    df
+    .query('carat &gt; 4')
+    [['carat', 'cut', 'depth', 'price']]
+);
+</code></pre>
+<p>But it's also possible to use the <code>query</code> method of <code>pandas</code>.</p>
+<h3>Sample and sort</h3>
+<pre><code class="language-python"># dplython
+(
+    dyf
+    &gt;&gt; sample_n(n)
+    &gt;&gt; arrange(X_dpl.carat)
+    &gt;&gt; select(X_dpl.carat, X_dpl.cut, X_dpl.depth, X_dpl.price)
+)
+</code></pre>
+<p><code>arrange</code> might seem strange in the beginning.
+Just think of it as sort and you're fine.</p>
+<pre><code class="language-python"># python-ply
+(
+    df
+    .sample(n)
+    .sort_values('carat')
+    .ply_select('carat', 'cut', 'depth', 'price')
+);
+</code></pre>
+<p>No surprises with <code>pandas-ply</code>.</p>
+<pre><code class="language-python"># pandas
+(
+    df
+    .sample(n)
+    .sort_values('carat')
+    [['carat', 'cut', 'depth', 'price']]
+);
+</code></pre>
+<p>And no surprises with vanilla <code>pandas</code>, but I still think it's quite readable.</p>
+<h3>Assign, group by and summarize</h3>
+<pre><code class="language-python"># dplython
+(
+    dyf
+    &gt;&gt; mutate(carat_bin=X_dpl.carat.round())
+    &gt;&gt; group_by(X_dpl.cut, X_dpl.carat_bin)
+    &gt;&gt; summarize(avg_price=X_dpl.price.mean())
+    &gt;&gt; head(10)
+)
+</code></pre>
+<p>This is an example where dplython shines.
+<code>mutate</code> makes clear that something is changed (though technically we return a copy, so we don't change anything)
+and <code>summarize</code> is similar to <code>pandas</code> <code>agg</code> but with a better interface/more functionality and a better name.</p>
+<pre><code class="language-python"># python-ply and pandas
+(
+    df
+    .assign(carat_bin=df.carat.round())
+    .groupby(['cut', 'carat_bin'])
+    .agg({'price': 'mean'})
+    .rename(columns={&quot;price&quot;: &quot;avg_price&quot;})
+    .reset_index()
+    .head(10)
+)
+</code></pre>
+<p>We were not really able to use any padans-ply features here. <code>ply_select(carat=_X.carat.round())</code> only leaves the selected 'carat' column.</p>
+<p><code>pandas</code>'s <code>assign</code> method is quite clear.
+<code>agg</code> does not feel as clean as the <code>summarize</code> function from <code>dplython</code>.
+With <code>summarize</code> we can directly assign the name for the new column which we can't do with <code>agg</code>
+(you could use <code>.agg({'price': {'avg_price': 'mean'}})</code> but that is going to be deprecated soon).
+Therefore we manually rename the column.</p>
+<p>Also note, that <code>agg()</code> returns a <code>DataFrame</code> with a <code>MultiIndex</code> whereas <code>summarize</code> of <code>dplython</code> returns a flat <code>DataFrame</code>.
+We flatten the <code>MultiIndex</code> by resetting the index.</p>
+<h2>Conclusion</h2>
+<p>So which one is better? <code>dplython</code>, <code>pandas-ply</code>, or even vanilla <code>pandas</code>?</p>
+<p>I think the method-chaining version of <code>pandas</code> is quite readable,
+but <code>pandas</code> is still <code>pandas</code>.
+Even though I know <code>pandas</code> quite well,
+I found myself looking up the docs more often than for <code>python-ply</code> and <code>dplython</code> (which I haven't used before):</p>
+<ul>
+<li>does the <code>rename</code> methods require a keyword argument?</li>
+<li>wasn't there a <code>select</code> method in pandas that I can use?</li>
+<li>can <code>agg</code> rename at the same time?</li>
+</ul>
+<p><code>pandas-ply</code> does not really offer a big advantage over good old <code>pandas</code> and is also not actively maintained.</p>
+<p><code>dplython</code> feels good!
+Piping, concise verbs, more popular.
+Will I use it in the future?
+I think I'll give it a try in a bigger project and see how it goes.</p>
+<p>Nevertheless, check out the <a href="https://tomaugspurger.github.io/method-chaining.html">modern pandas post</a> on method chaining if you don't use this feature yet!</p>
+<h2>References</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=4YAcwCe1mAE">dplython talk at PyGotham 2016</a></li>
+<li><a href="https://github.com/dodger487/dplython">dplython</a></li>
+<li><a href="https://github.com/coursera/pandas-ply">python-ply</a></li>
+<li><a href="http://pandas.pydata.org/">pandas</a></li>
+</ul>
+
+</div>
+
+
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      Created by Stefan Otte
+        | 2013 - 2024
+        | <a href="https://github.com/sotte/">github</a>
+        | <a href="https://www.linkedin.com/in/stefan-otte-29367a111/">linkedin</a>
+    </p>
+  </footer>
+
+</body>
+
+</html>
