@@ -12,12 +12,12 @@ _nav_page: home
 I'm a **machine learning engineer**,
 data scientist, speaker, and ex-roboticist
 working in Berlin, Germany.
-I worked as freelancer, at consultancies, and at startups,
+I worked as a freelancer, at consultancies, and at startups,
 always solving problems with and around machine learning.
 
 My latest position was **head of machine learning** at
 [paretos](https://paretos.com/),
-where I lead the team
+where I led the team
 and built ML products in the areas of supply chain and advertisement
 with the focus on time series forecasting.
 

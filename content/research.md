@@ -44,6 +44,9 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
     <a href="/static/pdfs/baisero2017identification.pdf">pdf</a>
   </div>
   <div style="clear: both;"></div>
+
+---
+
   <a name="kulick2015robots"></a>
   <aside>
     <a href="/static/pdfs/kulick2015robots.pdf">
@@ -64,6 +67,9 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
     <a href="/static/pdfs/kulick2015robots.pdf">pdf</a>
   </div>
   <div style="clear: both;"></div>
+
+---
+
   <a name="kulick2015active"></a>
   <aside>
     <a href="/static/pdfs/kulick2015active.pdf">
@@ -84,6 +90,9 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
     <a href="/static/pdfs/kulick2015active.pdf">pdf</a>
   </div>
   <div style="clear: both;"></div>
+
+---
+
   <a name="otte2014entropy"></a>
   <aside>
     <a href="/static/pdfs/otte2014entropy.pdf">
@@ -104,6 +113,9 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
     <a href="/static/pdfs/otte2014entropy.pdf">pdf</a>
   </div>
   <div style="clear: both;"></div>
+
+---
+
   <a name="Otte2012Master"></a>
   <aside>
     <a href="/static/pdfs/Otte2012Master.pdf">
@@ -124,6 +136,9 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
     <a href="/static/pdfs/Otte2012Master.pdf">pdf</a>
   </div>
   <div style="clear: both;"></div>
+
+---
+
   <a name="FumanoidsTDP2012"></a>
   <aside>
     <a href="/static/pdfs/FumanoidsTDP2012.pdf">
@@ -144,6 +159,9 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
     <a href="/static/pdfs/FumanoidsTDP2012.pdf">pdf</a>
   </div>
   <div style="clear: both;"></div>
+
+---
+
   <a name="FumanoidsTDP2011"></a>
   <aside>
     <a href="/static/pdfs/FumanoidsTDP2011.pdf">
@@ -164,6 +182,9 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
     <a href="/static/pdfs/FumanoidsTDP2011.pdf">pdf</a>
   </div>
   <div style="clear: both;"></div>
+
+---
+
   <a name="FumanoidsTDP2010"></a>
   <aside>
     <a href="/static/pdfs/FumanoidsTDP2010.pdf">
@@ -184,6 +205,9 @@ Summer School Tübingen in 2013](http://mlss.tuebingen.mpg.de/2013/2013/index.ht
     <a href="/static/pdfs/FumanoidsTDP2010.pdf">pdf</a>
   </div>
   <div style="clear: both;"></div>
+
+---
+
   <a name="FumanoidsTDP2009"></a>
   <aside>
     <a href="/static/pdfs/FumanoidsTDP2009.pdf">
