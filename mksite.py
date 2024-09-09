@@ -14,28 +14,16 @@ from pathlib import Path
 import frontmatter
 import mistune
 from jinja2 import Environment, FileSystemLoader
-from mistune.directives import Admonition, RSTDirective
+from mistune.directives import Admonition, RSTDirective, FencedDirective
 from pygments import highlight
 from pygments.formatters import html
 from pygments.lexers import get_lexer_by_name
 from rich import print as rprint
-
+from pygments.formatters import HtmlFormatter
 
 CONTENT_DIR = Path("content")
 OUT_DIR = Path("out")
 TITLE = "nodata.science"
-
-
-class _CodeRenderer(mistune.HTMLRenderer):
-    """Add to the mistune.create_markdown() as `renderer` and include a css with syntax hl."""
-
-    # FIXME: this breaks some formatting, e.g. publications and "notice" elements.
-    def block_code(self, code, info=None):
-        if info:
-            lexer = get_lexer_by_name(info, stripall=True)
-            formatter = html.HtmlFormatter()
-            return highlight(code, lexer, formatter)
-        return "<pre><code>" + mistune.escape(code) + "</code></pre>"
 
 
 def validate_blog_metadata(metadata: dict, path: Path):
@@ -48,19 +36,39 @@ def validate_blog_metadata(metadata: dict, path: Path):
         raise ValueError("\n".join(errors))
 
 
+class HighlightRenderer(mistune.HTMLRenderer):
+    def block_code(self, code, info=None):
+        # Extract the language from the `info` argument if provided
+        lang = info.split()[0] if info else None
+
+        if not lang:
+            return f'<pre><code>{mistune.escape(code)}</code></pre>'
+
+        try:
+            # Get the lexer for the specified language
+            lexer = get_lexer_by_name(lang, stripall=True)
+            formatter = HtmlFormatter()
+            return highlight(code, lexer, formatter)
+        except Exception:
+            # If there's an error (e.g., unsupported language), fall back to plain text
+            return f'<pre><code>{mistune.escape(code)}</code></pre>'
+
 def main():
     jinja_env = Environment(loader=FileSystemLoader("templates"))
     markdown = mistune.create_markdown(
-        escape=False,
+        # escape=False,
+        renderer=HighlightRenderer(escape=False),
         plugins=[
             "strikethrough",
             "footnotes",
             "table",
             "spoiler",
             "url",
-            RSTDirective([Admonition()]),
+            FencedDirective([
+                Admonition(),
+            ]),
         ],
-        # renderer=_CodeRenderer(),
+        # RSTDirective([Admonition()]),
     )
 
     rprint("# Copy static files...")

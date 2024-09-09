@@ -24,6 +24,7 @@ I can't remember how often I have written a training loop in `PyTorch`
 and how often I made mistakes doing so.
 Writing a training loop is easy enough that anybody can do it,
 but tricky enough that everybody can get it subtly wrong when she/he isn't paying full attention.
+
 - Have you ever forgotten to call `model.eval()`? [[1]](https://twitter.com/karpathy/status/1013244313327681536)
 - Have you ever forgotten to zero the gradients? [[2]](https://twitter.com/karpathy/status/1013244313327681536)
 - Have you ever used the train data in the eval step?
@@ -35,12 +36,14 @@ These problems would be void if `PyTorch` offered a `fit` function ala [keras](h
 However, even if there was a `fit` function you could still implement a custom training loop if you really had to.)
 
 In this post I'll evaluate the following high-level training libraries by solving a small image classification problem:
-- `ignite` https://github.com/pytorch/ignite
-- `skorch` https://github.com/dnouri/skorch
-- `PyToune` https://github.com/GRAAL-Research/pytoune
+
+- `ignite` <https://github.com/pytorch/ignite>
+- `skorch` <https://github.com/dnouri/skorch>
+- `PyToune` <https://github.com/GRAAL-Research/pytoune>
 - There are more ([tnt](https://github.com/pytorch/tnt), [fast.ai](https://github.com/fastai/fastai), ...) but it's too hot outside to spend more time in front of the computer.
 
 Note: This is a biased comparision!
+
 - I've used `ignite` before for small toy problems.
 - I looked at `skorch` but didn't use it because the support for `PyTorch` datasets seemed weird.
 - I've written my own little library and have my own ideas and preferences ;)
@@ -233,15 +236,18 @@ Wall time: 49.3 s
 Here I will try to solve the task with the three libraries.
 
 ### Ignite
+>
 > Ignite is a high-level library to help with training neural networks in PyTorch.
+>
 > - ignite helps you write compact but full-featured training loops in a few lines of code
 > - you get a training loop with metrics, early-stopping, model checkpointing and other features without the boilerplate
 
-Github: https://github.com/pytorch/ignite
+Github: <https://github.com/pytorch/ignite>
 
-Homepage: https://pytorch.org/ignite/
+Homepage: <https://pytorch.org/ignite/>
 
-`ignite` lives under the https://github.com/pytorch umbrella and can be installed with conda or pip:
+`ignite` lives under the <https://github.com/pytorch> umbrella and can be installed with conda or pip:
+
 ```
 conda install ignite -c pytorch
 pip install pytorch-ignite
@@ -252,6 +258,7 @@ The main abstractions are `Engines` which loop over the data.
 The `State` object is part of the engine and is used to track training/evaluation state.
 Via `Events` and `Handlers` you can execute your custom code, e.g. printing out the current loss or storing a checkpoint.
 You can register callbacks via decorators:
+
 ```python
 @trainer.on(Events.ITERATION_COMPLETED)
 def log_training_loss(trainer):
@@ -365,14 +372,16 @@ Wall time: 1min 39s
 >
 > The goal of skorch is to make it possible to use PyTorch with sklearn. This is achieved by providing a wrapper around PyTorch that has an sklearn interface. In that sense, skorch is the spiritual successor to nolearn, but instead of using Lasagne and Theano, it uses PyTorch.
 
-Github: https://github.com/dnouri/skorch
+Github: <https://github.com/dnouri/skorch>
 
-Homepage: https://skorch.readthedocs.io/en/latest/
+Homepage: <https://skorch.readthedocs.io/en/latest/>
 
 `skorch` is by the [Otto group](https://github.com/ottogroup/) and can be installed via pip
+
 ```
 pip install skorch
 ```
+
 The focus of `skorch` is to build a sklearn-like interface for PyTorch.
 I assume they use a lot of sklearn at Otto and they seamlessly want to intgrate PyTorch into their workflow (who could blame them).
 `skorch` also integrates into their serving service [palladium](https://github.com/ottogroup/palladium).
@@ -391,7 +400,7 @@ However, `skorch` does not allow me to wrap my existing datasets.
 Maybe it does but I was not able to find out how within 30 minutes.
 And I want to reuse all my Datasets :)
 
-> skorch uses the PyTorch DataLoaders by default. However, the Datasets provided by PyTorch are not sufficient for our usecase; for instance, they don’t work with numpy.ndarrays. 
+> skorch uses the PyTorch DataLoaders by default. However, the Datasets provided by PyTorch are not sufficient for our usecase; for instance, they don’t work with numpy.ndarrays.
 
 Due to the "dataset issue" I was not able to finish the task within 30 minutes.
 
@@ -410,13 +419,14 @@ model = NeuralNetClassifier(model_, max_epochs=2, device=device)
 > PyToune is a Keras-like framework for PyTorch and handles much of the boilerplating code needed to train neural networks.
 >
 > Use PyToune to:
+>
 > - Train models easily.
 > - Use callbacks to save your best model, perform early stopping and much more.
 >
 
-Github: https://github.com/GRAAL-Research/pytoune
+Github: <https://github.com/GRAAL-Research/pytoune>
 
-Homepage: https://pytoune.org/
+Homepage: <https://pytoune.org/>
 
 `PyToune` is a relatively young project by [GRAAL-Research](https://github.com/GRAAL-Research).
 It can be installed with pip:
@@ -514,7 +524,7 @@ All libraries look good.
 
 - `ignite` is a elegant wrapper around `PyTorch`. However, it's a bit too low level for what I'm looking for.
 - `skorch` is very complete and offers a ton of features. Sadly it does not play well with Dataset classes.
-- `PyToune` clicked right away and if you're familiar with `keras` I'm sure it will click for you as well. 
+- `PyToune` clicked right away and if you're familiar with `keras` I'm sure it will click for you as well.
 
 I highly encourage you to check out `PyToune`!
 
