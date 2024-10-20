@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>'No fit?' - Comparing high-level learning interfaces for PyTorch - nodata.science</title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/static/simple.css">
+  <link rel="stylesheet" href="/static/custom.css">
+  <link rel="stylesheet" href="/static/pygments.css">
+</head>
+
+<body>
+
+  <header>
+    <nav>
+      <h1>nodata.science</h1>
+      <a  href="/index.html">Home</a>
+      <a class="current" href="/blog.html">Blog</a>
+      <a  href="/research.html">Research</a>
+      <!-- <a  href="/uses.html">Uses</a> -->
+      <!-- <a  href="/rss.html">RSS</a> -->
+    </nav>
+  </header>
+
+  <main>
+    <div id="content">
+
+
+<div>
+  <h1>'No fit?' - Comparing high-level learning interfaces for PyTorch</h1>
+  <p>
+    <em>
+    Created at 2018-09-16 by Stefan Otte.
+    
+    Updated at 2024-01-29.
+    
+    </em>
+  </p>
+  <p class="notice">
+Note: you can find the jupyter notebook for this post <a href="https://github.com/sotte/sotte.github.io.resources">here</a>.
+</p>
+
+<p class="notice">
+Update 2019-02-07:
+Some corrections regarding skorch. See the update at the bottom of the page.
+</p>
+
+<p>I really like <code>PyTorch</code> and <a href="https://twitter.com/karpathy/status/868178954032513024">I'm not alone</a>.
+However, there is one aspect where <code>PyTorch</code> is not too user-friendly.
+<code>PyTorch</code> does not have a nice high-level <code>fit</code> function,
+i.e. a <code>fit</code> interface like <code>scikit-learn</code> or <code>keras</code>.
+That is the complaint I hear most often about <code>PyTorch</code>.</p>
+<p>I can't remember how often I have written a training loop in <code>PyTorch</code>
+and how often I made mistakes doing so.
+Writing a training loop is easy enough that anybody can do it,
+but tricky enough that everybody can get it subtly wrong when she/he isn't paying full attention.</p>
+<ul>
+<li>Have you ever forgotten to call <code>model.eval()</code>? <a href="https://twitter.com/karpathy/status/1013244313327681536">[1]</a></li>
+<li>Have you ever forgotten to zero the gradients? <a href="https://twitter.com/karpathy/status/1013244313327681536">[2]</a></li>
+<li>Have you ever used the train data in the eval step?</li>
+<li>Have you ever forgotten to move the data to the GPU?</li>
+<li>Have you ever implemented a metric incorrectly?</li>
+</ul>
+<p>These problems would be void if <code>PyTorch</code> offered a <code>fit</code> function ala <a href="https://keras.io/">keras</a> or <a href="https://scikit-learn.org/">scikit-learn</a>.
+(And, yes, you could argue that <code>PyTorch</code> is for power users and gives you all the power and flexibility so that you can implement the training loop tailored to your needs.
+However, even if there was a <code>fit</code> function you could still implement a custom training loop if you really had to.)</p>
+<p>In this post I'll evaluate the following high-level training libraries by solving a small image classification problem:</p>
+<ul>
+<li><code>ignite</code> <a href="https://github.com/pytorch/ignite">https://github.com/pytorch/ignite</a></li>
+<li><code>skorch</code> <a href="https://github.com/dnouri/skorch">https://github.com/dnouri/skorch</a></li>
+<li><code>PyToune</code> <a href="https://github.com/GRAAL-Research/pytoune">https://github.com/GRAAL-Research/pytoune</a></li>
+<li>There are more (<a href="https://github.com/pytorch/tnt">tnt</a>, <a href="https://github.com/fastai/fastai">fast.ai</a>, ...) but it's too hot outside to spend more time in front of the computer.</li>
+</ul>
+<p>Note: This is a biased comparision!</p>
+<ul>
+<li>I've used <code>ignite</code> before for small toy problems.</li>
+<li>I looked at <code>skorch</code> but didn't use it because the support for <code>PyTorch</code> datasets seemed weird.</li>
+<li>I've written my own little library and have my own ideas and preferences ;)</li>
+</ul>
+<h2>The Classification Problem</h2>
+<p>I'll evaluate the three libraries by solving a simple image classification problem
+within a 30 minute timeframe.
+The demo task I'm trying to solve is a simple transfer learning task.
+The data is taken from the <a href="https://www.kaggle.com/c/dogs-vs-cats">Dogs vs Cats kaggle challenge</a>
+and wrapped in a <code>DogsAndCatsDataset</code> class.
+I'll use a pre-trained ResNet and only replace the last layer.</p>
+<h2>Setup</h2>
+<p>This is the usual setup for most ML tasks: data, model, loss, and optimizer.
+Feel free to skip it.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+
+<span class="kn">import</span> <span class="nn">torchvision</span>
+<span class="kn">import</span> <span class="nn">torchvision.transforms</span> <span class="k">as</span> <span class="nn">transforms</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+<span class="kn">from</span> <span class="nn">torchvision.models.resnet</span> <span class="kn">import</span> <span class="n">resnet18</span>
+
+<span class="kn">import</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">DogsCatsDataset</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:0&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+</pre></div>
+<h3>The Data</h3>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">IMG_SIZE</span> <span class="o">=</span> <span class="mi">224</span>
+    <span class="n">_mean</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">]</span>
+    <span class="n">_std</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">]</span>
+
+    <span class="c1"># transforms for dataset</span>
+    <span class="n">train_trans</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+        <span class="c1"># some images are too small to only crop --&gt; resize first</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">Resize</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">ColorJitter</span><span class="p">(</span><span class="mf">.3</span><span class="p">,</span> <span class="mf">.3</span><span class="p">,</span> <span class="mf">.3</span><span class="p">),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">CenterCrop</span><span class="p">(</span><span class="n">IMG_SIZE</span><span class="p">),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">_mean</span><span class="p">,</span> <span class="n">_std</span><span class="p">),</span>
+    <span class="p">])</span>
+    <span class="n">val_trans</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">CenterCrop</span><span class="p">(</span><span class="n">IMG_SIZE</span><span class="p">),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">_mean</span><span class="p">,</span> <span class="n">_std</span><span class="p">),</span>
+    <span class="p">])</span>
+
+    <span class="c1"># dataset</span>
+    <span class="n">train_ds</span> <span class="o">=</span> <span class="n">DogsCatsDataset</span><span class="p">(</span>
+        <span class="s2">&quot;data&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sample/train&quot;</span> <span class="k">if</span> <span class="n">sample</span> <span class="k">else</span> <span class="s2">&quot;train&quot;</span><span class="p">,</span>
+        <span class="n">transform</span><span class="o">=</span><span class="n">train_trans</span><span class="p">,</span>
+        <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">val_ds</span> <span class="o">=</span> <span class="n">DogsCatsDataset</span><span class="p">(</span>
+        <span class="s2">&quot;data&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sample/valid&quot;</span> <span class="k">if</span> <span class="n">sample</span> <span class="k">else</span> <span class="s2">&quot;valid&quot;</span><span class="p">,</span>
+        <span class="n">transform</span><span class="o">=</span><span class="n">val_trans</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># data loader</span>
+    <span class="n">train_dl</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+        <span class="n">train_ds</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">val_dl</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+        <span class="n">val_ds</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">train_dl</span><span class="p">,</span> <span class="n">val_dl</span>
+
+
+<span class="n">train_dl</span><span class="p">,</span> <span class="n">val_dl</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">()</span>
+</pre></div>
+<h3>Model, Loss, and Optimizer</h3>
+<p>We'll just use a simple pre-trained ResNet and replace the last fully connected layer with a problem specific layer, i.e. a linear layer with two outputs (one for cats, one for dogs).</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_model</span><span class="p">():</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">resnet18</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">utils</span><span class="o">.</span><span class="n">freeze_all</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+    <span class="k">assert</span> <span class="n">utils</span><span class="o">.</span><span class="n">all_frozen</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">utils</span><span class="o">.</span><span class="n">all_frozen</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span> <span class="ow">is</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="n">model</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+<p>We also need to specify the loss function and the optimizer.</p>
+<div class="highlight"><pre><span></span><span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">)</span>
+</pre></div>
+<p>Just for the sake of completeness, a <em>simple</em> train loop would look something like this:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">n_epochs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_epochs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_epochs</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Train</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>  <span class="c1"># IMPORTANT</span>
+        <span class="n">running_loss</span><span class="p">,</span> <span class="n">correct</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">train_dl</span><span class="p">:</span>
+            <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">y</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="n">y_</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+            <span class="c1"># Statistics</span>
+            <span class="c1">#print(f&quot;    batch loss: {loss.item():0.3f}&quot;)</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">y_label_</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">correct</span> <span class="o">+=</span> <span class="p">(</span><span class="n">y_label_</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">running_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;  &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;loss: </span><span class="si">{</span><span class="n">running_loss</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">train_dl</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span><span class="si">:</span><span class="s2">0.3f</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;acc:  </span><span class="si">{</span><span class="n">correct</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">train_dl</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span><span class="si">:</span><span class="s2">0.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Eval</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>  <span class="c1"># IMPORTANT</span>
+        <span class="n">running_loss</span><span class="p">,</span> <span class="n">correct</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>  <span class="c1"># IMPORTANT</span>
+            <span class="k">for</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">val_dl</span><span class="p">:</span>
+                <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">y</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+                <span class="n">y_</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+                <span class="n">_</span><span class="p">,</span> <span class="n">y_label_</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">correct</span> <span class="o">+=</span> <span class="p">(</span><span class="n">y_label_</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>            
+                <span class="n">running_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;  &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;val_loss: </span><span class="si">{</span><span class="n">running_loss</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">val_dl</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span><span class="si">:</span><span class="s2">0.3f</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;val_acc:  </span><span class="si">{</span><span class="n">correct</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">val_dl</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span><span class="si">:</span><span class="s2">0.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+</pre></div>
+<p>Let's fit:</p>
+<div class="highlight"><pre><span></span><span class="o">%%</span><span class="n">time</span>
+<span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">n_epochs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+<p>Output:</p>
+<div class="highlight"><pre><span></span>Epoch 1/2 ...
+  loss: 0.322 acc:  0.886
+  val_loss: 0.204 val_acc:  0.938
+Epoch 2/2 ...
+  loss: 0.153 acc:  0.956
+  val_loss: 0.151 val_acc:  0.947
+CPU times: user 23 s, sys: 11.8 s, total: 34.8 s
+Wall time: 49.3 s
+</pre></div>
+<h2>The Contenders</h2>
+<p>Here I will try to solve the task with the three libraries.</p>
+<h3>Ignite</h3>
+<blockquote>
+<p>Ignite is a high-level library to help with training neural networks in PyTorch.</p>
+<ul>
+<li>ignite helps you write compact but full-featured training loops in a few lines of code</li>
+<li>you get a training loop with metrics, early-stopping, model checkpointing and other features without the boilerplate</li>
+</ul>
+</blockquote>
+<p>Github: <a href="https://github.com/pytorch/ignite">https://github.com/pytorch/ignite</a></p>
+<p>Homepage: <a href="https://pytorch.org/ignite/">https://pytorch.org/ignite/</a></p>
+<p><code>ignite</code> lives under the <a href="https://github.com/pytorch">https://github.com/pytorch</a> umbrella and can be installed with conda or pip:</p>
+<pre><code>conda install ignite -c pytorch
+pip install pytorch-ignite
+</code></pre><p><code>ignite</code> does not hide what's going on under the hood, but offers some light abstraction around the training loop.
+The main abstractions are <code>Engines</code> which loop over the data.
+The <code>State</code> object is part of the engine and is used to track training/evaluation state.
+Via <code>Events</code> and <code>Handlers</code> you can execute your custom code, e.g. printing out the current loss or storing a checkpoint.
+You can register callbacks via decorators:</p>
+<div class="highlight"><pre><span></span><span class="nd">@trainer</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="n">Events</span><span class="o">.</span><span class="n">ITERATION_COMPLETED</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">log_training_loss</span><span class="p">(</span><span class="n">trainer</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+<p><code>ignite</code> offers two helper functions, <code>create_supervised_trainer</code> and <code>create_supervised_evaluator</code>, which create <code>Engine</code>s for training and evaluating and should cover &gt;90% or your supervised learning problems (I think).
+Even with these helpers, you still have to register callbacks to actually do something like logging and calculating of metrics (however, ignite offers some metrics).</p>
+<p>All in all I like the documentation. They have a <code>Quickstart</code> and a <code>Concepts</code> section which should get you going pretty quick.
+Out of the box, <code>ignite</code> does not give you any default logging or progress reports, but it's easy to add.
+However, I wish <code>ignite</code> offered this feature out of the box.</p>
+<p>I was done solving the task after ~20 minutes.
+Here is the code:</p>
+<div class="highlight"><pre><span></span><span class="n">train_dl</span><span class="p">,</span> <span class="n">val_dl</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">()</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="c1"># The helper functions to create engines</span>
+<span class="kn">from</span> <span class="nn">ignite.engine</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Events</span><span class="p">,</span>
+    <span class="n">create_supervised_trainer</span><span class="p">,</span>
+    <span class="n">create_supervised_evaluator</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># The metrics we&#39;re going to use</span>
+<span class="kn">from</span> <span class="nn">ignite.metrics</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CategoricalAccuracy</span><span class="p">,</span>
+    <span class="n">Loss</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ignite.handlers</span> <span class="kn">import</span> <span class="n">Timer</span>
+
+<span class="c1"># Setup</span>
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">create_supervised_trainer</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+<span class="n">evaluator</span> <span class="o">=</span> <span class="n">create_supervised_evaluator</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">CategoricalAccuracy</span><span class="p">(),</span>
+        <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">Loss</span><span class="p">(</span><span class="n">criterion</span><span class="p">),</span>
+    <span class="p">},</span>
+    <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c1"># logging for output and metrics</span>
+<span class="nd">@trainer</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="n">Events</span><span class="o">.</span><span class="n">ITERATION_COMPLETED</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">log_training_loss</span><span class="p">(</span><span class="n">trainer</span><span class="p">):</span>
+    <span class="c1"># too verbose</span>
+    <span class="c1"># print(&quot;Epoch[{}] Loss: {:.2f}&quot;.format(trainer.state.epoch, trainer.state.output))</span>
+    <span class="k">pass</span>
+
+
+<span class="nd">@trainer</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="n">Events</span><span class="o">.</span><span class="n">EPOCH_COMPLETED</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">log_training_results</span><span class="p">(</span><span class="n">trainer</span><span class="p">):</span>
+    <span class="n">evaluator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_dl</span><span class="p">)</span>
+    <span class="n">metrics</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">metrics</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Training Results - Epoch: </span><span class="si">{</span><span class="n">trainer</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Avg accuracy: </span><span class="si">{</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Avg loss: </span><span class="si">{</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    
+    
+<span class="nd">@trainer</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="n">Events</span><span class="o">.</span><span class="n">EPOCH_COMPLETED</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">log_validation_results</span><span class="p">(</span><span class="n">trainer</span><span class="p">):</span>
+    <span class="n">evaluator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">val_dl</span><span class="p">)</span>
+    <span class="n">metrics</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">metrics</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Validation Results - Epoch: </span><span class="si">{</span><span class="n">trainer</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Avg accuracy: </span><span class="si">{</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Avg loss: </span><span class="si">{</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># let&#39;s measure the time</span>
+<span class="n">timer</span> <span class="o">=</span> <span class="n">Timer</span><span class="p">(</span><span class="n">average</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">timer</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span>
+    <span class="n">trainer</span><span class="p">,</span>
+    <span class="n">start</span><span class="o">=</span><span class="n">Events</span><span class="o">.</span><span class="n">EPOCH_STARTED</span><span class="p">,</span>
+    <span class="n">resume</span><span class="o">=</span><span class="n">Events</span><span class="o">.</span><span class="n">ITERATION_STARTED</span><span class="p">,</span>
+    <span class="n">pause</span><span class="o">=</span><span class="n">Events</span><span class="o">.</span><span class="n">ITERATION_STARTED</span><span class="p">,</span>
+    <span class="n">step</span><span class="o">=</span><span class="n">Events</span><span class="o">.</span><span class="n">ITERATION_COMPLETED</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="o">%%</span><span class="n">time</span>
+<span class="n">trainer</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_dl</span><span class="p">,</span> <span class="n">max_epochs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+<p>Output:</p>
+<div class="highlight"><pre><span></span>Training Results - Epoch: 1 Avg accuracy: 0.96 Avg loss: 0.18
+Validation Results - Epoch: 1 Avg accuracy: 0.94 Avg loss: 0.21
+Training Results - Epoch: 2 Avg accuracy: 0.97 Avg loss: 0.12
+Validation Results - Epoch: 2 Avg accuracy: 0.96 Avg loss: 0.15
+CPU times: user 44.3 s, sys: 23.2 s, total: 1min 7s
+Wall time: 1min 39s
+</pre></div>
+<h3>skorch</h3>
+<blockquote>
+<p>A scikit-learn compatible neural network library that wraps pytorch.</p>
+<p>The goal of skorch is to make it possible to use PyTorch with sklearn. This is achieved by providing a wrapper around PyTorch that has an sklearn interface. In that sense, skorch is the spiritual successor to nolearn, but instead of using Lasagne and Theano, it uses PyTorch.</p>
+</blockquote>
+<p>Github: <a href="https://github.com/dnouri/skorch">https://github.com/dnouri/skorch</a></p>
+<p>Homepage: <a href="https://skorch.readthedocs.io/en/latest/">https://skorch.readthedocs.io/en/latest/</a></p>
+<p><code>skorch</code> is by the <a href="https://github.com/ottogroup/">Otto group</a> and can be installed via pip</p>
+<pre><code>pip install skorch
+</code></pre><p>The focus of <code>skorch</code> is to build a sklearn-like interface for PyTorch.
+I assume they use a lot of sklearn at Otto and they seamlessly want to intgrate PyTorch into their workflow (who could blame them).
+<code>skorch</code> also integrates into their serving service <a href="https://github.com/ottogroup/palladium">palladium</a>.</p>
+<p><code>skorch</code> offers <code>NeuralNetClassifier</code> and <code>NeuralNetRegressor</code>.
+These classes wrap PyTorch's <code>nn.Module</code> and offer the sklearn-compatible interface
+(<code>fit</code>, <code>predict</code>, <code>predict_proba</code>, etc.).
+If you want more control you can create your own class and inherit from <code>skorch.NeuralNet</code>.
+Note that the <code>NeuralNet*</code> classes do internal cross validation.</p>
+<p><code>skorch</code> reuses alot of the sklearn goodness (metrics, grid search, pipelines) and that's great.
+Additionally, <code>skorch</code> offers a simple Callback mechanism.
+The documentation is great and the library feels pretty complete.</p>
+<p>However, <code>skorch</code> does not allow me to wrap my existing datasets.
+Maybe it does but I was not able to find out how within 30 minutes.
+And I want to reuse all my Datasets :)</p>
+<blockquote>
+<p>skorch uses the PyTorch DataLoaders by default. However, the Datasets provided by PyTorch are not sufficient for our usecase; for instance, they don’t work with numpy.ndarrays.</p>
+</blockquote>
+<p>Due to the &quot;dataset issue&quot; I was not able to finish the task within 30 minutes.</p>
+<p>Just to give you an idea of what the code looks like:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skorch.net</span> <span class="kn">import</span> <span class="n">NeuralNetClassifier</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">NeuralNetClassifier</span><span class="p">(</span><span class="n">model_</span><span class="p">,</span> <span class="n">max_epochs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+<span class="c1"># I can&#39;t pass a dataloader</span>
+<span class="c1"># model.fit(X, y)</span>
+</pre></div>
+<h3>PyToune</h3>
+<blockquote>
+<p>PyToune is a Keras-like framework for PyTorch and handles much of the boilerplating code needed to train neural networks.</p>
+<p>Use PyToune to:</p>
+<ul>
+<li>Train models easily.</li>
+<li>Use callbacks to save your best model, perform early stopping and much more.</li>
+</ul>
+</blockquote>
+<p>Github: <a href="https://github.com/GRAAL-Research/pytoune">https://github.com/GRAAL-Research/pytoune</a></p>
+<p>Homepage: <a href="https://pytoune.org/">https://pytoune.org/</a></p>
+<p><code>PyToune</code> is a relatively young project by <a href="https://github.com/GRAAL-Research">GRAAL-Research</a>.
+It can be installed with pip:</p>
+<div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pytoune
+</pre></div>
+<p><code>PyToune</code> feels very keras-y and I had a working version with progress reports and whatnot after just 7 minutes.
+The main abstraction is the <code>Model</code> which takes a <code>PyTorch</code> <code>nn.Module</code>, an optimizer, and a loss function.
+The <code>Model</code> then gives you an interface that is very similar to keras
+(<code>fit()</code>, <code>fit_generator()</code>, <code>evaluate_generator()</code>, etc).
+Additionally, you have a generic callback mechanism to interact with the opitmization process.
+There are also some useful callbacks implemented (<code>ModelCheckpoint</code>, <code>EarlyStopping</code>, <code>TerminateOnNaN</code>, <code>BestModelRestore</code>, and wrappers for <code>PyTorch</code>'s learning rate schedulers).
+<code>PyToune</code> offers some convenient layers like <code>Flatten</code>, <code>Identity</code>, and <code>Lambda</code> (I'm sure we've all written these many times, so I appreciate that :)).</p>
+<p>The documentation is very short (just api docs, but good ones) and could use a &quot;getting started&quot; guide and  more narrative docs.
+However, <code>PyToune</code> is so simple (in the best sense possible) that you are productive within a few minutes.</p>
+<p>All in all: nice! The docs should be extended and I wish there were more metrics, but <code>PyToune</code> looks great.
+I'm planning to use/evaluate it with some of my projects.</p>
+<p>After 25 minutes I stopped because there wasn't anything to do anymore :)
+Here is the code:</p>
+<div class="highlight"><pre><span></span><span class="n">train_dl</span><span class="p">,</span> <span class="n">val_dl</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">()</span>
+
+<span class="n">model_</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model_</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytoune.framework</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">pytoune.framework.callbacks</span> <span class="kn">import</span> <span class="n">ModelCheckpoint</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">model_</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="n">model_checkpoint_cb</span> <span class="o">=</span> <span class="n">ModelCheckpoint</span><span class="p">(</span>
+    <span class="s2">&quot;pytoune_experiment_best_epoch_</span><span class="si">{epoch}</span><span class="s2">.ckpt&quot;</span><span class="p">,</span>
+    <span class="n">monitor</span><span class="o">=</span><span class="s2">&quot;val_acc&quot;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">,</span>
+    <span class="n">save_best_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">restore_best</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">temporary_filename</span><span class="o">=</span><span class="s2">&quot;best_epoch.ckpt.tmp&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="o">%%</span><span class="n">time</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit_generator</span><span class="p">(</span>
+    <span class="n">train_dl</span><span class="p">,</span>
+    <span class="n">valid_generator</span><span class="o">=</span><span class="n">val_dl</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">model_checkpoint_cb</span><span class="p">],</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">);</span>
+</pre></div>
+<p>Output:</p>
+<div class="highlight"><pre><span></span>Epoch 1/2 29.92s Step 360/360: loss: 0.331596, acc: 88.656522, val_loss: 0.202725, val_acc: 94.450000
+Epoch 2/2 27.26s Step 360/360: loss: 0.153364, acc: 95.800000, val_loss: 0.147647, val_acc: 95.500000
+CPU times: user 24.9 s, sys: 13.2 s, total: 38.2 s
+Wall time: 57.3 s
+
+[{&#39;epoch&#39;: 1,
+  &#39;loss&#39;: 0.3315962664977364,
+  &#39;acc&#39;: 88.65652173913044,
+  &#39;val_loss&#39;: 0.20272484612464906,
+  &#39;val_acc&#39;: 94.45},
+ {&#39;epoch&#39;: 2,
+  &#39;loss&#39;: 0.15336425514584,
+  &#39;acc&#39;: 95.8,
+  &#39;val_loss&#39;: 0.14764661401510237,
+  &#39;val_acc&#39;: 95.5}]
+</pre></div>
+<div class="highlight"><pre><span></span><span class="n">ls</span> <span class="n">pytoune_</span><span class="o">*</span>
+</pre></div>
+<p>Output:</p>
+<div class="highlight"><pre><span></span>pytoune_experiment_best_epoch_1.ckpt  pytoune_experiment_best_epoch_2.ckpt
+</pre></div>
+<h2>Conclusion</h2>
+<p>All libraries look good.</p>
+<ul>
+<li><code>ignite</code> is a elegant wrapper around <code>PyTorch</code>. However, it's a bit too low level for what I'm looking for.</li>
+<li><code>skorch</code> is very complete and offers a ton of features. Sadly it does not play well with Dataset classes.</li>
+<li><code>PyToune</code> clicked right away and if you're familiar with <code>keras</code> I'm sure it will click for you as well.</li>
+</ul>
+<p>I highly encourage you to check out <code>PyToune</code>!</p>
+<p><strong>Update 2019-02-07:</strong> One of the friendly folks from skorch reached out to me and corrected me:</p>
+<blockquote>
+<p>One thing to note is that if you have a 'typical' dataset that provides a pair of <code>X</code>, <code>y</code> values then skorch already supports them as input to .fit: <code>net.fit(train_dataset, y=None)</code></p>
+<p>There are also example notebooks that demonstrate this quite well, we hope:</p>
+<ul>
+<li><a href="https://github.com/dnouri/skorch/blob/master/notebooks/Transfer_Learning.ipynb">notebooks/Transfer_Learning</a></li>
+<li><a href="https://github.com/dnouri/skorch/blob/master/examples/nuclei_image_segmentation/Nuclei_Image_Segmentation.ipynb">notebooks/nuclei_image_segmentation</a></li>
+</ul>
+</blockquote>
+<p>Thanks skorch and Marian for the information! Try out skorch!</p>
+
+</div>
+
+
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      Created by Stefan Otte
+        | 2013 - 2024
+        | <a href="https://github.com/sotte/">github</a>
+        | <a href="https://www.linkedin.com/in/stefan-otte-29367a111/">linkedin</a>
+    </p>
+  </footer>
+
+</body>
+
+</html>

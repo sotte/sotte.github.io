@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>dplyr enlightenment with pandas - nodata.science</title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/static/simple.css">
+  <link rel="stylesheet" href="/static/custom.css">
+  <link rel="stylesheet" href="/static/pygments.css">
+</head>
+
+<body>
+
+  <header>
+    <nav>
+      <h1>nodata.science</h1>
+      <a  href="/index.html">Home</a>
+      <a class="current" href="/blog.html">Blog</a>
+      <a  href="/research.html">Research</a>
+      <!-- <a  href="/uses.html">Uses</a> -->
+      <!-- <a  href="/rss.html">RSS</a> -->
+    </nav>
+  </header>
+
+  <main>
+    <div id="content">
+
+
+<div>
+  <h1>dplyr enlightenment with pandas</h1>
+  <p>
+    <em>
+    Created at 2017-07-14 by 2017-07-14.
+    
+    Updated at 2024-01-29.
+    
+    </em>
+  </p>
+  <p class="notice">
+  Update 2024-01-29:
+  more current libraries than the one mentioned here in the article are
+  <a href="https://github.com/machow/siuba/">siuba</a>
+  and
+  <a href="https://github.com/pwwang/datar">datar</a>.
+  Also check out <a href="https://github.com/pola-rs/polars">polars</a> for a fast dataframe library that offers a nice but different interface.
+<p>
+
+<p>I tried to reach <a href="http://dplyr.tidyverse.org/">dplyr</a> enlightenment in the <code>pandas</code> ecosystem,
+but what I found was different from what I expected. Be warned: opinions ahead!</p>
+<p>According to the <a href="https://github.com/tidyverse/dplyr">dplyr homepage</a></p>
+<blockquote>
+<p>&quot;dplyr is a grammar of data manipulation, providing a consistent set of verbs that help &gt; you solve the most common data manipulation challenges.</p>
+<ul>
+<li>mutate() adds new variables that are functions of existing variables</li>
+<li>select() picks variables based on their names.</li>
+<li>filter() picks cases based on their values.</li>
+<li>summarise() reduces multiple values down to a single summary.</li>
+<li>arrange() changes the ordering of the rows.&quot;</li>
+</ul>
+</blockquote>
+<p>Some people, myself included, think that you can write some concise and easy-to-read code with just these few verbs.</p>
+<p>Here is an example of dplyr in action taken from the <a href="https://github.com/coursera/pandas-ply">python-ply</a> page:</p>
+<div class="highlight"><pre><span></span><span class="n">flights</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">month</span><span class="p">,</span><span class="w"> </span><span class="n">day</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">arr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">arr_delay</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">dep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">dep_delay</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">filter</span><span class="p">(</span><span class="n">arr</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">dep</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">30</span><span class="p">)</span>
+</pre></div>
+<p>Compare this to, what they call, &quot;the most common way to express this in pandas&quot;:</p>
+<div class="highlight"><pre><span></span><span class="n">grouped_flights</span> <span class="o">=</span> <span class="n">flights</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">])</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="n">output</span><span class="p">[</span><span class="s1">&#39;arr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">grouped_flights</span><span class="o">.</span><span class="n">arr_delay</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">output</span><span class="p">[</span><span class="s1">&#39;dep&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">grouped_flights</span><span class="o">.</span><span class="n">dep_delay</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">filtered_output</span> <span class="o">=</span> <span class="n">output</span><span class="p">[(</span><span class="n">output</span><span class="o">.</span><span class="n">arr</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">dep</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">)]</span>
+</pre></div>
+<p>The dplyr version is more readable.</p>
+<p>Let's check out if there is a dplyr-like way to write the obove with python and <code>pandas</code>.
+Luckily there are some libraries which implement some of dplyr's features in python.</p>
+<ul>
+<li><a href="https://github.com/coursera/pandas-ply"><code>python-ply</code></a> has 124 stars and 12 forks on github. The last commit was in August 2015. <code>python-ply</code> monkey-patches <code>pandas</code> and adds <code>.ply_select</code> and <code>.ply_where</code> and adds a special <code>X</code> variable for lazy evaluation.</li>
+<li><a href="https://github.com/dodger487/dplython"><code>dplython</code></a> has 576 stars and 38 forks on github. The last commit was in December 2016. <code>dplython</code> uses more of verb-like approach with functions and also adds a special <code>X</code> for delayed execution.</li>
+</ul>
+<h2>Case Study with the Diamond dataset</h2>
+<p>I'm going to show some simple data mungling with the diamonds dataset.
+<a href="https://github.com/dodger487/dplython">dplython</a> has some data mungling examples that demonstrate of how to use dplython with this dataset.
+I'm going to do the same with <code>pandas-ply</code> and vanilla <code>pandas</code>.</p>
+<div class="highlight"><pre><span></span><span class="c1"># The imports...</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># pandas-ply</span>
+<span class="kn">from</span> <span class="nn">pandas_ply</span> <span class="kn">import</span> <span class="n">install_ply</span>
+<span class="c1"># normally just X</span>
+<span class="kn">from</span> <span class="nn">pandas_ply</span> <span class="kn">import</span> <span class="n">X</span> <span class="k">as</span> <span class="n">X_ply</span>
+<span class="n">install_ply</span><span class="p">(</span><span class="n">pd</span><span class="p">)</span>
+
+<span class="c1"># dplython</span>
+<span class="kn">from</span> <span class="nn">dplython</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">select</span><span class="p">,</span>
+    <span class="n">sift</span><span class="p">,</span>
+    <span class="n">sample_n</span><span class="p">,</span>
+    <span class="n">head</span><span class="p">,</span>
+    <span class="n">arrange</span><span class="p">,</span>
+    <span class="n">mutate</span><span class="p">,</span>
+    <span class="n">group_by</span><span class="p">,</span>
+    <span class="n">summarize</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># normally just X</span>
+<span class="kn">from</span> <span class="nn">dplython</span> <span class="kn">import</span> <span class="n">X</span> <span class="k">as</span> <span class="n">X_dpl</span>
+</pre></div>
+<p><code>dplython</code> already ships the diamonds dataset.
+Note that dplython uses <code>DplyFrame</code> as extension of the <code>DataFrame</code> and <code>dyf</code> is the diamond data as <code>DplyFrame</code>.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dplython</span> <span class="kn">import</span> <span class="n">diamonds</span>
+
+<span class="c1"># Note that dplython needs the DplyFrame</span>
+<span class="c1"># and dyf is the diamond data as DplyFrame</span>
+<span class="n">dyf</span> <span class="o">=</span> <span class="n">diamonds</span> 
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">diamonds</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dyf</span><span class="p">))</span>
+</pre></div>
+<p>Just to get an idea of how the data look like:</p>
+<div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># number of samples we&#39;ll draw</span>
+</pre></div>
+<h3>Simple select</h3>
+<div class="highlight"><pre><span></span><span class="c1"># dplython</span>
+<span class="p">(</span>
+    <span class="n">dyf</span>
+    <span class="o">&gt;&gt;</span> <span class="n">select</span><span class="p">(</span><span class="n">X_dpl</span><span class="o">.</span><span class="n">carat</span><span class="p">,</span> <span class="n">X_dpl</span><span class="o">.</span><span class="n">cut</span><span class="p">,</span> <span class="n">X_dpl</span><span class="o">.</span><span class="n">price</span><span class="p">)</span>
+    <span class="o">&gt;&gt;</span> <span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+<p>I like dplython's <code>&gt;&gt;</code> operator for piping the data (but I'm spoiled by elixir and I'm aware that operator overloading can be used for evil (hello c++)).
+The use of <code>X</code> gives us access to the columns of the data.
+It's nice, but again not a huge difference.</p>
+<div class="highlight"><pre><span></span><span class="c1"># pandas-ply</span>
+<span class="p">(</span>
+    <span class="n">df</span>
+    <span class="o">.</span><span class="n">ply_select</span><span class="p">(</span><span class="s1">&#39;carat&#39;</span><span class="p">,</span> <span class="s1">&#39;cut&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+<p>The <code>ply_select</code> methods is the equivalent to <code>dplython</code>'s <code>select</code> function.</p>
+<div class="highlight"><pre><span></span><span class="c1"># pandas</span>
+<span class="p">(</span>
+    <span class="n">df</span>
+    <span class="p">[[</span><span class="s1">&#39;carat&#39;</span><span class="p">,</span> <span class="s1">&#39;cut&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">]]</span>
+    <span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+<p>With pandas we use the good old bracket notation.
+Also quite readable.</p>
+<h3>Filter and select</h3>
+<div class="highlight"><pre><span></span><span class="c1"># dplython</span>
+<span class="p">(</span>
+    <span class="n">dyf</span>
+    <span class="o">&gt;&gt;</span> <span class="n">sift</span><span class="p">(</span><span class="n">X_dpl</span><span class="o">.</span><span class="n">carat</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="o">&gt;&gt;</span> <span class="n">select</span><span class="p">(</span><span class="n">X_dpl</span><span class="o">.</span><span class="n">carat</span><span class="p">,</span> <span class="n">X_dpl</span><span class="o">.</span><span class="n">cut</span><span class="p">,</span> <span class="n">X_dpl</span><span class="o">.</span><span class="n">depth</span><span class="p">,</span> <span class="n">X_dpl</span><span class="o">.</span><span class="n">price</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+<p><code>dplython</code>'s sift is like a filter and quite redable.</p>
+<div class="highlight"><pre><span></span><span class="c1"># pandas-ply</span>
+<span class="p">(</span>
+    <span class="n">df</span>
+    <span class="o">.</span><span class="n">ply_where</span><span class="p">(</span><span class="n">X_ply</span><span class="o">.</span><span class="n">carat</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">ply_select</span><span class="p">(</span><span class="s1">&#39;carat&#39;</span><span class="p">,</span> <span class="s1">&#39;cut&#39;</span><span class="p">,</span> <span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+<p><code>.ply_where</code> in combination with the <code>X</code> is just as nice as <code>dplyton</code>.</p>
+<div class="highlight"><pre><span></span><span class="c1"># pandas</span>
+<span class="p">(</span>
+    <span class="n">df</span>
+    <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">carat</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">]</span>
+    <span class="p">[[</span><span class="s1">&#39;carat&#39;</span><span class="p">,</span> <span class="s1">&#39;cut&#39;</span><span class="p">,</span> <span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">]]</span>
+<span class="p">);</span>
+</pre></div>
+<p>I guess this is the most common way to write the same in vanilla <code>pandas</code>.</p>
+<div class="highlight"><pre><span></span><span class="c1"># pandas</span>
+<span class="p">(</span>
+    <span class="n">df</span>
+    <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;carat &gt; 4&#39;</span><span class="p">)</span>
+    <span class="p">[[</span><span class="s1">&#39;carat&#39;</span><span class="p">,</span> <span class="s1">&#39;cut&#39;</span><span class="p">,</span> <span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">]]</span>
+<span class="p">);</span>
+</pre></div>
+<p>But it's also possible to use the <code>query</code> method of <code>pandas</code>.</p>
+<h3>Sample and sort</h3>
+<div class="highlight"><pre><span></span><span class="c1"># dplython</span>
+<span class="p">(</span>
+    <span class="n">dyf</span>
+    <span class="o">&gt;&gt;</span> <span class="n">sample_n</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="o">&gt;&gt;</span> <span class="n">arrange</span><span class="p">(</span><span class="n">X_dpl</span><span class="o">.</span><span class="n">carat</span><span class="p">)</span>
+    <span class="o">&gt;&gt;</span> <span class="n">select</span><span class="p">(</span><span class="n">X_dpl</span><span class="o">.</span><span class="n">carat</span><span class="p">,</span> <span class="n">X_dpl</span><span class="o">.</span><span class="n">cut</span><span class="p">,</span> <span class="n">X_dpl</span><span class="o">.</span><span class="n">depth</span><span class="p">,</span> <span class="n">X_dpl</span><span class="o">.</span><span class="n">price</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+<p><code>arrange</code> might seem strange in the beginning.
+Just think of it as sort and you're fine.</p>
+<div class="highlight"><pre><span></span><span class="c1"># python-ply</span>
+<span class="p">(</span>
+    <span class="n">df</span>
+    <span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;carat&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">ply_select</span><span class="p">(</span><span class="s1">&#39;carat&#39;</span><span class="p">,</span> <span class="s1">&#39;cut&#39;</span><span class="p">,</span> <span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+<p>No surprises with <code>pandas-ply</code>.</p>
+<div class="highlight"><pre><span></span><span class="c1"># pandas</span>
+<span class="p">(</span>
+    <span class="n">df</span>
+    <span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;carat&#39;</span><span class="p">)</span>
+    <span class="p">[[</span><span class="s1">&#39;carat&#39;</span><span class="p">,</span> <span class="s1">&#39;cut&#39;</span><span class="p">,</span> <span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">]]</span>
+<span class="p">);</span>
+</pre></div>
+<p>And no surprises with vanilla <code>pandas</code>, but I still think it's quite readable.</p>
+<h3>Assign, group by and summarize</h3>
+<div class="highlight"><pre><span></span><span class="c1"># dplython</span>
+<span class="p">(</span>
+    <span class="n">dyf</span>
+    <span class="o">&gt;&gt;</span> <span class="n">mutate</span><span class="p">(</span><span class="n">carat_bin</span><span class="o">=</span><span class="n">X_dpl</span><span class="o">.</span><span class="n">carat</span><span class="o">.</span><span class="n">round</span><span class="p">())</span>
+    <span class="o">&gt;&gt;</span> <span class="n">group_by</span><span class="p">(</span><span class="n">X_dpl</span><span class="o">.</span><span class="n">cut</span><span class="p">,</span> <span class="n">X_dpl</span><span class="o">.</span><span class="n">carat_bin</span><span class="p">)</span>
+    <span class="o">&gt;&gt;</span> <span class="n">summarize</span><span class="p">(</span><span class="n">avg_price</span><span class="o">=</span><span class="n">X_dpl</span><span class="o">.</span><span class="n">price</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+    <span class="o">&gt;&gt;</span> <span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+<p>This is an example where dplython shines.
+<code>mutate</code> makes clear that something is changed (though technically we return a copy, so we don't change anything)
+and <code>summarize</code> is similar to <code>pandas</code> <code>agg</code> but with a better interface/more functionality and a better name.</p>
+<div class="highlight"><pre><span></span><span class="c1"># python-ply and pandas</span>
+<span class="p">(</span>
+    <span class="n">df</span>
+    <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">carat_bin</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">carat</span><span class="o">.</span><span class="n">round</span><span class="p">())</span>
+    <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;cut&#39;</span><span class="p">,</span> <span class="s1">&#39;carat_bin&#39;</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;mean&#39;</span><span class="p">})</span>
+    <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;avg_price&quot;</span><span class="p">})</span>
+    <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+<p>We were not really able to use any padans-ply features here. <code>ply_select(carat=_X.carat.round())</code> only leaves the selected 'carat' column.</p>
+<p><code>pandas</code>'s <code>assign</code> method is quite clear.
+<code>agg</code> does not feel as clean as the <code>summarize</code> function from <code>dplython</code>.
+With <code>summarize</code> we can directly assign the name for the new column which we can't do with <code>agg</code>
+(you could use <code>.agg({'price': {'avg_price': 'mean'}})</code> but that is going to be deprecated soon).
+Therefore we manually rename the column.</p>
+<p>Also note, that <code>agg()</code> returns a <code>DataFrame</code> with a <code>MultiIndex</code> whereas <code>summarize</code> of <code>dplython</code> returns a flat <code>DataFrame</code>.
+We flatten the <code>MultiIndex</code> by resetting the index.</p>
+<h2>Conclusion</h2>
+<p>So which one is better? <code>dplython</code>, <code>pandas-ply</code>, or even vanilla <code>pandas</code>?</p>
+<p>I think the method-chaining version of <code>pandas</code> is quite readable,
+but <code>pandas</code> is still <code>pandas</code>.
+Even though I know <code>pandas</code> quite well,
+I found myself looking up the docs more often than for <code>python-ply</code> and <code>dplython</code> (which I haven't used before):</p>
+<ul>
+<li>does the <code>rename</code> methods require a keyword argument?</li>
+<li>wasn't there a <code>select</code> method in pandas that I can use?</li>
+<li>can <code>agg</code> rename at the same time?</li>
+</ul>
+<p><code>pandas-ply</code> does not really offer a big advantage over good old <code>pandas</code> and is also not actively maintained.</p>
+<p><code>dplython</code> feels good!
+Piping, concise verbs, more popular.
+Will I use it in the future?
+I think I'll give it a try in a bigger project and see how it goes.</p>
+<p>Nevertheless, check out the <a href="https://tomaugspurger.github.io/method-chaining.html">modern pandas post</a> on method chaining if you don't use this feature yet!</p>
+<h2>References</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=4YAcwCe1mAE">dplython talk at PyGotham 2016</a></li>
+<li><a href="https://github.com/dodger487/dplython">dplython</a></li>
+<li><a href="https://github.com/coursera/pandas-ply">python-ply</a></li>
+<li><a href="http://pandas.pydata.org/">pandas</a></li>
+</ul>
+
+</div>
+
+
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      Created by Stefan Otte
+        | 2013 - 2024
+        | <a href="https://github.com/sotte/">github</a>
+        | <a href="https://www.linkedin.com/in/stefan-otte-29367a111/">linkedin</a>
+    </p>
+  </footer>
+
+</body>
+
+</html>

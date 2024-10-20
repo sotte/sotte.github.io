@@ -1,0 +1,1201 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>My Small Polars Tutorial - nodata.science</title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/static/simple.css">
+  <link rel="stylesheet" href="/static/custom.css">
+  <link rel="stylesheet" href="/static/pygments.css">
+</head>
+
+<body>
+
+  <header>
+    <nav>
+      <h1>nodata.science</h1>
+      <a  href="/index.html">Home</a>
+      <a class="current" href="/blog.html">Blog</a>
+      <a  href="/research.html">Research</a>
+      <!-- <a  href="/uses.html">Uses</a> -->
+      <!-- <a  href="/rss.html">RSS</a> -->
+    </nav>
+  </header>
+
+  <main>
+    <div id="content">
+
+
+<div>
+  <h1>My Small Polars Tutorial</h1>
+  <p>
+    <em>
+    Created at 2022-09-09 by Stefan Otte.
+    
+    </em>
+  </p>
+  <p><a href="https://github.com/sotte/polars-tutorial">This</a> is a small <a href="https://www.pola.rs/">polars</a> tutorial.
+It covers basic polars concepts as well as some random (hopefully) useful things.</p>
+<p>It is based on the great
+<a href="https://franzdiebold.github.io/polars-cheat-sheet/Polars_cheat_sheet.pdf">polars cheat sheet</a>
+but is heavily extended and restructured.
+You can find a notebook version <a href="https://github.com/sotte/polars-tutorial">here</a>.</p>
+<p>Here are some important facts that you should know when you work with polars.</p>
+<p><strong>polars DataFrames don't have an index</strong>. Aka no <code>.reset_index()</code> every third line and less complexity due to no multi-index,
+but some operartions are a bit more cumbersome in return.</p>
+<p>There are two main concepts in polars: <strong>expressions</strong> and <strong>context</strong>.</p>
+<ul>
+<li><strong>expression</strong>: what to do with the data without actually knowing the data, e.g. <code>pl.col(&quot;foo&quot;).sort().head(2)</code></li>
+<li><strong>context</strong>: the context in which an expression is evaluated, e.g. in a <code>group_by</code></li>
+</ul>
+<p>Because of the expression/context setup <strong>method chaining</strong> makes even more sense than with pandas.</p>
+<p>These seven verbs cover most things you want to do with polars:</p>
+<div class="highlight"><pre><span></span><span class="n">select</span>        <span class="c1"># select columns (and add new ones)</span>
+<span class="n">with_columns</span>  <span class="c1"># like select but keep existing columns</span>
+<span class="n">sort</span>          <span class="c1"># sort rows</span>
+<span class="nb">filter</span>        <span class="c1"># filter rows</span>
+<span class="n">group_by</span>      <span class="c1"># group dataframe</span>
+<span class="n">agg</span>           <span class="c1"># aggregate groups</span>
+<span class="n">join</span>          <span class="c1"># join/merge another dataframe</span>
+</pre></div>
+<p>As always, <a href="https://docs.pola.rs/">read the friendly manual</a> to really understand how to use polars.</p>
+<p>IMO reading manuals is a super power and everybody can attain it. :shrug:</p>
+<h2>Setup</h2>
+<h3>Install</h3>
+<div class="highlight"><pre><span></span><span class="err">!</span><span class="n">cat</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+<pre><code>polars[plot,pyarrow]==1.2.1
+pandera[polars]==0.20.3
+jupyter
+jupytext
+ruff</code></pre><div class="highlight"><pre><span></span><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+<h3>Import</h3>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">polars</span> <span class="k">as</span> <span class="nn">pl</span>
+
+<span class="c1"># I personally like to import col as c to shorten some expressions</span>
+<span class="kn">from</span> <span class="nn">polars</span> <span class="kn">import</span> <span class="n">col</span> <span class="k">as</span> <span class="n">c</span>
+</pre></div>
+<h2>Basics</h2>
+<h3>Creating/Reading/Saving DataFrames</h3>
+<div class="highlight"><pre><span></span><span class="c1"># Create DataFrame</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;nrs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+        <span class="s2">&quot;names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;ham&quot;</span><span class="p">,</span> <span class="s2">&quot;spam&quot;</span><span class="p">,</span> <span class="s2">&quot;egg&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+        <span class="s2">&quot;random&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span>
+        <span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Save dataframes as csv</span>
+<span class="c1"># (do yourself a favour and switch to parquet instead of CSV!)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">write_csv</span><span class="p">(</span><span class="s2">&quot;df.csv&quot;</span><span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="c1"># Read CSV</span>
+<span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;df.csv&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;nrs&quot;</span><span class="p">,</span> <span class="s2">&quot;names&quot;</span><span class="p">,</span> <span class="s2">&quot;random&quot;</span><span class="p">,</span> <span class="s2">&quot;groups&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+</pre></div>
+<pre><code>True</code></pre><div class="highlight"><pre><span></span><span class="c1"># Save dataframe as parquet</span>
+<span class="n">df</span><span class="o">.</span><span class="n">write_parquet</span><span class="p">(</span><span class="s2">&quot;df.parquet&quot;</span><span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="c1"># Read parquet</span>
+<span class="c1"># Note: you can also read multiple frames with wildcards</span>
+<span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s2">&quot;df*.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+</pre></div>
+<pre><code>True</code></pre><h3>Select columns - <code>select()</code></h3>
+<div class="highlight"><pre><span></span><span class="c1"># Select multiple columns with specific names</span>
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;nrs&quot;</span><span class="p">,</span> <span class="s2">&quot;names&quot;</span><span class="p">)</span>
+<span class="c1"># equivalent</span>
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;nrs&quot;</span><span class="p">),</span> <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">))</span>
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">nrs</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 2)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th></tr><tr><td>i64</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td></tr><tr><td>null</td><td>&quot;egg&quot;</td></tr><tr><td>5</td><td>null</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">))</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 3)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>&quot;A&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>&quot;A&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>&quot;B&quot;</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>&quot;C&quot;</td></tr><tr><td>5</td><td>null</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Select columns whose name matches regular expression regex.</span>
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;^n.*$&quot;</span><span class="p">))</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 2)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th></tr><tr><td>i64</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td></tr><tr><td>null</td><td>&quot;egg&quot;</td></tr><tr><td>5</td><td>null</td></tr></tbody></table></div>
+
+<h3>Add New Columns - <code>select()</code> and <code>with_columns()</code></h3>
+<div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">NAMES</span><span class="o">=</span><span class="n">c</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">c</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;NAMES&quot;</span><span class="p">))</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 1)</small><table border="1" class="dataframe"><thead><tr><th>NAMES</th></tr><tr><td>str</td></tr></thead><tbody><tr><td>&quot;foo&quot;</td></tr><tr><td>&quot;ham&quot;</td></tr><tr><td>&quot;spam&quot;</td></tr><tr><td>&quot;egg&quot;</td></tr><tr><td>null</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Keep existing and add new columns with `with_columns`</span>
+<span class="n">df</span><span class="o">.</span><span class="n">with_columns</span><span class="p">((</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;nrs&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;product&quot;</span><span class="p">))</span>
+<span class="n">df</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="n">product</span><span class="o">=</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;nrs&quot;</span><span class="p">))</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 5)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th><th>product</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td><td>f64</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td><td>0.3</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td><td>1.4</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td><td>0.3</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td><td>null</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td><td>3.0</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Add several new columns to the DataFrame</span>
+<span class="n">df</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+    <span class="n">product</span><span class="o">=</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;nrs&quot;</span><span class="p">)),</span>
+    <span class="n">names_len_bytes</span><span class="o">=</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">len_bytes</span><span class="p">(),</span>
+<span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 6)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th><th>product</th><th>names_len_bytes</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>u32</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td><td>0.3</td><td>3</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td><td>1.4</td><td>3</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td><td>0.3</td><td>4</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td><td>null</td><td>3</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td><td>3.0</td><td>null</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Add a column &#39;index&#39; that enumerates the rows</span>
+<span class="n">df</span><span class="o">.</span><span class="n">with_row_index</span><span class="p">()</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 5)</small><table border="1" class="dataframe"><thead><tr><th>index</th><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>u32</td><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>0</td><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td></tr><tr><td>1</td><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td></tr><tr><td>2</td><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr><tr><td>3</td><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr><tr><td>4</td><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<h3>Select rows - <code>filter()</code> and friends</h3>
+<div class="highlight"><pre><span></span><span class="c1"># Filter: Extract rows that meet logical criteria.</span>
+<span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">c</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">random</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">((</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;groups&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">))</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Randomly select fraction of rows.</span>
+<span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (2, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td></tr><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Randomly select n rows.</span>
+<span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (2, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Select first n rows</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Select last n rows.</span>
+<span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (2, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<h3>Select rows and columns</h3>
+<div class="highlight"><pre><span></span><span class="c1"># Select rows 2-4</span>
+<span class="n">df</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="p">:]</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (2, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Select columns in positions 1 and 3 (first column is 0).</span>
+<span class="n">df</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 2)</small><table border="1" class="dataframe"><thead><tr><th>names</th><th>groups</th></tr><tr><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;foo&quot;</td><td>&quot;A&quot;</td></tr><tr><td>&quot;ham&quot;</td><td>&quot;A&quot;</td></tr><tr><td>&quot;spam&quot;</td><td>&quot;B&quot;</td></tr><tr><td>&quot;egg&quot;</td><td>&quot;C&quot;</td></tr><tr><td>null</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Select rows meeting logical condition, and only the specific columns.</span>
+<span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">,</span> <span class="s2">&quot;groups&quot;</span><span class="p">))</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>names</th><th>groups</th></tr><tr><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;ham&quot;</td><td>&quot;A&quot;</td></tr><tr><td>&quot;egg&quot;</td><td>&quot;C&quot;</td></tr><tr><td>null</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Select one columns as Series</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;names&quot;</span><span class="p">]))</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;names&quot;</span><span class="p">]</span>
+</pre></div>
+<pre><code>&lt;class 'polars.series.series.Series'&gt;</code></pre><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5,)</small><table border="1" class="dataframe"><thead><tr><th>names</th></tr><tr><td>str</td></tr></thead><tbody><tr><td>&quot;foo&quot;</td></tr><tr><td>&quot;ham&quot;</td></tr><tr><td>&quot;spam&quot;</td></tr><tr><td>&quot;egg&quot;</td></tr><tr><td>null</td></tr></tbody></table></div>
+
+<h3>Sort rows - <code>sort()</code></h3>
+<div class="highlight"><pre><span></span><span class="c1"># Order rows by values of a column (high to low)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td></tr><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Order by multiple rows</span>
+<span class="n">df</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;groups&quot;</span><span class="p">,</span> <span class="s2">&quot;random&quot;</span><span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr></tbody></table></div>
+
+<h3>Summarize Data</h3>
+<div class="highlight"><pre><span></span><span class="c1"># Tuple of # of rows, # of columns in DataFrame</span>
+<span class="n">df</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+<pre><code>(5, 4)</code></pre><div class="highlight"><pre><span></span><span class="c1"># number of rows in DataFrame</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">height</span>
+</pre></div>
+<pre><code>5</code></pre><div class="highlight"><pre><span></span><span class="c1"># number of cols in DataFrame</span>
+<span class="n">df</span><span class="o">.</span><span class="n">width</span>
+</pre></div>
+<pre><code>4</code></pre><div class="highlight"><pre><span></span><span class="c1"># Count number of rows with each unique value of variable</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;groups&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>groups</th><th>count</th></tr><tr><td>str</td><td>u32</td></tr></thead><tbody><tr><td>&quot;A&quot;</td><td>2</td></tr><tr><td>&quot;C&quot;</td><td>1</td></tr><tr><td>&quot;B&quot;</td><td>2</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># # of distinct values in a column</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;groups&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">n_unique</span><span class="p">()</span>
+</pre></div>
+<pre><code>3</code></pre><div class="highlight"><pre><span></span><span class="c1"># Basic descriptive and statistics for each column</span>
+<span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (9, 5)</small><table border="1" class="dataframe"><thead><tr><th>statistic</th><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>str</td><td>f64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>&quot;count&quot;</td><td>4.0</td><td>&quot;4&quot;</td><td>5.0</td><td>&quot;5&quot;</td></tr><tr><td>&quot;null_count&quot;</td><td>1.0</td><td>&quot;1&quot;</td><td>0.0</td><td>&quot;0&quot;</td></tr><tr><td>&quot;mean&quot;</td><td>2.75</td><td>null</td><td>0.52</td><td>null</td></tr><tr><td>&quot;std&quot;</td><td>1.707825</td><td>null</td><td>0.319374</td><td>null</td></tr><tr><td>&quot;min&quot;</td><td>1.0</td><td>&quot;egg&quot;</td><td>0.1</td><td>&quot;A&quot;</td></tr><tr><td>&quot;25%&quot;</td><td>2.0</td><td>null</td><td>0.3</td><td>null</td></tr><tr><td>&quot;50%&quot;</td><td>3.0</td><td>null</td><td>0.6</td><td>null</td></tr><tr><td>&quot;75%&quot;</td><td>3.0</td><td>null</td><td>0.7</td><td>null</td></tr><tr><td>&quot;max&quot;</td><td>5.0</td><td>&quot;spam&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Aggregation functions</span>
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="c1"># Sum values</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">),</span>
+    <span class="c1"># Minimum value</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">),</span>
+    <span class="c1"># Maximum value</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">),</span>
+    <span class="c1"># or</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;other_max&quot;</span><span class="p">),</span>
+    <span class="c1"># Standard deviation</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;std_dev&quot;</span><span class="p">),</span>
+    <span class="c1"># Variance</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;variance&quot;</span><span class="p">),</span>
+    <span class="c1"># Median</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;median&quot;</span><span class="p">),</span>
+    <span class="c1"># Mean</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;mean&quot;</span><span class="p">),</span>
+    <span class="c1"># Quantile</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;quantile_0.75&quot;</span><span class="p">),</span>
+    <span class="c1"># or</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;other_quantile_0.75&quot;</span><span class="p">),</span>
+    <span class="c1"># First value</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;first&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 11)</small><table border="1" class="dataframe"><thead><tr><th>sum</th><th>min</th><th>max</th><th>other_max</th><th>std_dev</th><th>variance</th><th>median</th><th>mean</th><th>quantile_0.75</th><th>other_quantile_0.75</th><th>first</th></tr><tr><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>2.6</td><td>0.1</td><td>0.9</td><td>0.9</td><td>0.319374</td><td>0.102</td><td>0.6</td><td>0.52</td><td>0.7</td><td>0.7</td><td>0.3</td></tr></tbody></table></div>
+
+<h3>Group And Aggregate Data - <code>group_by()</code> and <code>agg()</code></h3>
+<div class="highlight"><pre><span></span><span class="c1"># Group by values in column named &quot;col&quot;, returning a GroupBy object</span>
+<span class="n">df</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;groups&quot;</span><span class="p">)</span>
+</pre></div>
+<pre><code>&lt;polars.dataframe.group_by.GroupBy at 0x7f674d02c990&gt;</code></pre><div class="highlight"><pre><span></span><span class="c1"># All of the aggregation functions from above can be applied to a group as well</span>
+<span class="n">df</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;groups&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+    <span class="c1"># Sum values</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">),</span>
+    <span class="c1"># Minimum value</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">),</span>
+    <span class="c1"># Maximum value</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">),</span>
+    <span class="c1"># or</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;other_max&quot;</span><span class="p">),</span>
+    <span class="c1"># Standard deviation</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;std_dev&quot;</span><span class="p">),</span>
+    <span class="c1"># Variance</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;variance&quot;</span><span class="p">),</span>
+    <span class="c1"># Median</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;median&quot;</span><span class="p">),</span>
+    <span class="c1"># Mean</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;mean&quot;</span><span class="p">),</span>
+    <span class="c1"># Quantile</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;quantile_0.75&quot;</span><span class="p">),</span>
+    <span class="c1"># or</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;other_quantile_0.75&quot;</span><span class="p">),</span>
+    <span class="c1"># First value</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;first&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 12)</small><table border="1" class="dataframe"><thead><tr><th>groups</th><th>sum</th><th>min</th><th>max</th><th>other_max</th><th>std_dev</th><th>variance</th><th>median</th><th>mean</th><th>quantile_0.75</th><th>other_quantile_0.75</th><th>first</th></tr><tr><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>&quot;B&quot;</td><td>0.7</td><td>0.1</td><td>0.6</td><td>0.6</td><td>0.353553</td><td>0.125</td><td>0.35</td><td>0.35</td><td>0.6</td><td>0.6</td><td>0.1</td></tr><tr><td>&quot;C&quot;</td><td>0.9</td><td>0.9</td><td>0.9</td><td>0.9</td><td>null</td><td>null</td><td>0.9</td><td>0.9</td><td>0.9</td><td>0.9</td><td>0.9</td></tr><tr><td>&quot;A&quot;</td><td>1.0</td><td>0.3</td><td>0.7</td><td>0.7</td><td>0.282843</td><td>0.08</td><td>0.5</td><td>0.5</td><td>0.7</td><td>0.7</td><td>0.3</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Additional GroupBy functions</span>
+<span class="p">(</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;groups&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+        <span class="c1"># Count the number of values in each group</span>
+        <span class="n">pl</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;size&quot;</span><span class="p">),</span>
+        <span class="c1"># Sample one element in each group</span>
+        <span class="c1"># (favour `map_elements` over `apply`)</span>
+        <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map_elements</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">group_df</span><span class="p">:</span> <span class="n">group_df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">return_dtype</span><span class="o">=</span><span class="n">pl</span><span class="o">.</span><span class="n">String</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 3)</small><table border="1" class="dataframe"><thead><tr><th>groups</th><th>size</th><th>names</th></tr><tr><td>str</td><td>u32</td><td>str</td></tr></thead><tbody><tr><td>&quot;A&quot;</td><td>2</td><td>&quot;foo&quot;</td></tr><tr><td>&quot;B&quot;</td><td>2</td><td>null</td></tr><tr><td>&quot;C&quot;</td><td>1</td><td>&quot;egg&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;groups&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)))</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>groups</th><th>foo</th></tr><tr><td>str</td><td>list[str]</td></tr></thead><tbody><tr><td>&quot;C&quot;</td><td>[&quot;egg&quot;]</td></tr><tr><td>&quot;B&quot;</td><td>[null]</td></tr><tr><td>&quot;A&quot;</td><td>[&quot;foo&quot;]</td></tr></tbody></table></div>
+
+<h3>Reshaping Data - Changing Layout and Renaming</h3>
+<div class="highlight"><pre><span></span><span class="c1"># Rename the columns of a DataFrame</span>
+<span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s2">&quot;nrs&quot;</span><span class="p">:</span> <span class="s2">&quot;idx&quot;</span><span class="p">})</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 4)</small><table border="1" class="dataframe"><thead><tr><th>idx</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Drop columns from DataFrame</span>
+<span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;names&quot;</span><span class="p">,</span> <span class="s2">&quot;random&quot;</span><span class="p">])</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 2)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>groups</th></tr><tr><td>i64</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;A&quot;</td></tr><tr><td>2</td><td>&quot;A&quot;</td></tr><tr><td>3</td><td>&quot;B&quot;</td></tr><tr><td>null</td><td>&quot;C&quot;</td></tr><tr><td>5</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="n">df2</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;nrs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">],</span>
+        <span class="s2">&quot;names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;wow&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;random&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">],</span>
+        <span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">df3</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;primes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="c1"># Append rows of DataFrames.</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">df2</span><span class="p">])</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (6, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td></tr><tr><td>6</td><td>&quot;wow&quot;</td><td>0.9</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Append columns of DataFrames</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">df3</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 5)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th><th>primes</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td><td>i64</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td><td>2</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td><td>3</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td><td>5</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td><td>7</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td><td>11</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Spread rows into columns</span>
+<span class="n">df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="s2">&quot;nrs&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s2">&quot;groups&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;names&quot;</span><span class="p">)</span>
+</pre></div>
+<pre><code>/tmp/ipykernel_20290/3836154377.py:2: DeprecationWarning: The argument `columns` for `DataFrame.pivot` is deprecated. It has been renamed to `on`.
+  df.pivot(values=&quot;nrs&quot;, index=&quot;groups&quot;, columns=&quot;names&quot;)</code></pre><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 6)</small><table border="1" class="dataframe"><thead><tr><th>groups</th><th>foo</th><th>ham</th><th>spam</th><th>egg</th><th>null</th></tr><tr><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td></tr></thead><tbody><tr><td>&quot;A&quot;</td><td>1</td><td>2</td><td>null</td><td>null</td><td>null</td></tr><tr><td>&quot;B&quot;</td><td>null</td><td>null</td><td>3</td><td>null</td><td>5</td></tr><tr><td>&quot;C&quot;</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Gather columns into rows (this is equivalent to the deprecated melt() function)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">unpivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;nrs&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;names&quot;</span><span class="p">,</span> <span class="s2">&quot;groups&quot;</span><span class="p">])</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (10, 3)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>variable</th><th>value</th></tr><tr><td>i64</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;names&quot;</td><td>&quot;foo&quot;</td></tr><tr><td>2</td><td>&quot;names&quot;</td><td>&quot;ham&quot;</td></tr><tr><td>3</td><td>&quot;names&quot;</td><td>&quot;spam&quot;</td></tr><tr><td>null</td><td>&quot;names&quot;</td><td>&quot;egg&quot;</td></tr><tr><td>5</td><td>&quot;names&quot;</td><td>null</td></tr><tr><td>1</td><td>&quot;groups&quot;</td><td>&quot;A&quot;</td></tr><tr><td>2</td><td>&quot;groups&quot;</td><td>&quot;A&quot;</td></tr><tr><td>3</td><td>&quot;groups&quot;</td><td>&quot;B&quot;</td></tr><tr><td>null</td><td>&quot;groups&quot;</td><td>&quot;C&quot;</td></tr><tr><td>5</td><td>&quot;groups&quot;</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<h3>Reshaping Data - Joining Data Sets</h3>
+<div class="highlight"><pre><span></span><span class="n">df4</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;nrs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+        <span class="s2">&quot;animals&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;cheetah&quot;</span><span class="p">,</span> <span class="s2">&quot;lion&quot;</span><span class="p">,</span> <span class="s2">&quot;leopard&quot;</span><span class="p">,</span> <span class="s2">&quot;tiger&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="c1"># Inner join</span>
+<span class="c1"># Retains only rows with a match in the other set.</span>
+<span class="n">df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df4</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;nrs&quot;</span><span class="p">)</span>
+<span class="c1"># or</span>
+<span class="n">df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df4</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;nrs&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th><th>animals</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td><td>&quot;cheetah&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td><td>&quot;lion&quot;</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td><td>&quot;leopard&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Left join</span>
+<span class="c1"># Retains each row from &quot;left&quot; set (df).</span>
+<span class="n">df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df4</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;nrs&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 5)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th><th>animals</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td><td>&quot;cheetah&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td><td>&quot;lion&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td><td>null</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td><td>null</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td><td>&quot;leopard&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Outer join</span>
+<span class="c1"># Retains each row, even if no other matching row exists.</span>
+<span class="n">df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df4</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;nrs&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">)</span>
+</pre></div>
+<pre><code>/tmp/ipykernel_20290/1617706674.py:3: DeprecationWarning: Use of `how='outer'` should be replaced with `how='full'`.
+  df.join(df4, on=&quot;nrs&quot;, how=&quot;outer&quot;)</code></pre><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (6, 6)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th><th>nrs_right</th><th>animals</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td><td>i64</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td><td>1</td><td>&quot;cheetah&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td><td>2</td><td>&quot;lion&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td><td>null</td><td>null</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td><td>null</td><td>null</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td><td>5</td><td>&quot;leopard&quot;</td></tr><tr><td>null</td><td>null</td><td>null</td><td>null</td><td>6</td><td>&quot;tiger&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Anti join</span>
+<span class="c1"># Contains all rows from df that do not have a match in df4.</span>
+<span class="n">df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df4</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;nrs&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;anti&quot;</span><span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (2, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr></tbody></table></div>
+
+<h2>Misc</h2>
+<h3>Changing Entries That Match Certain Criteria</h3>
+<p>Use the <code>when().then().otherwise()</code> chain for this.</p>
+<div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">when</span><span class="p">((</span><span class="n">c</span><span class="p">(</span><span class="s2">&quot;groups&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">c</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;foo&quot;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="mf">9.0</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>9.0</td><td>&quot;A&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<h3>Handling Missing Data</h3>
+<div class="highlight"><pre><span></span><span class="c1"># How many nulls per column?</span>
+<span class="n">df</span><span class="o">.</span><span class="n">null_count</span><span class="p">()</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>u32</td><td>u32</td><td>u32</td><td>u32</td></tr></thead><tbody><tr><td>1</td><td>1</td><td>0</td><td>0</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Drop rows with any column having a null value</span>
+<span class="n">df</span><span class="o">.</span><span class="n">drop_nulls</span><span class="p">()</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Replace null values with given value</span>
+<span class="n">df</span><span class="o">.</span><span class="n">fill_null</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr><tr><td>42</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Replace null values using forward strategy</span>
+<span class="n">df</span><span class="o">.</span><span class="n">fill_null</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;forward&quot;</span><span class="p">)</span>
+<span class="c1"># Other fill strategies are &quot;backward&quot;, &quot;min&quot;, &quot;max&quot;, &quot;mean&quot;, &quot;zero&quot; and &quot;one&quot;</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr><tr><td>3</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr><tr><td>5</td><td>&quot;egg&quot;</td><td>0.6</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Replace floating point NaN values with given value</span>
+<span class="n">df</span><span class="o">.</span><span class="n">fill_nan</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<h3>Rolling Functions</h3>
+<div class="highlight"><pre><span></span><span class="c1"># The following rolling functions are available</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">),</span>
+    <span class="c1"># Rolling maximum value</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rolling_max</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;rolling_max&quot;</span><span class="p">),</span>
+    <span class="c1"># Rolling mean value</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rolling_mean</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;rolling_mean&quot;</span><span class="p">),</span>
+    <span class="c1"># Rolling median value</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">rolling_median</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;rolling_median&quot;</span><span class="p">),</span>
+    <span class="c1"># Rolling minimum value</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rolling_min</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;rolling_min&quot;</span><span class="p">),</span>
+    <span class="c1"># Rolling standard deviation</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rolling_std</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;rolling_std&quot;</span><span class="p">),</span>
+    <span class="c1"># Rolling sum values</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rolling_sum</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;rolling_sum&quot;</span><span class="p">),</span>
+    <span class="c1"># Rolling variance</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rolling_var</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;rolling_var&quot;</span><span class="p">),</span>
+    <span class="c1"># Rolling quantile</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">rolling_quantile</span><span class="p">(</span><span class="n">quantile</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;rolling_quantile&quot;</span><span class="p">),</span>
+    <span class="c1"># Rolling skew</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rolling_skew</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;rolling_skew&quot;</span><span class="p">),</span>
+    <span class="c1"># Rolling custom function</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">rolling_map</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;rolling_apply&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 11)</small><table border="1" class="dataframe"><thead><tr><th>random</th><th>rolling_max</th><th>rolling_mean</th><th>rolling_median</th><th>rolling_min</th><th>rolling_std</th><th>rolling_sum</th><th>rolling_var</th><th>rolling_quantile</th><th>rolling_skew</th><th>rolling_apply</th></tr><tr><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>0.3</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td></tr><tr><td>0.7</td><td>0.7</td><td>0.5</td><td>0.5</td><td>0.3</td><td>0.282843</td><td>1.0</td><td>0.08</td><td>0.7</td><td>-4.3368e-16</td><td>0.2</td></tr><tr><td>0.1</td><td>0.7</td><td>0.4</td><td>0.4</td><td>0.1</td><td>0.424264</td><td>0.8</td><td>0.18</td><td>0.7</td><td>3.8549e-16</td><td>0.3</td></tr><tr><td>0.9</td><td>0.9</td><td>0.5</td><td>0.5</td><td>0.1</td><td>0.565685</td><td>1.0</td><td>0.32</td><td>0.9</td><td>0.0</td><td>0.4</td></tr><tr><td>0.6</td><td>0.9</td><td>0.75</td><td>0.75</td><td>0.6</td><td>0.212132</td><td>1.5</td><td>0.045</td><td>0.9</td><td>0.0</td><td>0.15</td></tr></tbody></table></div>
+
+<h3>Window Functions</h3>
+<div class="highlight"><pre><span></span><span class="c1"># Window functions allow to group by several columns simultaneously</span>
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="s2">&quot;names&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;groups&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;random&quot;</span><span class="p">,</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;sum_by_names&quot;</span><span class="p">),</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="s2">&quot;groups&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;sum_by_groups&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 5)</small><table border="1" class="dataframe"><thead><tr><th>names</th><th>groups</th><th>random</th><th>sum_by_names</th><th>sum_by_groups</th></tr><tr><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>&quot;foo&quot;</td><td>&quot;A&quot;</td><td>0.3</td><td>0.3</td><td>1.0</td></tr><tr><td>&quot;ham&quot;</td><td>&quot;A&quot;</td><td>0.7</td><td>0.7</td><td>1.0</td></tr><tr><td>&quot;spam&quot;</td><td>&quot;B&quot;</td><td>0.1</td><td>0.1</td><td>0.7</td></tr><tr><td>&quot;egg&quot;</td><td>&quot;C&quot;</td><td>0.9</td><td>0.9</td><td>0.9</td></tr><tr><td>null</td><td>&quot;B&quot;</td><td>0.6</td><td>0.6</td><td>0.7</td></tr></tbody></table></div>
+
+<h3>Date Range Creation</h3>
+<div class="highlight"><pre><span></span><span class="c1"># create data with pl.date_range</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+
+
+<span class="n">df_date</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="c1"># eager=True is important to turn the expression into actual data</span>
+        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span>
+            <span class="n">date</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">date</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="s2">&quot;1d&quot;</span><span class="p">,</span> <span class="n">eager</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="n">df_date</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (7, 2)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>value</th></tr><tr><td>date</td><td>i64</td></tr></thead><tbody><tr><td>2024-01-01</td><td>1</td></tr><tr><td>2024-01-02</td><td>2</td></tr><tr><td>2024-01-03</td><td>3</td></tr><tr><td>2024-01-04</td><td>4</td></tr><tr><td>2024-01-05</td><td>5</td></tr><tr><td>2024-01-06</td><td>6</td></tr><tr><td>2024-01-07</td><td>7</td></tr></tbody></table></div>
+
+<h3>Time-based Upsampling - <code>group_by_dynamic()</code></h3>
+<p><code>group_by_dynamic</code> has <strong>many</strong> useful options.</p>
+<p><a href="https://docs.pola.rs/py-polars/html/reference/dataframe/api/polars.DataFrame.group_by_dynamic.html#polars.DataFrame.group_by_dynamic">[docs]</a></p>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="n">df_date</span><span class="o">.</span><span class="n">group_by_dynamic</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">every</span><span class="o">=</span><span class="s2">&quot;1w&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 2)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>value</th></tr><tr><td>date</td><td>i64</td></tr></thead><tbody><tr><td>2024-01-01</td><td>28</td></tr></tbody></table></div>
+
+<h3>Custom Expressions</h3>
+<p>You can create your own expression and reuse them throughout your projects.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">normalize_str_col</span><span class="p">(</span><span class="n">col_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">Expr</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="n">col_name</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">to_lowercase</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace_all</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+
+
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">new_col</span><span class="o">=</span><span class="n">normalize_str_col</span><span class="p">(</span><span class="n">col_name</span><span class="o">=</span><span class="s2">&quot;groups&quot;</span><span class="p">))</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 1)</small><table border="1" class="dataframe"><thead><tr><th>new_col</th></tr><tr><td>str</td></tr></thead><tbody><tr><td>&quot;a&quot;</td></tr><tr><td>&quot;a&quot;</td></tr><tr><td>&quot;b&quot;</td></tr><tr><td>&quot;c&quot;</td></tr><tr><td>&quot;b&quot;</td></tr></tbody></table></div>
+
+<h2>Plotting</h2>
+<p>Polars does not implement plotting itself, but delegates to <code>hvplot</code>.
+The plot functions are available via the <code>.plot</code> accessor.</p>
+<p><a href="https://docs.pola.rs/py-polars/html/reference/dataframe/plot.html">[docs]</a></p>
+<div class="highlight"><pre><span></span><span class="n">df</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 4)</small><table border="1" class="dataframe"><thead><tr><th>nrs</th><th>names</th><th>random</th><th>groups</th></tr><tr><td>i64</td><td>str</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;foo&quot;</td><td>0.3</td><td>&quot;A&quot;</td></tr><tr><td>2</td><td>&quot;ham&quot;</td><td>0.7</td><td>&quot;A&quot;</td></tr><tr><td>3</td><td>&quot;spam&quot;</td><td>0.1</td><td>&quot;B&quot;</td></tr><tr><td>null</td><td>&quot;egg&quot;</td><td>0.9</td><td>&quot;C&quot;</td></tr><tr><td>5</td><td>null</td><td>0.6</td><td>&quot;B&quot;</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="p">(</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;groups&quot;</span><span class="p">,</span> <span class="n">maintain_order</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;groups&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+<pre><code>%opts magic unavailable (pyparsing cannot be imported)
+%compositor magic unavailable (pyparsing cannot be imported)</code></pre><style>*[data-root-id],
+*[data-root-id] > * {
+  box-sizing: border-box;
+  font-family: var(--jp-ui-font-family);
+  font-size: var(--jp-ui-font-size1);
+  color: var(--vscode-editor-foreground, var(--jp-ui-font-color1));
+}
+
+/* Override VSCode background color */
+.cell-output-ipywidget-background:has(
+    > .cell-output-ipywidget-background > .lm-Widget > *[data-root-id]
+  ),
+.cell-output-ipywidget-background:has(> .lm-Widget > *[data-root-id]) {
+  background-color: transparent !important;
+}
+</style>
+
+<div id='p1002'>
+  <div id="e2d2945b-0ec7-4638-be07-5a0052166451" data-root-id="p1002" style="display: contents;"></div>
+</div>
+<script type="application/javascript">(function(root) {
+  var docs_json = {"a6326047-3672-434b-bae6-3098094d02b7":{"version":"3.4.2","title":"Bokeh Application","roots":[{"type":"object","name":"panel.models.browser.BrowserInfo","id":"p1002"},{"type":"object","name":"panel.models.comm_manager.CommManager","id":"p1003","attributes":{"plot_id":"p1002","comm_id":"27e7d69f8176448ca5e88b8f60e1cce6","client_comm_id":"0aa233070fff4903bc25e8551bfb2891"}}],"defs":[{"type":"model","name":"ReactiveHTML1"},{"type":"model","name":"FlexBox1","properties":[{"name":"align_content","kind":"Any","default":"flex-start"},{"name":"align_items","kind":"Any","default":"flex-start"},{"name":"flex_direction","kind":"Any","default":"row"},{"name":"flex_wrap","kind":"Any","default":"wrap"},{"name":"gap","kind":"Any","default":""},{"name":"justify_content","kind":"Any","default":"flex-start"}]},{"type":"model","name":"FloatPanel1","properties":[{"name":"config","kind":"Any","default":{"type":"map"}},{"name":"contained","kind":"Any","default":true},{"name":"position","kind":"Any","default":"right-top"},{"name":"offsetx","kind":"Any","default":null},{"name":"offsety","kind":"Any","default":null},{"name":"theme","kind":"Any","default":"primary"},{"name":"status","kind":"Any","default":"normalized"}]},{"type":"model","name":"GridStack1","properties":[{"name":"mode","kind":"Any","default":"warn"},{"name":"ncols","kind":"Any","default":null},{"name":"nrows","kind":"Any","default":null},{"name":"allow_resize","kind":"Any","default":true},{"name":"allow_drag","kind":"Any","default":true},{"name":"state","kind":"Any","default":[]}]},{"type":"model","name":"drag1","properties":[{"name":"slider_width","kind":"Any","default":5},{"name":"slider_color","kind":"Any","default":"black"},{"name":"value","kind":"Any","default":50}]},{"type":"model","name":"click1","properties":[{"name":"terminal_output","kind":"Any","default":""},{"name":"debug_name","kind":"Any","default":""},{"name":"clears","kind":"Any","default":0}]},{"type":"model","name":"FastWrapper1","properties":[{"name":"object","kind":"Any","default":null},{"name":"style","kind":"Any","default":null}]},{"type":"model","name":"NotificationAreaBase1","properties":[{"name":"js_events","kind":"Any","default":{"type":"map"}},{"name":"position","kind":"Any","default":"bottom-right"},{"name":"_clear","kind":"Any","default":0}]},{"type":"model","name":"NotificationArea1","properties":[{"name":"js_events","kind":"Any","default":{"type":"map"}},{"name":"notifications","kind":"Any","default":[]},{"name":"position","kind":"Any","default":"bottom-right"},{"name":"_clear","kind":"Any","default":0},{"name":"types","kind":"Any","default":[{"type":"map","entries":[["type","warning"],["background","#ffc107"],["icon",{"type":"map","entries":[["className","fas fa-exclamation-triangle"],["tagName","i"],["color","white"]]}]]},{"type":"map","entries":[["type","info"],["background","#007bff"],["icon",{"type":"map","entries":[["className","fas fa-info-circle"],["tagName","i"],["color","white"]]}]]}]}]},{"type":"model","name":"Notification","properties":[{"name":"background","kind":"Any","default":null},{"name":"duration","kind":"Any","default":3000},{"name":"icon","kind":"Any","default":null},{"name":"message","kind":"Any","default":""},{"name":"notification_type","kind":"Any","default":null},{"name":"_destroyed","kind":"Any","default":false}]},{"type":"model","name":"TemplateActions1","properties":[{"name":"open_modal","kind":"Any","default":0},{"name":"close_modal","kind":"Any","default":0}]},{"type":"model","name":"BootstrapTemplateActions1","properties":[{"name":"open_modal","kind":"Any","default":0},{"name":"close_modal","kind":"Any","default":0}]},{"type":"model","name":"TemplateEditor1","properties":[{"name":"layout","kind":"Any","default":[]}]},{"type":"model","name":"MaterialTemplateActions1","properties":[{"name":"open_modal","kind":"Any","default":0},{"name":"close_modal","kind":"Any","default":0}]},{"type":"model","name":"copy_to_clipboard1","properties":[{"name":"fill","kind":"Any","default":"none"},{"name":"value","kind":"Any","default":null}]}]}};
+  var render_items = [{"docid":"a6326047-3672-434b-bae6-3098094d02b7","roots":{"p1002":"e2d2945b-0ec7-4638-be07-5a0052166451"},"root_ids":["p1002"]}];
+  var docs = Object.values(docs_json)
+  if (!docs) {
+    return
+  }
+  const py_version = docs[0].version.replace('rc', '-rc.').replace('.dev', '-dev.')
+  async function embed_document(root) {
+    var Bokeh = get_bokeh(root)
+    await Bokeh.embed.embed_items_notebook(docs_json, render_items);
+    for (const render_item of render_items) {
+      for (const root_id of render_item.root_ids) {
+	const id_el = document.getElementById(root_id)
+	if (id_el.children.length && id_el.children[0].hasAttribute('data-root-id')) {
+	  const root_el = id_el.children[0]
+	  root_el.id = root_el.id + '-rendered'
+	  for (const child of root_el.children) {
+            // Ensure JupyterLab does not capture keyboard shortcuts
+            // see: https://jupyterlab.readthedocs.io/en/4.1.x/extension/notebook.html#keyboard-interaction-model
+	    child.setAttribute('data-lm-suppress-shortcuts', 'true')
+	  }
+	}
+      }
+    }
+  }
+  function get_bokeh(root) {
+    if (root.Bokeh === undefined) {
+      return null
+    } else if (root.Bokeh.version !== py_version) {
+      if (root.Bokeh.versions === undefined || !root.Bokeh.versions.has(py_version)) {
+	return null
+      }
+      return root.Bokeh.versions.get(py_version);
+    } else if (root.Bokeh.version === py_version) {
+      return root.Bokeh
+    }
+    return null
+  }
+  function is_loaded(root) {
+    var Bokeh = get_bokeh(root)
+    return (Bokeh != null && Bokeh.Panel !== undefined)
+  }
+  if (is_loaded(root)) {
+    embed_document(root);
+  } else {
+    var attempts = 0;
+    var timer = setInterval(function(root) {
+      if (is_loaded(root)) {
+        clearInterval(timer);
+        embed_document(root);
+      } else if (document.readyState == "complete") {
+        attempts++;
+        if (attempts > 200) {
+          clearInterval(timer);
+	  var Bokeh = get_bokeh(root)
+	  if (Bokeh == null || Bokeh.Panel == null) {
+            console.warn("Panel: ERROR: Unable to run Panel code because Bokeh or Panel library is missing");
+	  } else {
+	    console.warn("Panel: WARNING: Attempting to render but not all required libraries could be resolved.")
+	    embed_document(root)
+	  }
+        }
+      }
+    }, 25, root)
+  }
+})(window);</script>
+
+<div id='p1004'>
+  <div id="bb692441-3d3f-4cbc-b4bc-2cb6519ba73c" data-root-id="p1004" style="display: contents;"></div>
+</div>
+<script type="application/javascript">(function(root) {
+  var docs_json = {"0fe96f77-1dd6-468e-bcde-b4b98bb2286b":{"version":"3.4.2","title":"Bokeh Application","roots":[{"type":"object","name":"Row","id":"p1004","attributes":{"name":"Row00938","tags":["embedded"],"stylesheets":["\n:host(.pn-loading):before, .pn-loading:before {\n  background-color: #c3c3c3;\n  mask-size: auto calc(min(50%, 400px));\n  -webkit-mask-size: auto calc(min(50%, 400px));\n}",{"type":"object","name":"ImportedStyleSheet","id":"p1007","attributes":{"url":"https://cdn.holoviz.org/panel/1.4.4/dist/css/loading.css"}},{"type":"object","name":"ImportedStyleSheet","id":"p1063","attributes":{"url":"https://cdn.holoviz.org/panel/1.4.4/dist/css/listpanel.css"}},{"type":"object","name":"ImportedStyleSheet","id":"p1005","attributes":{"url":"https://cdn.holoviz.org/panel/1.4.4/dist/bundled/theme/default.css"}},{"type":"object","name":"ImportedStyleSheet","id":"p1006","attributes":{"url":"https://cdn.holoviz.org/panel/1.4.4/dist/bundled/theme/native.css"}}],"min_width":700,"margin":0,"sizing_mode":"stretch_width","align":"start","children":[{"type":"object","name":"Spacer","id":"p1008","attributes":{"name":"HSpacer00945","stylesheets":["\n:host(.pn-loading):before, .pn-loading:before {\n  background-color: #c3c3c3;\n  mask-size: auto calc(min(50%, 400px));\n  -webkit-mask-size: auto calc(min(50%, 400px));\n}",{"id":"p1007"},{"id":"p1005"},{"id":"p1006"}],"margin":0,"sizing_mode":"stretch_width","align":"start"}},{"type":"object","name":"Figure","id":"p1016","attributes":{"width":700,"height":300,"margin":[5,10],"sizing_mode":"fixed","align":"start","x_range":{"type":"object","name":"FactorRange","id":"p1009","attributes":{"tags":[[["groups",null]],[]],"factors":["A","B","C"]}},"y_range":{"type":"object","name":"Range1d","id":"p1010","attributes":{"tags":[[["random",null]],{"type":"map","entries":[["invert_yaxis",false],["autorange",false]]}],"end":1.03,"reset_start":0.0,"reset_end":1.03}},"x_scale":{"type":"object","name":"CategoricalScale","id":"p1026"},"y_scale":{"type":"object","name":"LinearScale","id":"p1027"},"title":{"type":"object","name":"Title","id":"p1019","attributes":{"text_color":"black","text_font_size":"12pt"}},"renderers":[{"type":"object","name":"GlyphRenderer","id":"p1056","attributes":{"data_source":{"type":"object","name":"ColumnDataSource","id":"p1047","attributes":{"selected":{"type":"object","name":"Selection","id":"p1048","attributes":{"indices":[],"line_indices":[]}},"selection_policy":{"type":"object","name":"UnionRenderers","id":"p1049"},"data":{"type":"map","entries":[["groups",["A","B","C"]],["random",{"type":"ndarray","array":{"type":"bytes","data":"AAAAAAAA8D9mZmZmZmbmP83MzMzMzOw/"},"shape":[3],"dtype":"float64","order":"little"}]]}}},"view":{"type":"object","name":"CDSView","id":"p1057","attributes":{"filter":{"type":"object","name":"AllIndices","id":"p1058"}}},"glyph":{"type":"object","name":"VBar","id":"p1053","attributes":{"tags":["apply_ranges"],"x":{"type":"field","field":"groups"},"width":{"type":"value","value":0.8},"top":{"type":"field","field":"random"},"fill_color":{"type":"value","value":"#30a2da"},"hatch_color":{"type":"value","value":"#30a2da"}}},"selection_glyph":{"type":"object","name":"VBar","id":"p1059","attributes":{"tags":["apply_ranges"],"x":{"type":"field","field":"groups"},"width":{"type":"value","value":0.8},"bottom":{"type":"value","value":0},"top":{"type":"field","field":"random"},"line_color":{"type":"value","value":"black"},"line_alpha":{"type":"value","value":1.0},"line_width":{"type":"value","value":1},"line_join":{"type":"value","value":"bevel"},"line_cap":{"type":"value","value":"butt"},"line_dash":{"type":"value","value":[]},"line_dash_offset":{"type":"value","value":0},"fill_color":{"type":"value","value":"#30a2da"},"fill_alpha":{"type":"value","value":1.0},"hatch_color":{"type":"value","value":"#30a2da"},"hatch_alpha":{"type":"value","value":1.0},"hatch_scale":{"type":"value","value":12.0},"hatch_pattern":{"type":"value","value":null},"hatch_weight":{"type":"value","value":1.0}}},"nonselection_glyph":{"type":"object","name":"VBar","id":"p1054","attributes":{"tags":["apply_ranges"],"x":{"type":"field","field":"groups"},"width":{"type":"value","value":0.8},"top":{"type":"field","field":"random"},"line_alpha":{"type":"value","value":0.1},"fill_color":{"type":"value","value":"#30a2da"},"fill_alpha":{"type":"value","value":0.1},"hatch_color":{"type":"value","value":"#30a2da"},"hatch_alpha":{"type":"value","value":0.1}}},"muted_glyph":{"type":"object","name":"VBar","id":"p1055","attributes":{"tags":["apply_ranges"],"x":{"type":"field","field":"groups"},"width":{"type":"value","value":0.8},"top":{"type":"field","field":"random"},"line_alpha":{"type":"value","value":0.2},"fill_color":{"type":"value","value":"#30a2da"},"fill_alpha":{"type":"value","value":0.2},"hatch_color":{"type":"value","value":"#30a2da"},"hatch_alpha":{"type":"value","value":0.2}}}}}],"toolbar":{"type":"object","name":"Toolbar","id":"p1025","attributes":{"tools":[{"type":"object","name":"WheelZoomTool","id":"p1014","attributes":{"tags":["hv_created"],"renderers":"auto","zoom_together":"none"}},{"type":"object","name":"HoverTool","id":"p1015","attributes":{"tags":["hv_created"],"renderers":[{"id":"p1056"}],"tooltips":[["groups","@{groups}"],["random","@{random}"]]}},{"type":"object","name":"SaveTool","id":"p1038"},{"type":"object","name":"PanTool","id":"p1039"},{"type":"object","name":"BoxZoomTool","id":"p1040","attributes":{"overlay":{"type":"object","name":"BoxAnnotation","id":"p1041","attributes":{"syncable":false,"level":"overlay","visible":false,"left":{"type":"number","value":"nan"},"right":{"type":"number","value":"nan"},"top":{"type":"number","value":"nan"},"bottom":{"type":"number","value":"nan"},"left_units":"canvas","right_units":"canvas","top_units":"canvas","bottom_units":"canvas","line_color":"black","line_alpha":1.0,"line_width":2,"line_dash":[4,4],"fill_color":"lightgrey","fill_alpha":0.5}}}},{"type":"object","name":"ResetTool","id":"p1046"}],"active_drag":{"id":"p1039"},"active_scroll":{"id":"p1014"}}},"left":[{"type":"object","name":"LinearAxis","id":"p1033","attributes":{"ticker":{"type":"object","name":"BasicTicker","id":"p1034","attributes":{"mantissas":[1,2,5]}},"formatter":{"type":"object","name":"BasicTickFormatter","id":"p1035"},"axis_label":"random","major_label_policy":{"type":"object","name":"AllLabels","id":"p1036"}}}],"below":[{"type":"object","name":"CategoricalAxis","id":"p1028","attributes":{"ticker":{"type":"object","name":"CategoricalTicker","id":"p1029"},"formatter":{"type":"object","name":"CategoricalTickFormatter","id":"p1030"},"axis_label":"groups","major_label_policy":{"type":"object","name":"AllLabels","id":"p1031"}}}],"center":[{"type":"object","name":"Grid","id":"p1032","attributes":{"axis":{"id":"p1028"},"grid_line_color":null}},{"type":"object","name":"Grid","id":"p1037","attributes":{"dimension":1,"axis":{"id":"p1033"},"grid_line_color":null}}],"min_border_top":10,"min_border_bottom":10,"min_border_left":10,"min_border_right":10,"output_backend":"webgl"}},{"type":"object","name":"Spacer","id":"p1061","attributes":{"name":"HSpacer00946","stylesheets":["\n:host(.pn-loading):before, .pn-loading:before {\n  background-color: #c3c3c3;\n  mask-size: auto calc(min(50%, 400px));\n  -webkit-mask-size: auto calc(min(50%, 400px));\n}",{"id":"p1007"},{"id":"p1005"},{"id":"p1006"}],"margin":0,"sizing_mode":"stretch_width","align":"start"}}]}}],"defs":[{"type":"model","name":"ReactiveHTML1"},{"type":"model","name":"FlexBox1","properties":[{"name":"align_content","kind":"Any","default":"flex-start"},{"name":"align_items","kind":"Any","default":"flex-start"},{"name":"flex_direction","kind":"Any","default":"row"},{"name":"flex_wrap","kind":"Any","default":"wrap"},{"name":"gap","kind":"Any","default":""},{"name":"justify_content","kind":"Any","default":"flex-start"}]},{"type":"model","name":"FloatPanel1","properties":[{"name":"config","kind":"Any","default":{"type":"map"}},{"name":"contained","kind":"Any","default":true},{"name":"position","kind":"Any","default":"right-top"},{"name":"offsetx","kind":"Any","default":null},{"name":"offsety","kind":"Any","default":null},{"name":"theme","kind":"Any","default":"primary"},{"name":"status","kind":"Any","default":"normalized"}]},{"type":"model","name":"GridStack1","properties":[{"name":"mode","kind":"Any","default":"warn"},{"name":"ncols","kind":"Any","default":null},{"name":"nrows","kind":"Any","default":null},{"name":"allow_resize","kind":"Any","default":true},{"name":"allow_drag","kind":"Any","default":true},{"name":"state","kind":"Any","default":[]}]},{"type":"model","name":"drag1","properties":[{"name":"slider_width","kind":"Any","default":5},{"name":"slider_color","kind":"Any","default":"black"},{"name":"value","kind":"Any","default":50}]},{"type":"model","name":"click1","properties":[{"name":"terminal_output","kind":"Any","default":""},{"name":"debug_name","kind":"Any","default":""},{"name":"clears","kind":"Any","default":0}]},{"type":"model","name":"FastWrapper1","properties":[{"name":"object","kind":"Any","default":null},{"name":"style","kind":"Any","default":null}]},{"type":"model","name":"NotificationAreaBase1","properties":[{"name":"js_events","kind":"Any","default":{"type":"map"}},{"name":"position","kind":"Any","default":"bottom-right"},{"name":"_clear","kind":"Any","default":0}]},{"type":"model","name":"NotificationArea1","properties":[{"name":"js_events","kind":"Any","default":{"type":"map"}},{"name":"notifications","kind":"Any","default":[]},{"name":"position","kind":"Any","default":"bottom-right"},{"name":"_clear","kind":"Any","default":0},{"name":"types","kind":"Any","default":[{"type":"map","entries":[["type","warning"],["background","#ffc107"],["icon",{"type":"map","entries":[["className","fas fa-exclamation-triangle"],["tagName","i"],["color","white"]]}]]},{"type":"map","entries":[["type","info"],["background","#007bff"],["icon",{"type":"map","entries":[["className","fas fa-info-circle"],["tagName","i"],["color","white"]]}]]}]}]},{"type":"model","name":"Notification","properties":[{"name":"background","kind":"Any","default":null},{"name":"duration","kind":"Any","default":3000},{"name":"icon","kind":"Any","default":null},{"name":"message","kind":"Any","default":""},{"name":"notification_type","kind":"Any","default":null},{"name":"_destroyed","kind":"Any","default":false}]},{"type":"model","name":"TemplateActions1","properties":[{"name":"open_modal","kind":"Any","default":0},{"name":"close_modal","kind":"Any","default":0}]},{"type":"model","name":"BootstrapTemplateActions1","properties":[{"name":"open_modal","kind":"Any","default":0},{"name":"close_modal","kind":"Any","default":0}]},{"type":"model","name":"TemplateEditor1","properties":[{"name":"layout","kind":"Any","default":[]}]},{"type":"model","name":"MaterialTemplateActions1","properties":[{"name":"open_modal","kind":"Any","default":0},{"name":"close_modal","kind":"Any","default":0}]},{"type":"model","name":"copy_to_clipboard1","properties":[{"name":"fill","kind":"Any","default":"none"},{"name":"value","kind":"Any","default":null}]}]}};
+  var render_items = [{"docid":"0fe96f77-1dd6-468e-bcde-b4b98bb2286b","roots":{"p1004":"bb692441-3d3f-4cbc-b4bc-2cb6519ba73c"},"root_ids":["p1004"]}];
+  var docs = Object.values(docs_json)
+  if (!docs) {
+    return
+  }
+  const py_version = docs[0].version.replace('rc', '-rc.').replace('.dev', '-dev.')
+  async function embed_document(root) {
+    var Bokeh = get_bokeh(root)
+    await Bokeh.embed.embed_items_notebook(docs_json, render_items);
+    for (const render_item of render_items) {
+      for (const root_id of render_item.root_ids) {
+	const id_el = document.getElementById(root_id)
+	if (id_el.children.length && id_el.children[0].hasAttribute('data-root-id')) {
+	  const root_el = id_el.children[0]
+	  root_el.id = root_el.id + '-rendered'
+	  for (const child of root_el.children) {
+            // Ensure JupyterLab does not capture keyboard shortcuts
+            // see: https://jupyterlab.readthedocs.io/en/4.1.x/extension/notebook.html#keyboard-interaction-model
+	    child.setAttribute('data-lm-suppress-shortcuts', 'true')
+	  }
+	}
+      }
+    }
+  }
+  function get_bokeh(root) {
+    if (root.Bokeh === undefined) {
+      return null
+    } else if (root.Bokeh.version !== py_version) {
+      if (root.Bokeh.versions === undefined || !root.Bokeh.versions.has(py_version)) {
+	return null
+      }
+      return root.Bokeh.versions.get(py_version);
+    } else if (root.Bokeh.version === py_version) {
+      return root.Bokeh
+    }
+    return null
+  }
+  function is_loaded(root) {
+    var Bokeh = get_bokeh(root)
+    return (Bokeh != null && Bokeh.Panel !== undefined)
+  }
+  if (is_loaded(root)) {
+    embed_document(root);
+  } else {
+    var attempts = 0;
+    var timer = setInterval(function(root) {
+      if (is_loaded(root)) {
+        clearInterval(timer);
+        embed_document(root);
+      } else if (document.readyState == "complete") {
+        attempts++;
+        if (attempts > 200) {
+          clearInterval(timer);
+	  var Bokeh = get_bokeh(root)
+	  if (Bokeh == null || Bokeh.Panel == null) {
+            console.warn("Panel: ERROR: Unable to run Panel code because Bokeh or Panel library is missing");
+	  } else {
+	    console.warn("Panel: WARNING: Attempting to render but not all required libraries could be resolved.")
+	    embed_document(root)
+	  }
+        }
+      }
+    }, 25, root)
+  }
+})(window);</script>
+
+<h2>Debugging</h2>
+<p>If you have a long chain of transformations, it can be handy to look at / log intemediate steps.
+Write little helpers to make this easy and call them via <code>pipe()</code>.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">log_df</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">shape:</span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">  schema: </span><span class="si">{</span><span class="nb">dict</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+
+<span class="p">(</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">log_df</span><span class="p">,</span> <span class="s2">&quot;step 1: &quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">random</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">log_df</span><span class="p">,</span> <span class="s2">&quot;step 2: &quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">log_df</span><span class="p">,</span> <span class="s2">&quot;step 3: &quot;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+<pre><code>step 1: shape:(5, 4)  schema: {'nrs': Int64, 'names': String, 'random': Float64, 'groups': String}
+step 2: shape:(3, 4)  schema: {'nrs': Int64, 'names': String, 'random': Float64, 'groups': String}
+step 3: shape:(3, 1)  schema: {'names': String}</code></pre><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 1)</small><table border="1" class="dataframe"><thead><tr><th>names</th></tr><tr><td>str</td></tr></thead><tbody><tr><td>&quot;ham&quot;</td></tr><tr><td>&quot;egg&quot;</td></tr><tr><td>null</td></tr></tbody></table></div>
+
+<h2>Eager, lazy, out-of-core</h2>
+<p>Lazy mode allows optimization of the query plan.</p>
+<p>Out-of-core or streaming allows to work with data that is bigger than the RAM.</p>
+<div class="highlight"><pre><span></span><span class="c1"># eager loading, lazy execution</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s2">&quot;df.parquet&quot;</span><span class="p">)</span>
+<span class="p">(</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">lazy</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;groups&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;total&quot;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;total&quot;</span><span class="p">)</span>
+    <span class="c1"># till here nothing really happened</span>
+    <span class="o">.</span><span class="n">collect</span><span class="p">()</span>  <span class="c1"># now we execute the plan and collect the results</span>
+<span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>groups</th><th>total</th></tr><tr><td>str</td><td>f64</td></tr></thead><tbody><tr><td>&quot;B&quot;</td><td>0.7</td></tr><tr><td>&quot;C&quot;</td><td>0.9</td></tr><tr><td>&quot;A&quot;</td><td>1.0</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># lazy loading, lazy execution</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">scan_parquet</span><span class="p">(</span><span class="s2">&quot;df.parquet&quot;</span><span class="p">)</span>
+<span class="p">(</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">lazy</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;groups&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;total&quot;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;total&quot;</span><span class="p">)</span>
+    <span class="c1"># till here nothing really happened</span>
+    <span class="c1"># with the next line, we execute the plan and collect the results</span>
+    <span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>groups</th><th>total</th></tr><tr><td>str</td><td>f64</td></tr></thead><tbody><tr><td>&quot;B&quot;</td><td>0.7</td></tr><tr><td>&quot;C&quot;</td><td>0.9</td></tr><tr><td>&quot;A&quot;</td><td>1.0</td></tr></tbody></table></div>
+
+<div class="highlight"><pre><span></span><span class="c1"># stream data</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">scan_parquet</span><span class="p">(</span><span class="s2">&quot;df.parquet&quot;</span><span class="p">)</span>
+<span class="p">(</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">lazy</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;groups&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;total&quot;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;total&quot;</span><span class="p">)</span>
+    <span class="c1"># till here nothing really happened</span>
+    <span class="c1"># with the next line, we execute the plan in a streaming fashion</span>
+    <span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="n">streaming</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>groups</th><th>total</th></tr><tr><td>str</td><td>f64</td></tr></thead><tbody><tr><td>&quot;B&quot;</td><td>0.7</td></tr><tr><td>&quot;C&quot;</td><td>0.9</td></tr><tr><td>&quot;A&quot;</td><td>1.0</td></tr></tbody></table></div>
+
+<h2>Data Validation with Pandera</h2>
+<p>Since 0.19 <a href="https://pandera.readthedocs.io/en/stable/polars.html">pandera offers polars support</a>.
+That means you can validate the schema and data of your polars DataFrame.</p>
+<p>This is just a sneak peak, read the docs for more.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandera.polars</span> <span class="k">as</span> <span class="nn">pa</span>
+
+
+<span class="c1"># define your schema in as much detail as you want</span>
+
+
+<span class="k">class</span> <span class="nc">MySchema</span><span class="p">(</span><span class="n">pa</span><span class="o">.</span><span class="n">DataFrameModel</span><span class="p">):</span>
+    <span class="n">nrs</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">names</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># or pl.String</span>
+    <span class="c1"># different range</span>
+    <span class="n">random</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">in_range</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;min_value&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;max_value&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">})</span>
+    <span class="c1"># C is not allowed</span>
+    <span class="n">groups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">isin</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">])</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="c1"># All existing columns must be listed in the schema</span>
+        <span class="n">strict</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="c1"># Then validate it.</span>
+<span class="c1"># Use lazy=True to run all validations before throwing the SchemaErrors</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">MySchema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">pa</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">SchemaErrors</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Got SchemaErrors exception.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+<pre><code>Got SchemaErrors exception.
+{
+    &quot;SCHEMA&quot;: {
+        &quot;SERIES_CONTAINS_NULLS&quot;: [
+            {
+                &quot;schema&quot;: &quot;MySchema&quot;,
+                &quot;column&quot;: &quot;nrs&quot;,
+                &quot;check&quot;: &quot;not_nullable&quot;,
+                &quot;error&quot;: &quot;non-nullable column 'nrs' contains null values&quot;
+            },
+            {
+                &quot;schema&quot;: &quot;MySchema&quot;,
+                &quot;column&quot;: &quot;names&quot;,
+                &quot;check&quot;: &quot;not_nullable&quot;,
+                &quot;error&quot;: &quot;non-nullable column 'names' contains null values&quot;
+            }
+        ]
+    },
+    &quot;DATA&quot;: {
+        &quot;DATAFRAME_CHECK&quot;: [
+            {
+                &quot;schema&quot;: &quot;MySchema&quot;,
+                &quot;column&quot;: &quot;random&quot;,
+                &quot;check&quot;: &quot;in_range(1.0, 2.0)&quot;,
+                &quot;error&quot;: &quot;Column 'random' failed validator number 0: &lt;Check in_range: in_range(1.0, 2.0)&gt; failure case examples: [{'random': 0.3}, {'random': 0.7}, {'random': 0.1}, {'random': 0.9}, {'random': 0.6}]&quot;
+            },
+            {
+                &quot;schema&quot;: &quot;MySchema&quot;,
+                &quot;column&quot;: &quot;groups&quot;,
+                &quot;check&quot;: &quot;isin(['A', 'B'])&quot;,
+                &quot;error&quot;: &quot;Column 'groups' failed validator number 0: &lt;Check isin: isin(['A', 'B'])&gt; failure case examples: [{'groups': 'C'}]&quot;
+            }
+        ]
+    }
+}</code></pre>
+</div>
+
+
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      Created by Stefan Otte
+        | 2013 - 2024
+        | <a href="https://github.com/sotte/">github</a>
+        | <a href="https://www.linkedin.com/in/stefan-otte-29367a111/">linkedin</a>
+    </p>
+  </footer>
+
+</body>
+
+</html>

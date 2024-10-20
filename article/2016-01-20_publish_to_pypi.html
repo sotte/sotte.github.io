@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Note to self - How to publish packages on PyPI - nodata.science</title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/static/simple.css">
+  <link rel="stylesheet" href="/static/custom.css">
+  <link rel="stylesheet" href="/static/pygments.css">
+</head>
+
+<body>
+
+  <header>
+    <nav>
+      <h1>nodata.science</h1>
+      <a  href="/index.html">Home</a>
+      <a class="current" href="/blog.html">Blog</a>
+      <a  href="/research.html">Research</a>
+      <!-- <a  href="/uses.html">Uses</a> -->
+      <!-- <a  href="/rss.html">RSS</a> -->
+    </nav>
+  </header>
+
+  <main>
+    <div id="content">
+
+
+<div>
+  <h1>Note to self - How to publish packages on PyPI</h1>
+  <p>
+    <em>
+    Created at 2016-01-20 by Stefan Otte.
+    
+    Updated at 2024-01-26.
+    
+    </em>
+  </p>
+  <p class="notice">
+Update 2024: The information in this article is out of date.
+Just use <a href="https://python-poetry.org/">poetry</a> (or other modern tools).
+That being said, it's quite interesting to see how the python packaging system has evolved over time.
+</p>
+
+<p>One of the least favorite things about python is package and release management.
+Even though it's getting better, there is still room for improvement.
+There are guides of how to publish package on <a href="https://pypi.python.org/pypi">PyPI</a> out there,
+but many are out of date and/or recommend methods that leak your password
+(<strong>DON'T</strong> use <code>setup.py upload</code> or <code>setup.py register</code>!).</p>
+<p>This guide is mostly for myself because I tend to forget things,
+but maybe it's useful for someone else.
+The authoritative source,
+and everybody should know about it,
+is <a href="https://packaging.python.org/en/latest/">python packaging</a>.
+It's a bit lengthy but really good.</p>
+<h2>Goal</h2>
+<p>The goal is to release an already existing package
+(which works with python 2&amp;3 and does not include any compiled stuff)
+on PyPI
+as <a href="https://packaging.python.org/en/latest/glossary/#term-source-distribution-or-sdist">source distribution</a> and as <a href="https://packaging.python.org/en/latest/distributing/#universal-wheels">universal wheel</a>
+so it's easy to <code>pip install</code>.</p>
+<h2>Tools</h2>
+<p>The tools we're going to be using:</p>
+<ul>
+<li>use <code>setuptools</code> in your <code>setup.py</code>,</li>
+<li>use <code>pip</code> for installing,</li>
+<li>use <code>wheels</code> to generate binary <code>universal wheel</code>_, and</li>
+<li>use <code>twine</code> to upload the packages to PyPI
+(<code>twine</code> uses an encrypted connection whereas <code>setup.py upload</code>
+leaks your password).</li>
+</ul>
+<p>See <a href="https://packaging.python.org/en/latest/current/">packaging tools</a> for more details.</p>
+<h2>Preperation: Create accounts</h2>
+<p>Even if you only want to publish your package on <a href="https://pypi.python.org/pypi">PyPI</a>
+you should have accounts on <a href="https://testpypi.python.org/pypi">PyPITest</a> (for testing purposes)
+<strong>and</strong> PyPI (for the real thing).
+Create accounts on both platforms.
+Work with PyPITest until you have the workflow down.
+Then actually release your package on PyPI.</p>
+<p>After you registered on
+<a href="https://pypi.python.org/pypi?%3Aaction=register_form">PyPI</a> and
+<a href="https://testpypi.python.org/pypi?%3Aaction=register_form">PyPITest</a>
+you should create a file <code>~/.pypirc</code> and add your credentials:</p>
+<div class="highlight"><pre><span></span><span class="c1"># .pypirc</span>
+<span class="k">[distutils]</span>
+<span class="na">index-servers</span><span class="o">=</span>
+<span class="w">    </span><span class="na">pypi</span>
+<span class="w">    </span><span class="na">pypitest</span>
+
+<span class="k">[pypitest]</span>
+<span class="na">repository</span><span class="o">=</span><span class="s">https://testpypi.python.org/pypi</span>
+<span class="na">username</span><span class="o">=</span><span class="s">&lt;your user name goes here&gt;</span>
+<span class="na">password</span><span class="o">=</span><span class="s">&lt;your password goes here&gt;</span>
+
+<span class="k">[pypi]</span>
+<span class="na">repository</span><span class="o">=</span><span class="s">https://pypi.python.org/pypi</span>
+<span class="na">username</span><span class="o">=</span><span class="s">&lt;your user name goes here&gt;</span>
+<span class="na">password</span><span class="o">=</span><span class="s">&lt;your password goes here&gt;</span>
+</pre></div>
+<h2>Your Package Should Have</h2>
+<p>... a <code>setup.py</code> file, a <code>setup.cfg</code> file, and a <code>README.rst</code> file (and
+a bunch of python code that actually does something).</p>
+<p>How to structure your <code>setup.py</code> is described
+<a href="https://packaging.python.org/en/latest/distributing/#setup-args">here</a>.</p>
+<p>The <code>setup.cfg</code> is needed to create a universal wheels and should look like
+this:</p>
+<div class="highlight"><pre><span></span><span class="c1"># setup.cfg</span>
+<span class="k">[bdist_wheel]</span>
+<span class="c1"># univesal wheel</span>
+<span class="na">universal</span><span class="o">=</span><span class="s">1</span>
+</pre></div>
+<p>I use <code>README.rst</code> because PyPI recognizes the <code>rst</code> format
+and I can reuse the <code>README.rst</code> with sphinx.</p>
+<h2>Steps to upload to PyPI(Test)</h2>
+<p>Given a proper setup package your can build the package:</p>
+<div class="highlight"><pre><span></span><span class="c1"># create a source distribution</span>
+python<span class="w"> </span>setup.py<span class="w"> </span>sdist
+<span class="c1"># create a universal wheel for</span>
+<span class="c1"># (py2&amp;3 without any ompiled stuff)</span>
+python<span class="w"> </span>setup.py<span class="w"> </span>bdist_wheel<span class="w"> </span>--universal
+</pre></div>
+<p>If the package is not on PyPI yet you have to register it first.
+Register your package on PyPI by uploading the <code>PKG-INFO</code>
+from <code>myproject.egg-info/PKG-INFO</code>
+via the <a href="https://testpypi.python.org/pypi?%3Aaction=submit_form">PyPITest web form</a>
+or the <a href="https://testpypi.python.org/pypi?%3Aaction=submit_form">PyPI web form</a>.
+DON'T use <code>python setup.py register</code> because it leaks your password!</p>
+<p>Then upload it to PyPITest:</p>
+<div class="highlight"><pre><span></span>twine<span class="w"> </span>upload<span class="w"> </span>--repository<span class="w"> </span>pypitest<span class="w"> </span>dist/*
+</pre></div>
+<p>or PyPI:</p>
+<div class="highlight"><pre><span></span>twine<span class="w"> </span>upload<span class="w"> </span>--repository<span class="w"> </span>pypi<span class="w"> </span>dist/*
+</pre></div>
+<h2>Conclusion</h2>
+<p>Congratulations, you're done!
+Once you know what to do it's not that hard :)</p>
+<p>I think it's a pain that default tools leak your password and you're forced
+to upload PKG
+<code>PKG-INFO</code> via a web form and install <code>twine</code> to upload the packages.
+Hopefully that changes at some point...</p>
+<!-- links -->
+
+
+</div>
+
+
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      Created by Stefan Otte
+        | 2013 - 2024
+        | <a href="https://github.com/sotte/">github</a>
+        | <a href="https://www.linkedin.com/in/stefan-otte-29367a111/">linkedin</a>
+    </p>
+  </footer>
+
+</body>
+
+</html>

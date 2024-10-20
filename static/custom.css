@@ -1,0 +1,11 @@
+.paper-title {
+  font-size: 1.44rem;
+  font-weight: bold;
+}
+.paper-author {
+  font-style: italic;
+}
+
+.paper-links {
+  align: center;
+}
