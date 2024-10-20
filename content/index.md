@@ -15,11 +15,8 @@ working in Berlin, Germany.
 I worked as a freelancer, at consultancies, and at startups,
 always solving problems with and around machine learning.
 
-My latest position was **head of machine learning** at
-[paretos](https://paretos.com/),
-where I led the team
-and built ML products in the areas of supply chain and advertisement
-with the focus on time series forecasting.
+I'm currently working as **staff machine learning engineer** at [plantix](https://plantix.net/),
+where we use machine learning to help farmers grow healthy crops.
 
 Feel free to contact me (stefan dot otte at gmail dot com),
 read some of my [blog posts](/blog.html),
